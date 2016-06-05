@@ -3,6 +3,13 @@ Welcome to the FanGaMk wiki!
 FGMK is the Fan Game Maker, it's made to resemble a little the RPG Maker 2000 - from memory, I haven't used it in ten years - but aims at easier to distribute games, and easier to modify. It's engine is made to be hacked, the descriptor files are meant to be human readable and even the editor is to be changed as needed.
 Important information:
 
+
+[Vocabulary and Definitions](terms.md)
+
+[Actions](actions.md)
+
+
+
 Right now, it's code is hacked together, with help of code floating around the web and stackoverflow, because I'm no professional programmer - I do plan on later, with the help of others evolve the idea. If you feel some code here belongs to you and want to be credited for it, tell me, I will try my best to make your name appear here and in the Maker interface. Some other things to have in mind:
 
 * The computer I use for development uses Linux, specifically Ubuntu 14.04 and Firefox, so even though Javascript and Python can run in other platforms, I current have no way to thoroughly test in them. Also the there 's little to none sanity tests - so if you feed the software with garbage data the result is unpredictable.
