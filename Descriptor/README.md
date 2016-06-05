@@ -20,6 +20,34 @@ Important information:
        ¦--f charas.json
        ¦--f items.json
 
+##charaset Folder
+
+Contains a json file descriptor for all charaset. 
+
+##levels Folder
+
+Contain a json file descriptor for each map.
+
+##init.json
+
+Describe initial parameters, like where in which map the hero begins and who is in the party at start.
+
+##feedback.json
+
+Vibration and sound settings
+
+##hms.json
+
+Hero, Monsters and Skills settings. This is important for the battles.
+
+##charas.json
+
+Set interaction, actions and animations for a chara. A chara can be placed in any map in the folder levels.
+
+##items.json
+
+Configure available items,that can be add or removed from the inventory during the game.
+
 [Vocabulary and Definitions](terms.md)
 
 [Actions](actions.md)
