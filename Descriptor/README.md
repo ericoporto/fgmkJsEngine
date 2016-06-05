@@ -4,6 +4,22 @@ FGMK is the Fan Game Maker, it's made to resemble a little the RPG Maker 2000 - 
 Important information:
 
 
+    d Game folder
+    |
+    ¦--d audio
+    ¦--d font
+    ¦--d img
+    ¦--d descriptors
+       |
+       ¦--d charaset
+       ¦--d levels
+       |
+       ¦--f init.json
+       ¦--f feedback.json
+       ¦--f hms.json
+       ¦--f charas.json
+       ¦--f items.json
+
 [Vocabulary and Definitions](terms.md)
 
 [Actions](actions.md)
