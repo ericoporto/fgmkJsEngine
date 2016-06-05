@@ -1,5 +1,30 @@
 Each event (be map event or chara event) can contain actions. Actions are arranged in a list and this list is similar to a receipt with branches - or an algorithm. Actions are the customizable mechanics in which you can script the logics that make things happen and the game progress other than the basic engine.
 
+    actions.addItem itemname
+    actions.alert msg
+    actions.battle monsters,params
+    actions.changeState state
+    actions.changeTile tileType level colision location current
+    actions.charAutoDelete chartodel
+    actions.fadeIn fadeInEffect
+    actions.fadeOut fadeOutEffect
+    actions.proceedBattleTurn
+    actions.questionBox question answer1...
+    actions.setVar varname value
+    actions.stopPicture picturename
+    actions.showPicture picturename
+    actions.showStatus 
+    actions.showText text
+    actions.teleport position, level
+    actions.testVar logicquestion
+    actions.varPlusOne varname
+    actions.noEffect  
+    actions.rain start/stop
+    
+    actions.IF 
+    actions.ELSE
+    actions.END 
+
 Here is the list of the actions currently available and the planned one until now.
 
 ## showText
