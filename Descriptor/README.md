@@ -1,67 +1,106 @@
-Welcome to the FanGaMk wiki!
+#FGMK
 
 FGMK is the Fan Game Maker, it's made to resemble a little the RPG Maker 2000 - from memory, I haven't used it in ten years - but aims at easier to distribute games, and easier to modify. It's engine is made to be hacked, the descriptor files are meant to be human readable and even the editor is to be changed as needed.
-Important information:
 
+#Vocabulary and Definitions
 
-    d Game folder
-    |
-    ¦--d audio
-    ¦--d font
-    ¦--d img
-    ¦--d descriptors
-       |
-       ¦--d charaset
-       ¦--d levels
-       |
-       ¦--f init.json
-       ¦--f feedback.json
-       ¦--f hms.json
-       ¦--f charas.json
-       ¦--f items.json
+For making describing things easier and fast I had to invent some terms, [read more about them here](terms.md).
 
-##charaset Folder
+Basically the visual part of things that move in a map are **charasets**, the description on how that thing interact is a **chara** and the character you control is called **hero**. In battle, the characters you control are the **heroes** and whatever you are fighting are the **monsters**. Anything you can add to your inventory is a **item**.
 
-Contains a json file descriptor for all charaset. 
+#Files and folders organization
 
-##levels Folder
+[`d Game folder        `](#game-folder)
+
+`|                    `
+
+[`¦--d audio           `](#audio-folder)
+
+[`¦--d font            `](#font-folder)
+
+[`¦--d img             `](#img-folder)
+
+[`¦--d descriptors     `](#descriptors-folder)
+
+`   |                 `
+
+[`   ¦--d charaset     `](#charaset-folder)
+
+[`   ¦--d levels       `](#levels-folder)
+
+`   |                 `
+
+[`   ¦--f init.json    `](#init.json)
+
+[`   ¦--f feedback.json`](#feedback.json)
+
+[`   ¦--f hms.json     `](#hms.json)
+
+[`   ¦--f charas.json  `](#charas.json)
+
+[`   ¦--f items.json   `](#items.json)
+
+##Game Folder
+
+This folder should contain the html engine, and the folders listed here. This folder can have any name, while all others have expected names that are as defined here.
+
+###Audio Folder
+
+This folder should contain all plain audio files that are going to be used, these can be wav and ogg files.
+
+###Font Folder
+
+This folder should contain the fonts you wish to use in your game - for rendering text.
+
+###Img Folder
+
+This folder should contain all the images you wish to use in your game, which includes how windows are draw, the images for charasets, the monsters image, the heros images and pictures.
+
+###Descriptors Folder
+
+All json descriptors that defines everything about your game.
+
+####charaset Folder
+
+Contains a json file descriptor for all charaset.
+
+####levels Folder
 
 Contain a json file descriptor for each map.
 
-##init.json
+####init.json
 
 Describe initial parameters, like where in which map the hero begins and who is in the party at start.
 
-##feedback.json
+####feedback.json
 
 Vibration and sound settings
 
-##hms.json
+####hms.json
 
 Hero, Monsters and Skills settings. This is important for the battles.
 
-##charas.json
+####charas.json
 
 Set interaction, actions and animations for a chara. A chara can be placed in any map in the folder levels.
 
-##items.json
+####items.json
 
 Configure available items,that can be add or removed from the inventory during the game.
 
-[Vocabulary and Definitions](terms.md)
 
-[Actions](actions.md)
+#Engine fifo system
 
+Everytime you interact with something in the game, actions will trigger. Each action works by placing engine atomic functions in the engine fifo buffer. These fuctions are then executed in the order they were placed in the buffer, in engine time. There are some functions that can alter a little which functions get executed - like IF cases.
 
+#Actions
 
-Right now, it's code is hacked together, with help of code floating around the web and stackoverflow, because I'm no professional programmer - I do plan on later, with the help of others evolve the idea. If you feel some code here belongs to you and want to be credited for it, tell me, I will try my best to make your name appear here and in the Maker interface. Some other things to have in mind:
+Whenever the hero interact with something (pressing action key or by being in a location), whenever something  happens, a list of actions is read. Actions will then place atomic functions in the Engine Fifo Buffer. An action can show a picture in the screen, add an item to the inventory, or show a text in the screen. You can [read more about them here](actions.md).
 
-* The computer I use for development uses Linux, specifically Ubuntu 14.04 and Firefox, so even though Javascript and Python can run in other platforms, I current have no way to thoroughly test in them. Also the there 's little to none sanity tests - so if you feed the software with garbage data the result is unpredictable.
+#Author and License
 
-* Until this being published here in GitHub it's being a single man effort - so expect bugs, shitty coding style... Also at first I didn't have the intent to release the code, it was something I was making for myself, but some friends saw and motivate me to release it here.
+The Javascript code is inspired on the source of the original game Redo, made by Lino, in the Global Game Jam 2012. In this article, he is the crazy guy with only an Ipad and I'm the electric engineer
 
-* Language support is for plain English, there is now no intend on supporting other languages - this is due the way text string is manipulated in the code. If you think your language deserves attention, submit a issue, and later, when the code is more stable, I will think on doing this.
+Fork, modify, hack, make it your own. Go ahead and have fun! If you make a game, share any modifications you do to the engine.
 
-* The Javascript code is based on the source of the original game Redo, made by Lino, in the Global Game Jam 2012. In this article, he is the crazy guy with only an Ipad and I'm the electric engineer
-
-Fork, modify, hack, make it your own. Go ahead and have fun! :)
+This code is written by Érico Vieira Porto, and it's here licensed as GPLv2.
