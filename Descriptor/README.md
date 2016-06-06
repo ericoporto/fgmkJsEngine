@@ -69,7 +69,6 @@ Contains a json file descriptor for all charaset.
 Contain a json file descriptor for each map.
 
 ####init.json
-
 Describe initial parameters, like where in which map the hero begins and who is in the party at start.
 
 ####feedback.json
