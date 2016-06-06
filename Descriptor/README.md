@@ -10,21 +10,29 @@ Basically the visual part of things that move in a map are **charasets**, the de
 
 #Files and folders organization
 
-[`d Game folder        `](#game-folder)
-`|                    `
-[`¦--d audio           `](#audio-folder)
-[`¦--d font            `](#font-folder)
-[`¦--d img             `](#img-folder)
-[`¦--d descriptors     `](#descriptors-folder)
-`   |                 `
-[`   ¦--d charaset     `](#charaset-folder)
-[`   ¦--d levels       `](#levels-folder)
-`   |                 `
-[`   ¦--f init.json    `](#initjson)
-[`   ¦--f feedback.json`](#feedbackjson)
-[`   ¦--f hms.json     `](#hmsjson)
-[`   ¦--f charas.json  `](#charasjson)
-[`   ¦--f items.json   `](#itemsjson)
+[`d Game folder`](#game-folder)
+
+* [`d audio      `](#audio-folder)
+
+* [`d font       `](#font-folder)
+
+* [`d img        `](#img-folder)
+
+* [`d descriptors`](#descriptors-folder)
+
+  * [`d charaset     `](#charaset-folder)
+
+  * [`d levels       `](#levels-folder)
+
+  * [`f init.json    `](#initjson)
+
+  * [`f feedback.json`](#feedbackjson)
+
+  * [`f hms.json     `](#hmsjson)
+
+  * [`f charas.json  `](#charasjson)
+
+  * [`f items.json   `](#itemsjson)
 
 ##Game Folder
 
