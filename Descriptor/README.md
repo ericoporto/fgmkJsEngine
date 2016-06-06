@@ -30,15 +30,15 @@ Basically the visual part of things that move in a map are **charasets**, the de
 
 `   |                 `
 
-[`   ¦--f init.json    `](#init.json)
+[`   ¦--f init.json    `](#initjson)
 
-[`   ¦--f feedback.json`](#feedback.json)
+[`   ¦--f feedback.json`](#feedbackjson)
 
-[`   ¦--f hms.json     `](#hms.json)
+[`   ¦--f hms.json     `](#hmsjson)
 
-[`   ¦--f charas.json  `](#charas.json)
+[`   ¦--f charas.json  `](#charasjson)
 
-[`   ¦--f items.json   `](#items.json)
+[`   ¦--f items.json   `](#itemsjson)
 
 ##Game Folder
 
