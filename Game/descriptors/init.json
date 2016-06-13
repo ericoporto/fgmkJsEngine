@@ -7,12 +7,12 @@
     }, 
     "HMSFile": "hms.json", 
     "LevelsList": {
-        "beach": "beach.json", 
-        "desertcave": "desertcave.json", 
-        "housemiddown": "housemiddown.json", 
-        "housetopleft": "housetopleft.json", 
-        "playerhouse": "playerhouse.json", 
-        "smallforest": "smallforest.json"
+        "beach": "beach.map.json", 
+        "desertcave": "desertcave.map.json", 
+        "housemiddown": "housemiddown.map.json", 
+        "housetopleft": "housetopleft.map.json", 
+        "playerhouse": "playerhouse.map.json", 
+        "smallforest": "smallforest.map.json"
     }, 
     "Player": {
         "charaFile": "person.json", 
