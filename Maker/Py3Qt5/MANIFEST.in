@@ -1,2 +1,0 @@
-include setup.py fgmk AUTHORS README COPYING
-recursive-include src/ *.py *.json *.png *.html
