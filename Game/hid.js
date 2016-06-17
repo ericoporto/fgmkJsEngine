@@ -60,19 +60,27 @@ var HID = {
         },
         layer1: {
             letter: '1',
-            toggle: function(){debug.showLayer.layer1 = !debug.showLayer.layer1}
+            toggle: function(){debug.showLayer.layer1 = !debug.showLayer.layer1
+                    if(debug.showLayer.layer1){actions.alert("layer1 shown.")}
+                    else{actions.alert("layer1 hidden.")}}
         },
         layer2: {
             letter: '2',
-            toggle: function(){debug.showLayer.layer2 = !debug.showLayer.layer2}
+            toggle: function(){debug.showLayer.layer2 = !debug.showLayer.layer2
+                if(debug.showLayer.layer2){actions.alert("layer2 shown.")}
+                else{actions.alert("layer2 hidden.")}}
         },
         layer3: {
             letter: '3',
-            toggle: function(){debug.showLayer.layer3 = !debug.showLayer.layer3}
+            toggle: function(){debug.showLayer.layer3 = !debug.showLayer.layer3
+                if(debug.showLayer.layer3){actions.alert("layer3 shown.")}
+                else{actions.alert("layer3 hidden.")}}
         },
         layer4: {
             letter: '4',
-            toggle: function(){debug.showLayer.layer4 = !debug.showLayer.layer4}
+            toggle: function(){debug.showLayer.layer4 = !debug.showLayer.layer4
+                if(debug.showLayer.layer4){actions.alert("layer4 shown.")}
+                else{actions.alert("layer4 hidden.")}}
         }
     },
 

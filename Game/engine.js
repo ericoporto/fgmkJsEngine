@@ -2,14 +2,6 @@ var chars = []
 
 var engine = {};
 
-window.ondevicemotion = function(event) {
-    if (event.accelerationIncludingGravity.y > 4) {
-        player['running'] = false;
-    }else{
-        player['running'] = true;
-    }
-};
-
 function charalist(){
     if ("charas" in engine.currentLevel["Level"] ) {
         listofcharas = engine.currentLevel["Level"]["charas"]
@@ -366,9 +358,21 @@ engine.menuSetup = function(){
                         }
                     },0),
 
-                back: {
-                    action: 'exit',
-                    index: 2
+                    walkspeed: new menu({
+                        x2: {
+                            action: [function(){ player['running'] = true }, 'exit'],
+                            index: 0
+                        },
+
+                        x1: {
+                            action: [function(){ player['running'] = false }, 'exit'],
+                            index: 1
+                        }
+                    },1),
+
+                    back: {
+                        action: 'exit',
+                        index: 2
                 }
             },3),
             exit: {
