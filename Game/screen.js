@@ -1044,3 +1044,5 @@ debug.FPS = {
 
 
 }
+
+addEvent(window, "resize", function(){screen.resize()});

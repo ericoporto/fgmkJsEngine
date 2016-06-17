@@ -11,7 +11,16 @@ function clone (existingArray) {
     return newObj;
 }
 
-
+var addEvent = function(object, type, callback) {
+    if (object == null || typeof(object) == 'undefined') return;
+    if (object.addEventListener) {
+        object.addEventListener(type, callback, false);
+    } else if (object.attachEvent) {
+        object.attachEvent("on" + type, callback);
+    } else {
+        object["on"+type] = callback;
+    }
+};
 
 getkey0 = function(tree,key){
     //if key exists return value, otherwise return zero
