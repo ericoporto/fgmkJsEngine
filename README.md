@@ -1,6 +1,8 @@
 ![Icon](iconTiny.png) fangamk
 =============================
 
+WORK IN PROGRESS IGNORE THIS REPO FOR NOW
+
 This is a way describe a type of game in json files, a javascipt engine to play
 it and a pyqt application to make it.
 
