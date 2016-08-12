@@ -595,6 +595,7 @@ engine.teleport = function(param) {
     //param = [positionX,positionY,level]
     engine.state = "map"
     engine.currentLevel = resources['levels'][param[2]];
+    resources.tileset = resources.tile[engine.currentLevel.Level.tileImage]
     player.mapx = parseInt(param[0],10)*32 ;
 	player.mapy = (parseInt(param[1],10)-1)*32;
     player.steps = 0;
@@ -711,8 +712,10 @@ engine.testVar = function(param) {
     var test = {
         '>'  : function(a,b) {return a>b},
         'bigger'  : function(a,b) {return a>b},
+        'greater'  : function(a,b) {return a>b},
         '<'  : function(a,b) {return a<b},
         'smaller'  : function(a,b) {return a<b},
+        'less'  : function(a,b) {return a<b},
         '>=' : function(a,b) {return a>=b},
         '<=' : function(a,b) {return a<=b},
         '==' : function(a,b) {return a==b},

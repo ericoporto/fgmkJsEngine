@@ -26,24 +26,27 @@ bootstrap.onLoadDOM = function(){
 		document.ontouchmove = function(e){ e.preventDefault();}
 		document.getElementsByTagName('canvas')[0].getContext('2d').fillStyle = '#FFFFFF';
 		document.getElementsByTagName('canvas')[0].getContext('2d').fillText("LOADING...", 64, 64)
-		resources.harvest();
-        screen.init();
-        player.setup();
-        camera.setupCanvas(screen.canvas);
-		engine.setup();
-        screen.setEngine(engine);
-		HID.setup(screen)
-        engine.currentLevel = resources['levels'][init['World']['initLevel']];
-		screen.printBox.setup(resources.printerset);
-		feedbackEng.setup();
-		title.setup();
-		battle.setup();
-		menus.setAllDrawables();
-		engine.loop();
-		screen.requestAnimationFrame.call(window,function(){screen.loop()})
-        debug.FPS.loop();
-        chars = new charalist();
-        chars.push(player)
+		resources.harvest(function(){
+      screen.init();
+      player.setup();
+      camera.setupCanvas(screen.canvas);
+      engine.setup();
+      screen.setEngine(engine);
+      HID.setup(screen)
+      engine.currentLevel = resources['levels'][init['World']['initLevel']];
+      resources.tileset = resources.tile[engine.currentLevel.Level.tileImage]
+      screen.printBox.setup(resources.printerset);
+      feedbackEng.setup();
+      title.setup();
+      battle.setup();
+      menus.setAllDrawables();
+      engine.loop();
+      screen.requestAnimationFrame.call(window,function(){screen.loop()})
+      debug.FPS.loop();
+      chars = new charalist();
+      chars.push(player)
+    });
+
 	}catch (err){
 		alert("Error on bootstrap! "+err);
 	}

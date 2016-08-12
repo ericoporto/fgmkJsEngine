@@ -17,7 +17,7 @@ var resources = {
     hms: {}
 };
 
-resources.harvest = function(){
+resources.harvest = function(callback){
     var filecount = 0;
     document.getElementsByTagName('canvas')[0].getContext('2d').fillStyle = '#FFFFFF';
 
@@ -35,11 +35,12 @@ resources.harvest = function(){
         return toreturn
     }
 
-    this.tileset = document.getElementById("tile");
+    this.tileset = []
     this.faceset = document.getElementById("faceset");
     this.charasetimg = document.getElementById("charasetimg");
     this.printerset = document.getElementById("printerimg");
     this.monsterimg = document.getElementById("monsterbattleimg");
+    this.tile = {}
     this.pictures = {}
     this.pictures.title = document.getElementById("titleimg");
     this.pictures.keys0 = document.getElementById("keys0");
@@ -48,12 +49,17 @@ resources.harvest = function(){
     this.pictures.controllers = document.getElementById("controllers");
 
     this.feedback = getresource(descriptors+"feedback.json")['Feedback'];
+    this.tileslist = []
 
     LevelsList = init['LevelsList']
     for (var level in LevelsList) {
         var levelItem = LevelsList[level]
         console.log(descriptors+levelsFolder+levelItem)
         resources['levels'][level] = getresource(descriptors+levelsFolder+levelItem);
+        var tileimage = resources['levels'][level]['Level']['tileImage']
+        if(this.tileslist.indexOf(tileimage)<0) {
+          this.tileslist.push(tileimage)
+        }
     }
     CharasetFileList = init['CharasetFileList']
     for (var charasetfilep in CharasetFileList) {
@@ -61,6 +67,28 @@ resources.harvest = function(){
         console.log(descriptors+charasetsFolder+charasetfile)
         resources['charasets'] = getresource(descriptors+charasetsFolder+charasetfile)['Charaset'];
     }
+    resources['charas'] = getresource(descriptors+"charas.json")['Charas'];
+    this.playerCharaset = resources['charasets'][init['Player']['charaSet']];
+    this.hms = getresource(descriptors+init["HMSFile"])
+    this.items = getresource(descriptors+init["itemsFile"])['Items']
+
+    index = 0
+    function loadTile(src, callback) {
+        resources.tile[src] = new Image();
+        resources.tile[src].onload = function() {
+           index++;
+           if(index < resources.tileslist.length) {
+               loadTile(resources.tileslist[index],callback);
+           } else {
+               callback()
+           }
+        };
+        resources.tile[src].src = src;
+    }
+
+    loadTile(resources.tileslist[index],callback)
+
+
     //CharasFileList = init['CharasFileList']
     //for (var charasfilep in CharasFileList) {
     //    var charasfile = CharasFileList[charasfilep]
@@ -68,8 +96,5 @@ resources.harvest = function(){
     //    resources['charas'] = jsonGet(descriptors+charasFolder+charasfile)['Charas'];
     //}
 
-    resources['charas'] = getresource(descriptors+"charas.json")['Charas'];
-    this.playerCharaset = resources['charasets'][init['Player']['charaSet']];
-    this.hms = getresource(descriptors+init["HMSFile"])
-    this.items = getresource(descriptors+init["itemsFile"])['Items']
+
 }
