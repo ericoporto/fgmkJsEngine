@@ -591,6 +591,13 @@ engine.changeState = function(param) {
     engine.state = param[0]
 }
 
+engine.teleportInPlace = function(param){
+  var px = Math.floor(player.mapx/32),
+  py = Math.floor(player.mapy/32)+1;
+    var map = param[0]
+    engine.teleport([px,py,map])
+}
+
 engine.teleport = function(param) {
     //param = [positionX,positionY,level]
     engine.state = "map"

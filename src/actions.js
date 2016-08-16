@@ -103,6 +103,17 @@ actions.teleport = function(param, position) {
     }, '']);
 };
 
+actions.teleportInPlace = function(param, position) {
+    var params = param.split(';')
+    engine.atomStack.push([function() {
+        screen.paused = true;
+    }, '']);
+    engine.atomStack.push([engine.teleportInPlace, params]);
+    engine.atomStack.push([function() {
+        screen.paused = false;
+    }, '']);
+};
+
 actions.changeTile = function(param, position) {
     //param[4] location (current or x,y,level)
     var colisionDict = {
