@@ -277,7 +277,6 @@ player.setup = function() {
                 var px = Math.floor(player.mapx / 32),
                     py = Math.floor(player.mapy / 32) + 1;
                 if (eventInMap(engine.currentLevel["Level"], [0, 1], [py, px])) {
-                    console.log("x" + px + " y" + py)
                     HID.inputs["accept"].active = false
                     engine.mapEventBlocked = true
                 }
