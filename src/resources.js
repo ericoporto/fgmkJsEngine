@@ -17,19 +17,19 @@ var resources = {
     hms: {}
 };
 
-resources.harvest = function(callback){
+resources.harvest = function(callback) {
     var filecount = 0;
     document.getElementsByTagName('canvas')[0].getContext('2d').fillStyle = '#FFFFFF';
 
     var getresource = function(getthis) {
         var toreturn = jsonGet(getthis)
-        if(!(typeof toreturn.resources === "undefined")){
-            if(!(typeof toreturn.resources.audio === "undefined")){
+        if (!(typeof toreturn.resources === "undefined")) {
+            if (!(typeof toreturn.resources.audio === "undefined")) {
 
             }
         }
-        filecount+=1
-        if(!(typeof toreturn.Level === "undefined")){
+        filecount += 1
+        if (!(typeof toreturn.Level === "undefined")) {
             document.getElementsByTagName('canvas')[0].getContext('2d').fillText(".", filecount, filecount)
         }
         return toreturn
@@ -48,45 +48,46 @@ resources.harvest = function(callback){
     this.pictures.keys2 = document.getElementById("keys2");
     this.pictures.controllers = document.getElementById("controllers");
 
-    this.feedback = getresource(descriptors+"feedback.json")['Feedback'];
+    this.feedback = getresource(descriptors + "feedback.json")['Feedback'];
     this.tileslist = []
 
     LevelsList = init['LevelsList']
     for (var level in LevelsList) {
         var levelItem = LevelsList[level]
-        console.log(descriptors+levelsFolder+levelItem)
-        resources['levels'][level] = getresource(descriptors+levelsFolder+levelItem);
+        console.log(descriptors + levelsFolder + levelItem)
+        resources['levels'][level] = getresource(descriptors + levelsFolder + levelItem);
         var tileimage = resources['levels'][level]['Level']['tileImage']
-        if(this.tileslist.indexOf(tileimage)<0) {
-          this.tileslist.push(tileimage)
+        if (this.tileslist.indexOf(tileimage) < 0) {
+            this.tileslist.push(tileimage)
         }
     }
     CharasetFileList = init['CharasetFileList']
     for (var charasetfilep in CharasetFileList) {
         var charasetfile = CharasetFileList[charasetfilep]
-        console.log(descriptors+charasetsFolder+charasetfile)
-        resources['charasets'] = getresource(descriptors+charasetsFolder+charasetfile)['Charaset'];
+        console.log(descriptors + charasetsFolder + charasetfile)
+        resources['charasets'] = getresource(descriptors + charasetsFolder + charasetfile)['Charaset'];
     }
-    resources['charas'] = getresource(descriptors+"charas.json")['Charas'];
+    resources['charas'] = getresource(descriptors + "charas.json")['Charas'];
     this.playerCharaset = resources['charasets'][init['Player']['charaSet']];
-    this.hms = getresource(descriptors+init["HMSFile"])
-    this.items = getresource(descriptors+init["itemsFile"])['Items']
+    this.hms = getresource(descriptors + init["HMSFile"])
+    this.items = getresource(descriptors + init["itemsFile"])['Items']
 
     index = 0
+
     function loadTile(src, callback) {
         resources.tile[src] = new Image();
         resources.tile[src].onload = function() {
-           index++;
-           if(index < resources.tileslist.length) {
-               loadTile(resources.tileslist[index],callback);
-           } else {
-               callback()
-           }
+            index++;
+            if (index < resources.tileslist.length) {
+                loadTile(resources.tileslist[index], callback);
+            } else {
+                callback()
+            }
         };
         resources.tile[src].src = src;
     }
 
-    loadTile(resources.tileslist[index],callback)
+    loadTile(resources.tileslist[index], callback)
 
 
     //CharasFileList = init['CharasFileList']
