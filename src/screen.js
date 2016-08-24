@@ -499,18 +499,25 @@ screen.printBox = {
             sizex: 16,
             sizey: 16
         },
-        icon0: {
-            x: 0,
-            y: 96,
-            sizex: 64,
-            sizey: 64
-        },
-        icon1: {
+        upArrow: {
             x: 64,
-            y: 96,
-            sizex: 64,
-            sizey: 64
+            y: 64,
+            sizex: 32,
+            sizey: 16
+        },
+        downArrow: {
+            x: 64,
+            y: 80,
+            sizex: 32,
+            sizey: 16
         }
+    },
+
+    getIcon: function(i) {
+       return {x:parseInt(i%4)*64,
+               y:parseInt(Math.floor(i/4))*64+96,
+               sizex: 64,
+               sizey: 64}
     },
 
     drawButtonAccept: function() {
@@ -525,7 +532,6 @@ screen.printBox = {
             accept['sizex'], accept['sizey'],
             screen.GSTARTX + screen.GWIDTH - 32, screen.GSTARTY + screen.GHEIGHT - 32, accept['sizex'], accept['sizey'])
     },
-
 
     drawElement: function(element, x, y, sizex, sizey, imgPrintSet, select) {
         select = (typeof select === "undefined") ? 0 : select;
@@ -564,6 +570,16 @@ screen.printBox = {
             this.drawButtonAccept()
         }
 
+    },
+
+    drawArrow: function(upordown,x,y){
+        var imgPrintSet = screen.printBox.imgPrintSet;
+        var arrow = screen.printBox.printSet.upArrow
+        if(upordown=='down'){
+            arrow = screen.printBox.printSet.downArrow
+        }
+
+        screen.printBox.drawElement(arrow, x, y, arrow.sizex, arrow.sizey, imgPrintSet)
     },
 
     drawBox: function(x, y, sizex, sizey, select) {
@@ -840,26 +856,48 @@ screen.drawMonsters = function() {
 }
 
 screen.drawMenu = function(menu) {
+    var maxOnScreen = menu.maxOnScreen
     var maxItems = menu.itemsLength
     var maxItemStringLength = menu.maxItemStringSize()
+    var selectedIndex = menu.selectedItem.index
 
+    if (typeof menu.firstItem === "undefined"){
+        menu.firstItem = 0
+        menu.finalItem = Math.min(maxItems,maxOnScreen)
+    }
 
-    screen.printBox.drawBox(menu['drawx'],
-        menu['drawy'],
-        menu['width'],
-        menu['height']);
+    if(selectedIndex >= menu.finalItem){
+        menu.finalItem = selectedIndex+1
+        menu.firstItem = menu.finalItem - maxOnScreen
+    } else if (selectedIndex < menu.firstItem) {
+        menu.firstItem = selectedIndex
+        menu.finalItem = menu.firstItem + maxOnScreen
+    }
 
-    for (var i = 0; i < maxItems; i += 1) {
+    if(!(menu.wait)){
+        if(menu.finalItem < maxItems){
+           screen.printBox.drawArrow('down', menu['drawx']+menu['width']-32,menu['drawy']+menu['height']+16)
+        }
+        if(menu.firstItem > 0){
+           screen.printBox.drawArrow('up', menu['drawx']+menu['width']-32,menu['drawy']+menu['height'])
+        }
+    }
+
+    screen.printBox.drawBox(menu['drawx'], menu['drawy'],
+                            menu['width'], menu['height']);
+
+    var k=0;
+    for (var i = menu.firstItem; i < menu.finalItem; i += 1) {
         if (menu.items[Object.keys(menu.items)[i]].selected) {
             if (menu.wait) {
                 screen.printBox.drawBox(menu['drawx'] + 8,
-                    menu['drawy'] + 8 + 32 * i,
+                    menu['drawy'] + 8 + 32 * k,
                     menu['width'] - 16,
                     32,
                     1);
             } else {
                 screen.printBox.drawBox(menu['drawx'] + 8,
-                    menu['drawy'] + 8 + 32 * i,
+                    menu['drawy'] + 8 + 32 * k,
                     menu['width'] - 16,
                     32,
                     1 + Math.floor(screen.frameCount / 4) % 2);
@@ -867,8 +905,7 @@ screen.drawMenu = function(menu) {
 
             if (typeof menu.items[Object.keys(menu.items)[i]].icon !== "undefined") {
                 var imgPrintSet = screen.printBox.imgPrintSet;
-                var s = screen['printBox']['printSet']
-                var icon = s[menu.items[Object.keys(menu.items)[i]].icon]
+                var icon = screen.printBox.getIcon([menu.items[Object.keys(menu.items)[i]].icon])
 
                 screen.printBox.drawBox(menu['drawx'] + menu['width'],
                     menu['drawy'],
@@ -878,7 +915,8 @@ screen.drawMenu = function(menu) {
             }
 
         }
-        screen.drawText(Object.keys(menu.items)[i], +menu['drawx'] + 16, menu['drawy'] + menu.items[Object.keys(menu.items)[i]].itemy);
+        screen.drawText(Object.keys(menu.items)[i], +menu['drawx'] + 16, menu['drawy'] + 32+k*32);
+        k+=1;
     }
 
 }

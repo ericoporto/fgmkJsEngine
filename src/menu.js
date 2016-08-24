@@ -27,15 +27,19 @@ var menus = {
         }
     },
     setDrawables: function(menuToDraw) {
+        var maxOnScreen = menuToDraw.maxOnScreen
+        var maxItems = menuToDraw.itemsLength
+        var finalItem = Math.min(maxItems,maxOnScreen)
+
         if (menuToDraw.parent == null) {
             menuToDraw['drawx'] = 16;
             menuToDraw['drawy'] = 16;
-            menuToDraw['height'] = menuToDraw.itemsLength * 32 + 32;
+            menuToDraw['height'] = finalItem * 32 + 32;
             menuToDraw['width'] = menuToDraw.maxItemStringSize() * 13 + 32;
         } else {
             menuToDraw['drawx'] = menuToDraw.parent.drawx + menuToDraw.parent.width;
             menuToDraw['drawy'] = menuToDraw.parent.drawy;
-            menuToDraw['height'] = menuToDraw.itemsLength * 32 + 32;
+            menuToDraw['height'] = finalItem * 32 + 32;
             menuToDraw['width'] = menuToDraw.maxItemStringSize() * 13 + 32;
         }
     },
@@ -57,6 +61,7 @@ function menu(_items, _index, _noexit) {
     this.items = _items;
     this.noexit = _noexit;
 
+    this.maxOnScreen = 5
     this.parent = null
     this.index = _index
     this.enabled = false;

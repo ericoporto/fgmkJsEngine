@@ -337,7 +337,7 @@ engine.menuSetup = function() {
                         actions.showText("this is a yes!")
                     }, 'stopWait', 'exit'],
                     index: 0,
-                    icon: 'icon1'
+                    icon: 0
                 },
 
                 no: {
@@ -345,7 +345,7 @@ engine.menuSetup = function() {
                         actions.showText("this is a no!")
                     }, 'exit'],
                     index: 1,
-                    icon: 'icon0'
+                    icon: 1
                 }
             }, 0),
 
