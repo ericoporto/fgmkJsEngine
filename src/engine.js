@@ -559,7 +559,7 @@ eventInChar = function(char, evType, position) {
         var aNmb, action, actionAndParam;
         for (aNmb = 0; aNmb < char['chara']['actions']['list'].length; aNmb++) {
             actionAndParam = char['chara']['actions']['list'][aNmb];
-            translateActions(actionAndParam[0], actionAndParam[1], position, char);
+            engine.translateActions(actionAndParam[0], actionAndParam[1], position, char);
         }
         engine.atomStack.push([function() {
             char.stopped = false;
@@ -616,7 +616,7 @@ eventInMap = function(level, evType, position) {
         var aNmb, action, actionAndParam;
         for (aNmb = 0; aNmb < level['eventsActions'][event.toString()].length; aNmb++) {
             actionAndParam = level['eventsActions'][event.toString()][aNmb];
-            translateActions(actionAndParam[0], actionAndParam[1], position);
+            engine.translateActions(actionAndParam[0], actionAndParam[1], position);
         }
         return true
     }
@@ -878,7 +878,7 @@ engine.alertupdate = function() {
     }
 }
 
-translateActions = function(action, param, position, charsender) {
+engine.translateActions = function(action, param, position, charsender) {
     actions[action](param, position, charsender)
 };
 

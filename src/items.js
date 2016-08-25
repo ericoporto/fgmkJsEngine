@@ -55,8 +55,6 @@ items.setup = function(itemsjson) {
         delete this.inventory[itemname]
     }
 
-
-
     this.effect = {}
     this.pts = function(itemname) {
         var baseplus = getkey0(this.inventory[itemname].effect, "basep")
@@ -70,8 +68,9 @@ items.setup = function(itemsjson) {
         target.hp = Math.min(target.hp + pts, target.hpmax)
     }
 
-    this.useItem = function(itemname) {
-        if (this.inventory[itemname].action == null) {
+    this.useItem = function(item_name) {
+        var itemname = item_name
+        if(this.inventory[itemname].effect != null){
             var points = this.pts(itemname)
             var target = []
             target.push(battle.heroes[player.party[0]])
@@ -82,10 +81,18 @@ items.setup = function(itemsjson) {
                     this.effect[effects[i]](target[j], points)
                 }
             }
+        }
 
-            if(!(this.inventory[itemname].reusable)){
-                this.subtractItem(itemname)
+        if(this.inventory[itemname].action != null){
+            var position = [Math.floor(player.mapx / 32), Math.floor(player.mapy / 32) + 1]
+            for (var i = 0; i < this.inventory[itemname].action.length; i++) {
+                var actionAndParam = this.inventory[itemname].action[i]
+                engine.translateActions(actionAndParam[0], actionAndParam[1], position);
             }
+        }
+
+        if(this.inventory[itemname].reusable == false){
+            this.subtractItem(itemname)
         }
     }
 
@@ -181,40 +188,45 @@ items.setup = function(itemsjson) {
                 if (this.inventory[iitem].equiped) {
                     itemactions["unequip"] = {}
                     itemactions["unequip"]["index"] = k
-                    itemactions["unequip"]["action"] = [function() {
-                        items.unequipItem(iitem)
-                    }, 'exit']
+                    itemactions["unequip"]["action"] = [(function(the_item){
+                        return function() {
+                        items.unequipItem(the_item)}
+                    })(iitem), 'exit']
                 } else {
                     itemactions["equip"] = {}
                     itemactions["equip"]["index"] = k
-                    itemactions["equip"]["action"] = [function() {
-                        items.equipItem(iitem)
-                    }, 'exit']
+                    itemactions["equip"]["action"] = [(function(the_item){
+                        return function() {
+                        items.equipItem(the_item)}
+                    })(iitem), 'exit']
                 }
                 k++
             }
             if (this.inventory[iitem].usable) {
                 itemactions["use"] = {}
                 itemactions["use"]["index"] = k
-                itemactions["use"]["action"] = [function() {
-                    items.useItem(iitem)
-                }, 'exit']
+                itemactions["use"]["action"] = [(function(the_item){
+                    return function() {
+                    items.useItem(the_item)}
+                })(iitem), 'exit']
                 k++
             }
             if (this.inventory[iitem].description) {
                 itemactions["look"] = {}
                 itemactions["look"]["index"] = k
-                itemactions["look"]["action"] = [function() {
-                    items.lookItem(iitem)
-                }, 'exit']
+                itemactions["look"]["action"] = [(function(the_item){
+                    return function() {
+                    items.lookItem(the_item)}
+                })(iitem), 'exit']
                 k++
             }
             if (!(this.inventory[iitem].unique)) {
                 itemactions["drop"] = {}
                 itemactions["drop"]["index"] = k
-                itemactions["drop"]["action"] = [function() {
-                    items.dropItem(iitem)
-                }, 'exit']
+                itemactions["drop"]["action"] = [(function(the_item){
+                    return function() {
+                    items.dropItem(the_item)}
+                })(iitem), 'exit']
                 k++
             }
 
