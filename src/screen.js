@@ -905,7 +905,7 @@ screen.drawMenu = function(menu) {
 
             if (typeof menu.items[Object.keys(menu.items)[i]].icon !== "undefined") {
                 var imgPrintSet = screen.printBox.imgPrintSet;
-                var icon = screen.printBox.getIcon([menu.items[Object.keys(menu.items)[i]].icon])
+                var icon = screen.printBox.getIcon(menu.items[Object.keys(menu.items)[i]].icon)
 
                 screen.printBox.drawBox(menu['drawx'] + menu['width'],
                     menu['drawy'],
