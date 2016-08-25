@@ -8,6 +8,7 @@ items.setup = function(itemsjson) {
             "equipable": false,
             "equiped": false,
             "usable": false,
+            "reusable":false,
             "unique": false,
             "effect": null,
             "statMod": null,
@@ -82,7 +83,9 @@ items.setup = function(itemsjson) {
                 }
             }
 
-            this.subtractItem(itemname)
+            if(!(this.inventory[itemname].reusable)){
+                this.subtractItem(itemname)
+            }
         }
     }
 
