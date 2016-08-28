@@ -1,3 +1,9 @@
+isInt = Number.isInteger || function(val) {
+  return typeof val === "number" &&
+    isFinite(val) &&
+    Math.floor(val) === val;
+};
+
 function clone(existingArray) {
     var newObj = (existingArray instanceof Array) ? [] : {};
     for (i in existingArray) {

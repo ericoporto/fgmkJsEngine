@@ -903,7 +903,7 @@ screen.drawMenu = function(menu) {
                     1 + Math.floor(screen.frameCount / 4) % 2);
             }
 
-            if (typeof menu.items[Object.keys(menu.items)[i]].icon !== "undefined") {
+            if (isInt(menu.items[Object.keys(menu.items)[i]].icon)) {
                 var imgPrintSet = screen.printBox.imgPrintSet;
                 var icon = screen.printBox.getIcon(menu.items[Object.keys(menu.items)[i]].icon)
 
@@ -1027,8 +1027,8 @@ screen.loop = function() {
             screen.drawHID();
 
 
-
-            for (var menuToDraw in menus.allMenus) {
+            var allMenusLenght = menus.allMenus.length
+            for (var menuToDraw=allMenusLenght-1 ; menuToDraw>=0;menuToDraw--) {
                 if (menus.allMenus[menuToDraw].enabled) {
                     screen.drawMenu(menus.allMenus[menuToDraw]);
                 }

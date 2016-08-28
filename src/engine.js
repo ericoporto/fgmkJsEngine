@@ -330,39 +330,6 @@ engine.menuSetup = function() {
             },
             index: 1
         },
-        test: new menu({
-            test2: new menu({
-                yes: {
-                    action: ['goWait', function() {
-                        actions.showText("this is a yes!")
-                    }, 'stopWait', 'exit'],
-                    index: 0,
-                    icon: 0
-                },
-
-                no: {
-                    action: [function() {
-                        actions.showText("this is a no!")
-                    }, 'exit'],
-                    index: 1,
-                    icon: 1
-                }
-            }, 0),
-
-            yes1: {
-                action: [function() {
-                    actions.showText("this is a yes1!")
-                }, 'exit'],
-                index: 1
-            },
-
-            no1: {
-                action: [function() {
-                    actions.showText("this is a no1!")
-                }, 'exit'],
-                index: 2
-            }
-        }, 2),
 
         config: new menu({
             showFPS: new menu({
@@ -401,10 +368,10 @@ engine.menuSetup = function() {
                 action: 'exit',
                 index: 2
             }
-        }, 3),
+        }, 2),
         exit: {
             action: 'exit',
-            index: 4
+            index: 3
         }
     });
     menus.setParent(engine.mapMenu);

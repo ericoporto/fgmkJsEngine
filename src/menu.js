@@ -52,18 +52,20 @@ var menus = {
     }
 };
 
-function menu(_items, _index, _noexit) {
+function menu(_items, _index, _noexit, _icon) {
 
     var tempArray = [];
 
     _index = (typeof _index === "undefined") ? null : _index;
-    _noexit = (typeof _noexit === "undefined") ? false : true;
+    _icon = (typeof _icon === "undefined") ? null : _icon;
+    _noexit = (typeof _noexit === "undefined") ? false : _noexit;
     this.items = _items;
     this.noexit = _noexit;
 
     this.maxOnScreen = 5
     this.parent = null
     this.index = _index
+    this.icon = _icon
     this.enabled = false;
     this.selectedItem = null;
     this.wait = false
