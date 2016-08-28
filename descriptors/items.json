@@ -1,33 +1,16 @@
 {
-    "Items": {
-        "mirror": {
-            "action": [
-                ["rain", "start"],
-                ["alert", "is raining.."]
-            ],
-            "name": "mirror",
-            "usable": true,
-            "reusable": true,
-            "description": "a weird mirror"
-        },
-        "potion": {
-            "name": "potion",
-            "effect": {
-                "effect": ["hpup"],
-                "basep": 0,
-                "plus": 10
-            },
-            "usable": true,
-            "description": "A flask containing a funny looking liquid."
-        },
-        "sword": {
-            "name": "sword",
-            "statMod": {
-                "st": 1
-            },
-            "category": "weapon",
-            "description": "",
-            "equipable": true
-        }
+"Items":
+    {
+    "potion":{
+            "effect":{"dl":0,"basep":0,"plus":10,"effect":["hpup"]},
+            "usable":true,
+            "description":"A flask containing a funny looking liquid.",
+            "icon":1
+             },
+    "sword":{
+            "equipable":true,
+            "category":"weapon",
+            "statMod":{"st":1}
+            }
     }
 }
