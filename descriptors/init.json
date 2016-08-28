@@ -7,8 +7,6 @@
     },
     "HMSFile": "hms.json",
     "LevelsList": {
-        "Diffhouse": "Diffhouse.map.json",
-        "ahouse": "ahouse.map.json",
         "beach": "beach.map.json",
         "desertcave": "desertcave.map.json",
         "housemiddown": "housemiddown.map.json",
@@ -27,7 +25,7 @@
         ]
     },
     "World": {
-        "initLevel": "ahouse"
+        "initLevel": "playerhouse"
     },
     "itemsFile": "items.json"
 }
