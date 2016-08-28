@@ -670,8 +670,12 @@ engine.evalNum = function(number) {
                 return player.facing
             } else if (value.split('hero:')[1] == "x") {
                 return Math.floor(player.mapx / 32)
-            } else {
+            } else if (value.split('hero:')[1] == "y") {
                 return Math.floor(player.mapy / 32) + 1
+            }
+        } else if (value.indexOf("map:") == 0) {
+            if (value.split('map:')[1] == "this" || value.split('map:')[1] == "current" ) {
+                return engine.currentLevel.Level.levelName
             }
         } else {
             return value
