@@ -1,0 +1,33 @@
+{
+    "CharasFileList": {
+        "charas1": "charas1.json"
+    },
+    "CharasetFileList": {
+        "charaset1": "charaset1.json"
+    },
+    "HMSFile": "hms.json",
+    "LevelsList": {
+        "Diffhouse": "Diffhouse.map.json",
+        "ahouse": "ahouse.map.json",
+        "beach": "beach.map.json",
+        "desertcave": "desertcave.map.json",
+        "housemiddown": "housemiddown.map.json",
+        "housetopleft": "housetopleft.map.json",
+        "playerhouse": "playerhouse.map.json",
+        "smallforest": "smallforest.map.json"
+    },
+    "Player": {
+        "charaFile": "person.json",
+        "charaSet": "person",
+        "facing": "down",
+        "initPosX": 160,
+        "initPosY": 160,
+        "party": [
+            "hero"
+        ]
+    },
+    "World": {
+        "initLevel": "ahouse"
+    },
+    "itemsFile": "items.json"
+}
