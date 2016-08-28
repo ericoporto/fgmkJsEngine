@@ -206,6 +206,11 @@ actions.addItem = function(param, position) {
     engine.atomStack.push([engine.addItem, params]);
 }
 
+actions.subtractItem = function(param, position) {
+    var params = param.split(';')
+    engine.atomStack.push([engine.subtractItem, params]);
+}
+
 actions.proceedBattleTurn = function(param, position) {
     battle.herodecision = ""
     engine.questionBoxAnswer = engine.questionBoxUndef

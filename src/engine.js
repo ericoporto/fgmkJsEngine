@@ -628,6 +628,12 @@ engine.addItem = function(param) {
     }
 }
 
+engine.subtractItem = function(param) {
+    for (var i = 0; i < param.length; i++) {
+        items.subtractItem(param[i])
+    }
+}
+
 engine.battle = function(param) {
     battle.start(param)
 }
