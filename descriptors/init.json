@@ -14,12 +14,14 @@
         "playerhouse": "playerhouse.map.json",
         "smallforest": "smallforest.map.json"
     },
+    "PictureList":["test"]
+    ,
     "Player": {
         "charaFile": "person.json",
         "charaSet": "person",
         "facing": "down",
-        "initPosX": 160,
-        "initPosY": 160,
+        "initPosX": 224,
+        "initPosY": 224,
         "party": [
             "hero"
         ]
