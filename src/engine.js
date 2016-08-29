@@ -780,6 +780,9 @@ engine.showPicture = function(param) {
     var picture = {}
     picture["image"] = param[0]
     picture["position"] = [param[1], param[2]]
+    if(param[3]=="sys"){
+        picture["sys"] = true
+    }
     screen.pictureStack.push(picture)
 }
 

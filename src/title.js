@@ -25,25 +25,25 @@ title.setup = function() {
     }, undefined, true);
     menus.setParent(title.startMenu);
     title.startMenu.activate()
-    actions.showPicture("title;0;0")
+    actions.showPicture("title;0;0;sys")
     setTimeout(function() {
         if (engine.state == "startScreen") {
-            engine.showPicture(["keys0", "160", "8"])
-            engine.showPicture(["controllers", "8", (screen.GHEIGHT - 32).toString()])
+            engine.showPicture(["keys0", "160", "8", "sys"])
+            engine.showPicture(["controllers", "8", (screen.GHEIGHT - 32).toString(), "sys"])
         }
     }, 1000);
 
     setTimeout(function() {
         if (engine.state == "startScreen") {
-            engine.showPicture(["keys2", "160", "24"])
+            engine.showPicture(["keys2", "160", "24", "sys"])
         }
     }, 4000);
     setTimeout(function() {
         if (engine.state == "startScreen") {
             engine.stopPicture("");
-            engine.showPicture(["title", "0", "0"])
-            engine.showPicture(["keys1", "150", "16"]);
-            engine.showPicture(["controllers", "8", (screen.GHEIGHT - 32).toString()])
+            engine.showPicture(["title", "0", "0", "sys"])
+            engine.showPicture(["keys1", "150", "16", "sys"]);
+            engine.showPicture(["controllers", "8", (screen.GHEIGHT - 32).toString(), "sys"])
         }
     }, 10000);
 }

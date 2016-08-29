@@ -42,11 +42,12 @@ resources.harvest = function(callback) {
     this.monsterimg = document.getElementById("monsterbattleimg");
     this.tile = {}
     this.pictures = {}
-    this.pictures.title = document.getElementById("titleimg");
-    this.pictures.keys0 = document.getElementById("keys0");
-    this.pictures.keys1 = document.getElementById("keys1");
-    this.pictures.keys2 = document.getElementById("keys2");
-    this.pictures.controllers = document.getElementById("controllers");
+    this.syspictures = {}
+    this.syspictures.title = document.getElementById("titleimg");
+    this.syspictures.keys0 = document.getElementById("keys0");
+    this.syspictures.keys1 = document.getElementById("keys1");
+    this.syspictures.keys2 = document.getElementById("keys2");
+    this.syspictures.controllers = document.getElementById("controllers");
 
     this.feedback = getresource(descriptors + "feedback.json")['Feedback'];
     this.tileslist = []
@@ -72,22 +73,41 @@ resources.harvest = function(callback) {
     this.hms = getresource(descriptors + init["HMSFile"])
     this.items = getresource(descriptors + init["itemsFile"])['Items']
 
+    this.pictureList = init['PictureList']
+
+    pic_count = 0
     index = 0
 
-    function loadTile(src, callback) {
-        resources.tile[src] = new Image();
-        resources.tile[src].onload = function() {
-            index++;
-            if (index < resources.tileslist.length) {
-                loadTile(resources.tileslist[index], callback);
-            } else {
-                callback()
-            }
-        };
-        resources.tile[src].src = src;
+    function loadImages(src, callback) {
+        if(index < resources.tileslist.length){
+            resources.tile[src] = new Image();
+            resources.tile[src].onload = function() {
+                index++;
+                if (index < resources.tileslist.length) {
+                    loadImages(resources.tileslist[index], callback);
+                } else if (pic_count < resources.pictureList.length){
+                    loadImages(resources.pictureList[pic_count], callback);
+                } else {
+                    callback()
+                }
+            };
+            resources.tile[src].src = src;
+        } else {
+            var name = src
+            resources.pictures[name] = new Image();
+            resources.pictures[name].onload = function() {
+                pic_count++;
+                if(pic_count < resources.pictureList.length){
+                    loadImages(resources.pictureList[pic_count], callback)
+                } else {
+                    callback()
+                }
+            };
+            resources.pictures[name].src = 'img/pictures/'+name+'.png'
+        }
     }
 
-    loadTile(resources.tileslist[index], callback)
+    loadImages(resources.tileslist[index], callback)
 
 
     //CharasFileList = init['CharasFileList']

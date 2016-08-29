@@ -964,8 +964,14 @@ screen.drawStatus = function(heroch) {
 screen.showpicture = function() {
     if (screen.pictureStack.length > 0) {
         for (var i = 0; i < screen.pictureStack.length; i += 1) {
-            screen.drawImage(resources.pictures[screen.pictureStack[i].image],
-                screen.pictureStack[i].position)
+            if(screen.pictureStack[i].sys){
+                screen.drawImage(resources.syspictures[screen.pictureStack[i].image],
+                    screen.pictureStack[i].position)
+            } else {
+                screen.drawImage(resources.pictures[screen.pictureStack[i].image],
+                    screen.pictureStack[i].position)
+            }
+
         }
     }
 }
