@@ -488,7 +488,7 @@ engine.loop = function() {
         }
 
         HID.clearInputs();
-        engine.timer = setTimeout("engine.loop()", 1000 / 46.0);
+        engine.timer = setTimeout("engine.loop()", 1000 / 60.0);
 
     } catch (err) {
         alert("engine loop error: " + err);
