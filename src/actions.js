@@ -206,7 +206,7 @@ actions.addItem = function(param, position) {
     engine.atomStack.push([engine.addItem, params]);
 }
 
-actions.subtractItem = function(param, position) {
+actions.dropItem = function(param, position) {
     var params = param.split(';')
     engine.atomStack.push([engine.subtractItem, params]);
 }
