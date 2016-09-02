@@ -652,6 +652,40 @@ engine.changeTile = function(param) {
     levelToChange["Level"][param[1]][param[4]][param[5]] = param[0]
 }
 
+engine.changeAllTiles = function(param) {
+    //param = [originalTileType, newTileType,layer,colision,event,level]
+    //              0          ,     1      ,  2  ,   3    ,  4  ,  5
+    ///////////////////////////////////////////////////////////////////
+
+    var originalTile = param[0]
+    var newTile = param[1]
+    var layer = param[2]
+
+    if (param[5] == null || param[5] == "this") {
+        var levelToChange = engine.currentLevel
+    } else {
+        var levelToChange = resources['levels'][param[5]];
+    }
+    var h = levelToChange["Level"]["colision"].length
+    var w = levelToChange["Level"]["colision"][0].length
+
+    for(var y=0; y<h; y++){
+        for (var x=0; x<w; x++){
+            var currTile = levelToChange["Level"][layer][y][x]
+            if(currTile == originalTile){
+                if (param[3] != -1) {
+                    levelToChange["Level"]["colision"][y][x] = param[3]
+                }
+                if (param[4] != -1) {
+                    levelToChange["Level"]["events"][y][x] = param[4]
+                }
+
+                levelToChange["Level"][layer][y][x] = param[1]
+            }
+        }
+    }
+}
+
 engine.evalNum = function(number) {
     var value = number.slice(0)
     if (isNaN(value)) {

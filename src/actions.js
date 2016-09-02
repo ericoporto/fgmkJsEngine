@@ -156,6 +156,40 @@ actions.changeTile = function(param, position) {
     ]]);
 };
 
+
+actions.changeAllTiles = function(param, position) {
+  //param = [otileType,newtiletype, layer,colision,event,level]
+  //          0      ,     1      ,   2  ,   3    , 4   , 5
+  ///////////////////////////////////////////////////////////////////
+    var colisionDict = {
+        keep: -1,
+        noColision: 0,
+        collidable: 1
+    }
+    var params3Value
+    var params = param.split(';')
+
+    var originalTileType = params[0]
+    var newTileType = params[1]
+    var aLayer = params[2]
+    var aColision = colisionDict[params[3]];
+    if (params[4] == "keep") {
+        params3Value = -1;
+    } else if (params[4] == "remove") {
+        params3Value = 0;
+    } else {
+        params3Value = parseInt(params[4], 10);
+    }
+
+    var aEvent = params3Value;
+    var aLevel = params[5]
+
+    engine.atomStack.push([
+        engine.changeAllTiles, [originalTileType, newTileType,
+                            aLayer, aColision, aEvent, aLevel]
+    ]);
+};
+
 actions.fadeIn = function(param, position) {
     var params = param.split(';')
     engine.atomStack.push([screen.effects.fadeIn, params]);
