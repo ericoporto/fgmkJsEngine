@@ -107,8 +107,14 @@ camera.drawMapLayer = function(_worldLevel, _zIndex) {
 }
 
 camera.drawChar = function(chara) {
-    if (chara.steps) charaAnimation = chara['charaset']["walking"][chara.facing]
-    else charaAnimation = chara['charaset']["standing"][chara.facing]
+    var charaAnimation = null
+    if(chara.curr_animation){
+        charaAnimation = chara.charaset[chara.curr_animation][chara.facing]
+    } else if (chara.steps){
+        charaAnimation = chara.charaset.walking[chara.facing]
+    } else {
+        charaAnimation = chara.charaset.standing[chara.facing]
+    }
 
     var targetFrame = Math.floor(screen.frameCount / 4) % charaAnimation.length;
 

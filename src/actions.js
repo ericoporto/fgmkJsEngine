@@ -11,6 +11,10 @@ lastBlock = function() {
     return value
 }
 
+actions.changePlayerAnimation = function(param, position) {
+    var params = param.split(';')
+    engine.atomStack.push([engine.changePlayerAnimation, params])
+}
 
 actions.charAutoDelete = function(param, position, charatodel) {
     var params = param.split(';')
@@ -256,6 +260,14 @@ actions.alert = function(param, position) {
 
     engine.atomStack.push([engine.alert, params])
 }
+
+actions.waitCycle = function(param, position) {
+    var params = param.split(';')
+    var cycles = parseInt(params[0])
+    for (var i = 0; i < cycles; i++) {
+        engine.atomStack.push(["block", null]);
+    }
+};
 
 actions.rain = function(param, position) {
     var params = param.split(';')

@@ -146,6 +146,7 @@ function char(chara, x, y) {
     this['mapy'] = (y - 1) * 32;
     this['movstack'] = clone(this['chara']['movements']);
     this['stopped'] = false;
+    this['curr_animation'] = false;
     this['mapwidth'] = engine.currentLevel["Level"]["colision"].length,
         this['mapheight'] = engine.currentLevel["Level"]["colision"][0].length - 1;
     this['checkMapBoundaries'] = function(px, py, mapw, maph) {
@@ -237,6 +238,7 @@ player.setup = function() {
     player['steps'] = 0;
     player['waits'] = 0;
     player['running'] = false;
+    player['curr_animation'] = false;
     player['checkMapBoundaries'] = function(px, py, mapw, maph) {
         return engine.checkMapBoundaries(player, px, py, mapw, maph)
     }
@@ -902,6 +904,15 @@ engine.questionBox = function(param) {
 
 engine.proceedBattleTurn = function(param) {
     battle.waitherodecision = false
+}
+
+engine.changePlayerAnimation = function(param){
+    var animation = param[0]
+    if(param[0]=='default'){
+        player.curr_animation = false
+    } else {
+        player.curr_animation = param[0]
+    }
 }
 
 engine.alert = function(param) {
