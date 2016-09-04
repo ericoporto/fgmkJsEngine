@@ -56,11 +56,13 @@ camera.panToChara = function(chara) {
             this.finey = chara.mapy % 32;
         } else if (charatiley < this.halfHeight) {
             this.y = this.halfHeight;
+            this.finey = 0
         } else if (charatiley == this.maxWorldHeight - this.halfHeight - this.yerror) {
             this.y = this.maxWorldHeight - this.halfHeight - this.yerror;
             this.finey = chara.mapy % 32;
         } else {
             this.y = this.maxWorldHeight - this.halfHeight - this.yerror;
+            this.finey = 30
         }
     }
 
