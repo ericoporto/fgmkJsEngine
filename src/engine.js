@@ -136,7 +136,7 @@ function char(chara, x, y) {
     this['chara'] = resources['charas'][chara]
     this['nocolision'] = this.chara.properties.nocolision
     this['charaset'] = resources['charasets'][this['chara']['charaset']]
-    this['pushable'] = false
+    this['pushable'] = this.chara.properties.pushable
     this['facing'] = 'down';
     this['steps'] = 0;
     this['waits'] = 0;
