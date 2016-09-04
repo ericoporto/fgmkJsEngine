@@ -329,6 +329,7 @@ engine.resetBlocks = function() {
 };
 
 engine.setup = function() {
+    engine.toggle = false;
     engine.currentLevel = null;
     engine.levels = null;
     engine.paused = false;
@@ -497,9 +498,6 @@ engine.loop = function() {
         if (!this.paused) {
 
             // update
-
-            HID.processGamepad();
-
             if (!engine.waitKey && !engine.waitTimeSwitch) {
                 if (menus.isAnyMenuEnabled()) {
                     menus.updateMenuEnabled();
@@ -512,9 +510,10 @@ engine.loop = function() {
                     } else if (engine.state == "battle") {
                         battle.update()
                     }
-                    engine.alertupdate()
                     engine.runatomStack();
                 }
+                engine.alertupdate()
+
             } else if (this.minimumWait) {
                 this.testWaitForKey();
             }
@@ -523,6 +522,10 @@ engine.loop = function() {
         }
 
         HID.clearInputs();
+        if(engine.toggle){
+            HID.processGamepad();
+        }
+        engine.toggle = !(engine.toggle)
         engine.timer = setTimeout("engine.loop()", 1000 / 60.0);
 
     } catch (err) {

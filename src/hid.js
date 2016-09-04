@@ -11,7 +11,11 @@ var HID = {
             mapY: 0,
             color: '#111111',
             gamepad: function(pad) {
-                return (pad.axes[1] < -HID.axeNotNull);
+               if (!(typeof pad === "undefined")){
+                   return (pad.axes[1] < -HID.axeNotNull);
+               } else {
+                   return false
+               }
             }
         },
         left: {
@@ -21,7 +25,11 @@ var HID = {
             mapY: 96,
             color: '#111111',
             gamepad: function(pad) {
-                return (pad.axes[0] < -HID.axeNotNull);
+                if (!(typeof pad === "undefined")){
+                    return (pad.axes[0] < -HID.axeNotNull);
+                } else {
+                    return false
+                }
             }
         },
         down: {
@@ -31,7 +39,11 @@ var HID = {
             mapY: 192,
             color: '#111111',
             gamepad: function(pad) {
-                return (pad.axes[1] > HID.axeNotNull);
+                if (!(typeof pad === "undefined")){
+                    return (pad.axes[1] > HID.axeNotNull);
+                } else {
+                    return false
+                }
             }
         },
         right: {
@@ -41,7 +53,11 @@ var HID = {
             mapY: 96,
             color: '#111111',
             gamepad: function(pad) {
-                return (pad.axes[0] > HID.axeNotNull);
+                if (!(typeof pad === "undefined")) {
+                    return (pad.axes[0] > HID.axeNotNull);
+                } else {
+                    return false
+                }
             }
         },
         accept: {
@@ -51,7 +67,11 @@ var HID = {
             mapY: 32,
             color: '#127826',
             gamepad: function(pad) {
-                return pad.buttons[0].pressed;
+                if (!(typeof pad === "undefined")) {
+                    return pad.buttons[0].pressed;
+                } else {
+                    return false
+                }
             }
         },
         cancel: {
@@ -61,7 +81,11 @@ var HID = {
             mapY: 160,
             color: '#ed1c24',
             gamepad: function(pad) {
-                return pad.buttons[1].pressed;
+                if (!(typeof pad === "undefined")){
+                    return pad.buttons[1].pressed;
+                } else {
+                    return false
+                }
             }
         }
     },
@@ -120,20 +144,24 @@ var HID = {
 
 
     processGamepad: function() {
-        if (typeof HID.gamepads != 'undefined') {
+        if (!(typeof HID.gamepads === "undefined")) {
 
-            for (var i = 0; i < HID.gamepads.length; ++i) {
-                var pad = HID.gamepads[i];
+            if(HID.gamepads.length > 0){
+                for (var i = 0; i < HID.gamepads.length; ++i) {
+                    var pad = navigator.getGamepads()[HID.gamepads[i]];
 
-                for (var tag in HID.inputs) {
-                    var HIDItem = HID.inputs[tag];
+                    if (!(typeof pad === "undefined")) {
+                        for (var tag in HID.inputs) {
+                            var HIDItem = HID.inputs[tag];
 
-                    if (HIDItem.gamepad(pad)) {
-                        HIDItem.active = true
-                    } else
-                        HIDItem.active = false
+                            if (HIDItem.gamepad(pad)) {
+                                HIDItem.active = true
+                            } else {
+                                HIDItem.active = false
+                            }
+                        }
+                    }
                 }
-
             }
         }
     },
@@ -317,8 +345,13 @@ var HID = {
         window.addEventListener('touchmove', HID.handleTouchMove, false);
         window.addEventListener('touchend', HID.handleTouchUp, false);
         window.addEventListener("gamepadconnected", function(e) {
-            HID.gamepads = navigator.getGamepads();
-            actions.alert("gamepad connected!")
+            setTimeout(function() {
+                if (typeof HID.gamepads === "undefined") {
+                    HID.gamepads = [];
+                }
+                HID.gamepads.push(e.gamepad.index)
+                actions.alert("gamepad connected!")
+            }, 1200);
         });
         window.addEventListener("gamepaddisconnected", function(e) {
             HID.gamepads = [];
@@ -326,6 +359,25 @@ var HID = {
             HID.clearInputs();
             actions.alert("gamepad disconnected.")
         });
+
+        //the following function checks if there is an already connected gamepad
+        setTimeout(function() {
+            if(navigator.getGamepads().length>0){
+               var gamepads = navigator.getGamepads()
+               for(var pad=0; pad<gamepads.length ; pad++){
+                   if (!(typeof gamepads[pad] === "undefined")) {
+                      HID.gamepads = [];
+                  }
+               }
+               for(var pad=0; pad<gamepads.length ; pad++){
+                   if (!(typeof gamepads[pad] === "undefined")) {
+                      HID.gamepads.push(pad)
+                      actions.alert("gamepad connected!")
+                  }
+               }
+            }
+        }, 1000);
+
 
     },
 
