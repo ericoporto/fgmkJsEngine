@@ -2,6 +2,8 @@ var chars = []
 
 var engine = {};
 
+engine.step = 4;
+
 function charalist() {
     if ("charas" in engine.currentLevel["Level"]) {
         listofcharas = engine.currentLevel["Level"]["charas"]
@@ -218,7 +220,7 @@ function char(chara, x, y) {
             }
 
         } else if (this.steps > 0 && this.waits == 0 && this.stopped == false) {
-            engine.charWalkSteps(this, 1)
+            engine.charWalkSteps(this, engine.step)
         } else if (this.waits > 0 && this.stopped == false) {
             this.waits -= 2;
         }
@@ -299,11 +301,11 @@ player.setup = function() {
             }
 
         } else if (player.waits == 0) {
-            engine.charWalkSteps(player, 2)
+            engine.charWalkSteps(player, engine.step)
 
             if (player.running) {
                 if (!(player.steps == 0)) {
-                    engine.charWalkSteps(player, 2)
+                    engine.charWalkSteps(player, engine.step)
                 }
             }
             if ((player.mapx%32==0) && (player.mapy%32==0)) {
