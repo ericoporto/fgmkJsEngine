@@ -85,6 +85,28 @@ engine.charaLookToPlayer = function(chara) {
     return false
 }
 
+engine.charaLookAwayPlayer = function(chara) {
+    var ppx = Math.floor(player.mapx / 32),
+        ppy = Math.floor(player.mapy / 32) + 1;
+    var cpx = Math.floor(chara.mapx / 32),
+        cpy = Math.floor(chara.mapy / 32) + 1;
+
+    var resx = cpx - ppx
+    var resy = cpy - ppy
+
+    if (resx == 0 && resy < 0) {
+        return "up"
+    } else if (resx == 0 && resy > 0) {
+        return "down"
+    } else if (resx < 0) {
+        return "left"
+    } else {
+        return "right"
+    }
+    console.log("error facing!" + resx + " , " + resy)
+    return false
+}
+
 engine.randomDirection = function() {
     var directions = ["down", "up", "right", "left", "down"]
     return directions[Math.floor(Math.random() * 4)]
@@ -114,6 +136,7 @@ function char(chara, x, y) {
     this['chara'] = resources['charas'][chara]
     this['nocolision'] = this.chara.properties.nocolision
     this['charaset'] = resources['charasets'][this['chara']['charaset']]
+    this['pushable'] = false
     this['facing'] = 'down';
     this['steps'] = 0;
     this['waits'] = 0;
@@ -136,6 +159,9 @@ function char(chara, x, y) {
     this['followPlayer'] = function() {
         this.facing = engine.charaLookToPlayer(this)
     }
+    this['awayPlayer'] = function() {
+        this.facing = engine.charaLookAwayPlayer(this)
+    }
 
     this['update'] = function() {
         if (printer.isShown) return;
@@ -148,6 +174,8 @@ function char(chara, x, y) {
                 if (moveToDo[0] == "move") {
                     if (moveToDo[1] == "follow") {
                         this.followPlayer()
+                    } else if (moveToDo[1] == "away") {
+                        this.awayPlayer()
                     } else if (moveToDo[1] == "random") {
                         this.facing = engine.randomDirection()
                     } else {
@@ -174,6 +202,8 @@ function char(chara, x, y) {
                 if (moveToDo[0] == "face") {
                     if (moveToDo[1] == "follow") {
                         this.followPlayer()
+                    } else if (moveToDo[1] == "away") {
+                        this.awayPlayer()
                     } else if (moveToDo[1] == "random") {
                         this.facing = engine.randomDirection()
                     } else {
@@ -228,6 +258,9 @@ player.setup = function() {
                 var fpos = player.facingPosition()
                 if (player.checkMapBoundaries(px, py, mapwidth, mapheight)) {
                     var charFacing = engine.playerFaceChar()
+                    if(charFacing.pushable){
+                        charFacing.movstack.push(['move','away'])
+                    }
                     if (engine.currentLevel["Level"]["colision"][fpos[0]][fpos[1]] == 0 && !(charFacing.nocolision)) {
                         player.steps = 32;
                         if (charFacing) {
