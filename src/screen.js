@@ -415,7 +415,9 @@ screen.HIDcsetup = function() {
 
 screen.clearAll = function() {
     //this.ctx.fillStyle = '#a0a7b9';
-    //this.ctx.clearRect(this.GSTARTX, this.GSTARTY, this.GWIDTH, this.GHEIGHT);
+    if(!(debug.showLayer.layer1)){
+        this.ctx.clearRect(this.GSTARTX, this.GSTARTY, this.GWIDTH, this.GHEIGHT);
+    }
 }
 
 
