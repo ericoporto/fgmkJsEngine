@@ -147,8 +147,8 @@ function char(chara, x, y) {
     this['movstack'] = clone(this['chara']['movements']);
     this['stopped'] = false;
     this['curr_animation'] = false;
-    this['mapwidth'] = engine.currentLevel["Level"]["colision"].length,
-        this['mapheight'] = engine.currentLevel["Level"]["colision"][0].length - 1;
+    this['mapheight'] = engine.currentLevel["Level"]["colision"].length-1;
+    this['mapwidth'] = engine.currentLevel["Level"]["colision"][0].length;
     this['checkMapBoundaries'] = function(px, py, mapw, maph) {
         return engine.checkMapBoundaries(this, px, py, mapw, maph)
     }
@@ -249,8 +249,8 @@ player.setup = function() {
 
         var px = Math.floor(player.mapx / 32),
             py = Math.floor(player.mapy / 32) + 1;
-        var mapwidth = engine.currentLevel["Level"]["colision"].length;
-        var mapheight = engine.currentLevel["Level"]["colision"][0].length - 1;
+        var mapheight = engine.currentLevel["Level"]["colision"].length-1;
+        var mapwidth = engine.currentLevel["Level"]["colision"][0].length;
 
         if (player.steps == 0 && player.waits == 0) {
             var dirkey = engine.dirKeyActive()
