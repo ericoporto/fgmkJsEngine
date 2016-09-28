@@ -386,17 +386,17 @@ engine.menuSetup = function() {
                 }
             }, 0),
 
-            walkspeed: new menu({
+            stepSpeed: new menu({
                 x2: {
                     action: [function() {
-                        player['running'] = true
+                        engine.step = 4
                     }, 'exit'],
                     index: 0
                 },
 
                 x1: {
                     action: [function() {
-                        player['running'] = false
+                        engine.step = 2
                     }, 'exit'],
                     index: 1
                 }
