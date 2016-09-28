@@ -402,9 +402,25 @@ engine.menuSetup = function() {
                 }
             }, 1),
 
+            sound: new menu({
+                on: {
+                    action: [function() {
+                        feedbackEng.soundOn = true
+                    }, 'exit'],
+                    index: 0
+                },
+
+                off: {
+                    action: [function() {
+                        feedbackEng.soundOn = false
+                    }, 'exit'],
+                    index: 1
+                }
+            }, 2),
+
             back: {
                 action: 'exit',
-                index: 2
+                index: 3
             }
         }, 2),
         exit: {

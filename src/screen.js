@@ -12,7 +12,7 @@ camera.setupMap = function(_worldLevel, _engine) {
     this.maxWorldHeight = _worldLevel["Level"]["layer1"].length;
 }
 
-camera.setupCanvas = function(_canvas) {
+camera.setupCanvas = function() {
     this.yerror = 1 - (screen.GHEIGHT / 32) % 2;
     this.xerror = 1 - (screen.GWIDTH / 32) % 2;
     this.width = Math.floor(screen.GWIDTH / 32) + 1;
@@ -363,11 +363,26 @@ screen.resize = function() {
         this.currentHeight = window.innerHeight;
         this.currentWidth = this.currentHeight * this.RATIO;
     } else {
-        this.GHEIGHT = 256; //was 288
-        this.currentHeight = window.innerHeight * this.HEIGHT / this.GHEIGHT
-        this.currentWidth = this.currentHeight * this.RATIO;
-    }
+        if(window.innerHeight > 0.8*window.innerWidth){
+            this.GHEIGHT = 416;
 
+            this.currentWidth = window.innerWidth * this.WIDTH / this.GWIDTH
+            this.currentHeight = this.currentWidth  / this.RATIO;
+        } else  if(window.innerHeight > 0.6*window.innerWidth){
+            this.GHEIGHT = 352; //was 288
+
+            this.currentHeight = window.innerHeight * this.HEIGHT / this.GHEIGHT
+            this.currentWidth = this.currentHeight * this.RATIO;
+        } else {
+            this.GHEIGHT = 256; //was 288
+
+            this.currentHeight = window.innerHeight * this.HEIGHT / this.GHEIGHT
+            this.currentWidth = this.currentHeight * this.RATIO;
+        }
+
+    }
+    this.printBox.setSize()
+    camera.setupCanvas()
 
     if (this.android || this.ios) {
         document.body.style.height = (window.innerHeight + 50) + 'px';
@@ -382,6 +397,8 @@ screen.resize = function() {
 }
 
 screen.drawButton = function(pHIDItem) {
+    if(!(screen.mobile)){ return }
+
     if (pHIDItem.active) {
         this.ctx.fillStyle = '#ff9900';
         this.ctx.fillRect(pHIDItem.mapX, pHIDItem.mapY + this.GHEIGHT, 96, 96);
@@ -389,12 +406,18 @@ screen.drawButton = function(pHIDItem) {
 }
 
 screen.drawHID = function() {
-    screen.ctx.drawImage(screen.HIDButtons, 0, screen.GHEIGHT)
+    if(screen.mobile){
 
-    var HIDItem;
-    for (var tag in HID.inputs) {
-        HIDItem = HID.inputs[tag];
-        screen.drawButton(HIDItem)
+        this.ctx.drawImage(screen.HIDButtons, 0, screen.GHEIGHT)
+
+        var HIDItem;
+        for (var tag in HID.inputs) {
+            HIDItem = HID.inputs[tag];
+            screen.drawButton(HIDItem)
+        }
+    } else {
+        this.ctx.fillStyle = '#000000';
+        this.ctx.fillRect(0, screen.GHEIGHT,screen.GWIDTH,screen.HEIGHT-screen.GHEIGHT)
     }
 }
 
@@ -430,11 +453,15 @@ screen.clearAll = function() {
 screen.printBox = {
 
     setup: function(imgPrintSet) {
+        this.imgPrintSet = imgPrintSet;
+        this.setSize()
+    },
+
+    setSize: function() {
         this.Width = screen.GWIDTH;
         this.Height = 96;
         this.X = 0;
         this.Y = screen.GHEIGHT - this.Height;
-        this.imgPrintSet = imgPrintSet;
         this.aSizex = [32, 64, 128, this.Width, this.Width];
         this.aSizey = [32, 32, 48, 48, this.Height];
         this.anim = 'none';

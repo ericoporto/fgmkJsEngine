@@ -29,7 +29,6 @@ bootstrap.onLoadDOM = function(){
 		resources.harvest(function(){
       screen.init();
       player.setup();
-      camera.setupCanvas(screen.canvas);
       engine.setup();
       screen.setEngine(engine);
       HID.setup(screen)
