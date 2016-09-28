@@ -381,7 +381,7 @@ screen.resize = function() {
         }
 
     }
-    this.printBox.setSize()
+    screen.printBox.setSize()
     camera.setupCanvas()
 
     if (this.android || this.ios) {
@@ -452,21 +452,21 @@ screen.clearAll = function() {
 
 screen.printBox = {
 
+  setSize: function() {
+      this.Width = screen.GWIDTH;
+      this.Height = 96;
+      this.X = 0;
+      this.Y = screen.GHEIGHT - this.Height;
+      this.aSizex = [32, 64, 128, this.Width, this.Width];
+      this.aSizey = [32, 32, 48, 48, this.Height];
+      this.anim = 'none';
+      this.frameMax = this.aSizex.length - 1;
+      this.targetFrame = this.frameMax;
+  },
+
     setup: function(imgPrintSet) {
         this.imgPrintSet = imgPrintSet;
         this.setSize()
-    },
-
-    setSize: function() {
-        this.Width = screen.GWIDTH;
-        this.Height = 96;
-        this.X = 0;
-        this.Y = screen.GHEIGHT - this.Height;
-        this.aSizex = [32, 64, 128, this.Width, this.Width];
-        this.aSizey = [32, 32, 48, 48, this.Height];
-        this.anim = 'none';
-        this.frameMax = this.aSizex.length - 1;
-        this.targetFrame = this.frameMax;
     },
 
     printSet: {
