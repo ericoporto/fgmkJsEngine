@@ -14,6 +14,15 @@ function rain(__context, __width, __height, ___screen) {
 
     this.raining = false;
 
+    function checkOutdoors() {
+      if (this.raining == false) {
+        this.raining = true;
+      }
+      else {
+        this.raining = false;
+      }
+    }
+
     function toColor(num) {
         var g = Math.min(Math.round(num), 0xFF);
         return "rgba(" + [g, g, g].join(",") + ",1)";
@@ -27,20 +36,20 @@ function rain(__context, __width, __height, ___screen) {
 
     this.startRain = function() {
 
-        for (var i = 0; i < 7; i++) {
-            colors[i] = toColor((i) * 128 / 6 + 128);
-        }
-        that.raining = true
-        stop = false
-        that.maxRainDrops = 200;
+            for (var i = 0; i < 7; i++) {
+                colors[i] = toColor((i) * 128 / 6 + 128);
+            }
+            that.raining = true
+            stop = false
+            that.maxRainDrops = 200;
 
-        rainBufferCanvas = document.createElement("canvas");
-        rainBufferCanvasCtx = rainBufferCanvas.getContext("2d");
-        rainBufferCanvasCtx.mozImageSmoothingEnabled = false;
-        rainBufferCanvasCtx.canvas.width = rainBufferWidth;
-        rainBufferCanvasCtx.canvas.height = rainBufferHeight;
+            rainBufferCanvas = document.createElement("canvas");
+            rainBufferCanvasCtx = rainBufferCanvas.getContext("2d");
+            rainBufferCanvasCtx.mozImageSmoothingEnabled = false;
+            rainBufferCanvasCtx.canvas.width = rainBufferWidth;
+            rainBufferCanvasCtx.canvas.height = rainBufferHeight;
 
-        RainDropTimer = setInterval(addRainDrop, 200);
+            RainDropTimer = setInterval(addRainDrop, 200);
     };
 
     this.stopRain = function() {

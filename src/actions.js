@@ -97,7 +97,8 @@ actions.showText = function(param, position) {
 };
 
 actions.teleport = function(param, position) {
-    var params = param.split(';')
+    rain.checkOutdoors();
+    var params = param.split(';');
     engine.atomStack.push([function() {
         screen.paused = true;
     }, '']);
@@ -285,4 +286,23 @@ actions.rain = function(param, position) {
             [""]
         ])
     }
+}
+
+actions.insideOutside = function(param, position) {
+  var params = param.split(';')
+
+  condition = params[0]
+  if (condition == 'inside') {
+    engine.atomStack.push([function() {
+      screen.rains.stopRain()
+    },
+    [""]
+  ])
+  } else {
+      engine.atomStack.push([function() {
+              screen.rains.stopRain()
+          },
+          [""]
+      ])
+  }
 }
