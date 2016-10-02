@@ -1,8 +1,10 @@
-var chars = []
+//defines the base of the engine
+
 
 var engine = {};
+var player = {};
 
-engine.step = 4;
+var chars = []
 
 function charalist() {
     if ("charas" in engine.currentLevel["Level"]) {
@@ -24,306 +26,6 @@ function charalist() {
     }
 }
 
-engine.checkMapBoundaries = function(_char, px, py, mapw, maph) {
-    if (_char.facing == "up") {
-        return (py > 0)
-    } else if (_char.facing == "left") {
-        return (px > 0)
-    } else if (_char.facing == "right") {
-        return (px < mapw)
-    } else if (_char.facing == "down") {
-        return (py < maph)
-    }
-    return True
-}
-
-engine.facingPosition = function(_char, px, py) {
-    var facing = _char.facing
-    if (facing == "up") {
-        return [py - 1, px]
-    } else if (facing == "left") {
-        return [py, px - 1]
-    } else if (facing == "right") {
-        return [py, px + 1]
-    } else {
-        return [py + 1, px]
-    }
-    console.log("error facing! char: " + _char + " ;position: " + px + ", " + py)
-    return false
-}
-
-engine.charWalkSteps = function(_char, walkSteps) {
-    _char.steps -= walkSteps;
-    if (_char.facing == "up") {
-        _char.mapy -= walkSteps;
-    } else if (_char.facing == "left") {
-        _char.mapx -= walkSteps;
-    } else if (_char.facing == "right") {
-        _char.mapx += walkSteps;
-    } else if (_char.facing = "down") {
-        _char.mapy += walkSteps;
-    }
-}
-
-engine.charaLookToPlayer = function(chara) {
-    var ppx = Math.floor(player.mapx / 32),
-        ppy = Math.floor(player.mapy / 32) + 1;
-    var cpx = Math.floor(chara.mapx / 32),
-        cpy = Math.floor(chara.mapy / 32) + 1;
-
-    var resx = cpx - ppx
-    var resy = cpy - ppy
-
-    if (resx == 0 && resy < 0) {
-        return "down"
-    } else if (resx == 0 && resy > 0) {
-        return "up"
-    } else if (resx < 0) {
-        return "right"
-    } else {
-        return "left"
-    }
-    console.log("error facing!" + resx + " , " + resy)
-    return false
-}
-
-engine.charaLookAwayPlayer = function(chara) {
-    var ppx = Math.floor(player.mapx / 32),
-        ppy = Math.floor(player.mapy / 32) + 1;
-    var cpx = Math.floor(chara.mapx / 32),
-        cpy = Math.floor(chara.mapy / 32) + 1;
-
-    var resx = cpx - ppx
-    var resy = cpy - ppy
-
-    if (resx == 0 && resy < 0) {
-        return "up"
-    } else if (resx == 0 && resy > 0) {
-        return "down"
-    } else if (resx < 0) {
-        return "left"
-    } else {
-        return "right"
-    }
-    console.log("error facing!" + resx + " , " + resy)
-    return false
-}
-
-engine.randomDirection = function() {
-    var directions = ["down", "up", "right", "left", "down"]
-    return directions[Math.floor(Math.random() * 4)]
-}
-
-engine.isCharFacingPlayer = function(_char) {
-    var ppx = Math.floor(_char.mapx / 32),
-        ppy = Math.floor(_char.mapy / 32) + 1;
-
-    var cpx = Math.floor(player.mapx / 32),
-        cpy = Math.floor(player.mapy / 32) + 1;
-
-    if (ppx - cpx == 1 && cpy - ppy == 0 && _char.facing == "left") {
-        return true
-    } else if (ppx - cpx == -1 && cpy - ppy == 0 && _char.facing == "right") {
-        return true
-    } else if (ppx - cpx == 0 && cpy - ppy == 1 && _char.facing == "down") {
-        return true
-    } else if (ppx - cpx == 0 && cpy - ppy == -1 && _char.facing == "up") {
-        return true
-    }
-    return false
-}
-
-
-function char(chara, x, y) {
-    this['chara'] = resources['charas'][chara]
-    this['nocolision'] = this.chara.properties.nocolision
-    this['charaset'] = resources['charasets'][this['chara']['charaset']]
-    this['pushable'] = this.chara.properties.pushable
-    this['facing'] = 'down';
-    this['steps'] = 0;
-    this['waits'] = 0;
-    this['mapx'] = x * 32;
-    this['mapy'] = (y - 1) * 32;
-    this['movstack'] = clone(this['chara']['movements']);
-    this['stopped'] = false;
-    this['curr_animation'] = false;
-    this['mapheight'] = engine.currentLevel["Level"]["colision"].length-1;
-    this['mapwidth'] = engine.currentLevel["Level"]["colision"][0].length;
-    this['checkMapBoundaries'] = function(px, py, mapw, maph) {
-        return engine.checkMapBoundaries(this, px, py, mapw, maph)
-    }
-    this['facingPosition'] = function(px, py) {
-        return engine.facingPosition(this, px, py)
-    }
-    this['isFacingPlayer'] = function() {
-        return engine.isCharFacingPlayer(this)
-    }
-    this['imediate'] = (this.chara.actions.type[1] == 1);
-    this['followPlayer'] = function() {
-        this.facing = engine.charaLookToPlayer(this)
-    }
-    this['awayPlayer'] = function() {
-        this.facing = engine.charaLookAwayPlayer(this)
-    }
-
-    this['update'] = function() {
-        if (printer.isShown) return;
-
-        if (this.steps == 0 && this.waits == 0 && this.stopped == false) {
-            if (this['movstack'].length > 0) {
-                var px = Math.floor(this.mapx / 32),
-                    py = Math.floor(this.mapy / 32) + 1;
-                var moveToDo = this['movstack'].shift();
-                if (moveToDo[0] == "move") {
-                    if (moveToDo[1] == "follow") {
-                        this.followPlayer()
-                    } else if (moveToDo[1] == "away") {
-                        this.awayPlayer()
-                    } else if (moveToDo[1] == "random") {
-                        this.facing = engine.randomDirection()
-                    } else {
-                        this.facing = moveToDo[1]
-                    }
-
-
-                    var fpos = this.facingPosition(px, py)
-                    if (this.imediate) {
-                        if (this.isFacingPlayer()) {
-                            var playerpx = Math.floor(player.mapx / 32),
-                                playerpy = Math.floor(player.mapy / 32) + 1;
-                            eventInChar(this, [0, 1], [playerpy - 1, playerpx])
-                        }
-                    }
-                    if (this.checkMapBoundaries(px, py, this.mapwidth, this.mapheight) &&
-                        engine.currentLevel["Level"]["colision"][fpos[0]][fpos[1]] == 0) {
-                        this.steps = 32
-                    } else {
-                        this.waits = 16
-                    }
-
-                }
-                if (moveToDo[0] == "face") {
-                    if (moveToDo[1] == "follow") {
-                        this.followPlayer()
-                    } else if (moveToDo[1] == "away") {
-                        this.awayPlayer()
-                    } else if (moveToDo[1] == "random") {
-                        this.facing = engine.randomDirection()
-                    } else {
-                        this.facing = moveToDo[1]
-                    }
-                    this.waits = 16
-                }
-            } else {
-                if (this['chara']['movements'] != []) {
-                    this['movstack'] = clone(this['chara']['movements'])
-                }
-            }
-
-        } else if (this.steps > 0 && this.waits == 0 && this.stopped == false) {
-            engine.charWalkSteps(this, engine.step)
-        } else if (this.waits > 0 && this.stopped == false) {
-            this.waits -= 2;
-        }
-    };
-}
-
-var player = {};
-player.setup = function() {
-    player['charaset'] = resources.playerCharaset;
-    player['mapx'] = init['Player']['initPosX'];
-    player['mapy'] = init['Player']['initPosY'];
-    player['facing'] = init['Player']['facing'];
-    player['party'] = init['Player']['party']
-    player['steps'] = 0;
-    player['waits'] = 0;
-    player['running'] = false;
-    player['curr_animation'] = false;
-    player['checkMapBoundaries'] = function(px, py, mapw, maph) {
-        return engine.checkMapBoundaries(player, px, py, mapw, maph)
-    }
-
-    player['update'] = function() {
-
-        if (printer.isShown) return;
-
-        var px = Math.floor(player.mapx / 32),
-            py = Math.floor(player.mapy / 32) + 1;
-        var mapheight = engine.currentLevel["Level"]["colision"].length-1;
-        var mapwidth = engine.currentLevel["Level"]["colision"][0].length;
-
-        if (player.steps == 0 && player.waits == 0) {
-            var dirkey = engine.dirKeyActive()
-            if (dirkey) {
-                engine.mapEventBlocked = false
-                player.mapx = px * 32,
-                    player.mapy = (py - 1) * 32
-                player.facing = dirkey
-                var fpos = player.facingPosition()
-                if (player.checkMapBoundaries(px, py, mapwidth, mapheight)) {
-                    var charFacing = engine.playerFaceChar()
-                    if(charFacing.pushable){
-                        charFacing.movstack.push(['move','away'])
-                    }
-                    if (engine.currentLevel["Level"]["colision"][fpos[0]][fpos[1]] == 0 && !(charFacing.nocolision)) {
-                        player.steps = 32;
-                        if (charFacing) {
-                            eventInChar(charFacing, [0, 1], [py - 1, px])
-                        }
-                    } else {
-                        feedbackEng.play('stop')
-                        HID.inputs[dirkey].active = false
-                    }
-                } else {
-                    feedbackEng.play('stop')
-                    HID.inputs[dirkey].active = false
-                }
-            } else if (HID.inputs["accept"].active) {
-                var charFacing = engine.playerFaceChar()
-                if (charFacing) {
-                    if (eventInChar(charFacing, [1, 0], [py - 1, px])) {
-                        HID.inputs["accept"].active = false
-                        engine.waitTime(400);
-                    } else {
-                        player.waits = 16
-                    }
-                } else {
-                    if (py - 1 > 0 && px - 1 > 0 && px + 1 < engine.currentLevel["Level"]["events"].length && px + 1 < engine.currentLevel["Level"]["events"].length) {
-                        var fpos = player.facingPosition()
-                        if (eventInMap(engine.currentLevel["Level"], [1, 0], fpos)) {
-                            HID.inputs["accept"].active = false
-                            engine.waitTime(400);
-                        }
-                    }
-
-                }
-            } else if (HID.inputs["cancel"].active) {
-                HID.inputs["cancel"].active = false
-                engine.mapMenu.activate()
-            }
-
-        } else if (player.waits == 0) {
-            engine.charWalkSteps(player, engine.step)
-
-            if (player.running) {
-                if (!(player.steps == 0)) {
-                    engine.charWalkSteps(player, engine.step)
-                }
-            }
-            if ((player.mapx%32==0) && (player.mapy%32==0)) {
-                var px = Math.floor(player.mapx / 32),
-                    py = Math.floor(player.mapy / 32) + 1;
-                if (eventInMap(engine.currentLevel["Level"], [0, 1], [py, px])) {
-                    HID.inputs["accept"].active = false
-                    engine.mapEventBlocked = true
-                }
-            }
-        } else {
-            player.waits -= 1
-        }
-    };
-}
-
 engine.resetBlocks = function() {
     actions.blockCounter = 0;
     actions.blockStack = new Array();
@@ -341,6 +43,7 @@ engine.setup = function() {
     engine.waitKey = false;
     engine.waitTimeSwitch = false;
     engine.minimumWait = false;
+    engine.step = 4;
     engine.atomStack = new Array();
     engine.alertStack = new Array();
     engine.st = {};
@@ -564,37 +267,49 @@ engine.runatomStack = function() {
     }
 };
 
-evalCondition = function(param) {
-    var value = eval(param[0])
-    return value
+
+engine.checkMapBoundaries = function(_char, px, py, mapw, maph) {
+    if (_char.facing == "up") {
+        return (py > 0)
+    } else if (_char.facing == "left") {
+        return (px > 0)
+    } else if (_char.facing == "right") {
+        return (px < mapw)
+    } else if (_char.facing == "down") {
+        return (py < maph)
+    }
+    return True
 }
 
-eventInChar = function(char, evType, position) {
-    if (char['chara']['actions']['type'][0] == evType[0] && char['chara']['actions']['type'][1] == evType[1]) {
-        char.charwasfacingfirst = char.facing
-        char.waits = 16
-        var newfacing = player.charaFacingTo(char)
-        if (newfacing) {
-            char.facing = newfacing
-        }
-        char.stopped = true
-        engine.resetBlocks()
-        var aNmb, action, actionAndParam;
-        for (aNmb = 0; aNmb < char['chara']['actions']['list'].length; aNmb++) {
-            actionAndParam = char['chara']['actions']['list'][aNmb];
-            engine.translateActions(actionAndParam[0], actionAndParam[1], position, char);
-        }
-        engine.atomStack.push([function() {
-            char.stopped = false;
-            char.facing = char.charwasfacingfirst
-        }, '']);
-        return true;
+engine.facingPosition = function(_char, px, py) {
+    var facing = _char.facing
+    if (facing == "up") {
+        return [py - 1, px]
+    } else if (facing == "left") {
+        return [py, px - 1]
+    } else if (facing == "right") {
+        return [py, px + 1]
     } else {
-        return false;
+        return [py + 1, px]
     }
-};
+    console.log("error facing! char: " + _char + " ;position: " + px + ", " + py)
+    return false
+}
 
-player.charaFacingTo = function(chara) {
+engine.charWalkSteps = function(_char, walkSteps) {
+    _char.steps -= walkSteps;
+    if (_char.facing == "up") {
+        _char.mapy -= walkSteps;
+    } else if (_char.facing == "left") {
+        _char.mapx -= walkSteps;
+    } else if (_char.facing == "right") {
+        _char.mapx += walkSteps;
+    } else if (_char.facing = "down") {
+        _char.mapy += walkSteps;
+    }
+}
+
+engine.charaLookToPlayer = function(chara) {
     var ppx = Math.floor(player.mapx / 32),
         ppy = Math.floor(player.mapy / 32) + 1;
     var cpx = Math.floor(chara.mapx / 32),
@@ -603,47 +318,64 @@ player.charaFacingTo = function(chara) {
     var resx = cpx - ppx
     var resy = cpy - ppy
 
-    if (resx == 0 && resy < 0)
+    if (resx == 0 && resy < 0) {
         return "down"
-    else if (resx == 0 && resy > 0)
+    } else if (resx == 0 && resy > 0) {
         return "up"
-    else if (resx < 0 && resy == 0)
+    } else if (resx < 0) {
         return "right"
-    else
+    } else {
         return "left"
-
-    console.log("error facing!")
+    }
+    console.log("error facing!" + resx + " , " + resy)
     return false
-
 }
 
-player.facingPosition = function() {
-    var px = Math.floor(player.mapx / 32),
-        py = Math.floor(player.mapy / 32) + 1;
-    return engine.facingPosition(player, px, py)
+engine.charaLookAwayPlayer = function(chara) {
+    var ppx = Math.floor(player.mapx / 32),
+        ppy = Math.floor(player.mapy / 32) + 1;
+    var cpx = Math.floor(chara.mapx / 32),
+        cpy = Math.floor(chara.mapy / 32) + 1;
+
+    var resx = cpx - ppx
+    var resy = cpy - ppy
+
+    if (resx == 0 && resy < 0) {
+        return "up"
+    } else if (resx == 0 && resy > 0) {
+        return "down"
+    } else if (resx < 0) {
+        return "left"
+    } else {
+        return "right"
+    }
+    console.log("error facing!" + resx + " , " + resy)
+    return false
 }
 
-eventInMap = function(level, evType, position) {
-    if (engine.mapEventBlocked) {
-        return false
-    }
+engine.randomDirection = function() {
+    var directions = ["down", "up", "right", "left", "down"]
+    return directions[Math.floor(Math.random() * 4)]
+}
 
-    var event = level["events"][position[0]][position[1]]
+engine.isCharFacingPlayer = function(_char) {
+    var ppx = Math.floor(_char.mapx / 32),
+        ppy = Math.floor(_char.mapy / 32) + 1;
 
-    if (event == 0) {
-        return false
-    }
+    var cpx = Math.floor(player.mapx / 32),
+        cpy = Math.floor(player.mapy / 32) + 1;
 
-    engine.resetBlocks()
-    if (level['eventsType'][event.toString()][0] == evType[0] && level['eventsType'][event.toString()][1] == evType[1]) {
-        var aNmb, action, actionAndParam;
-        for (aNmb = 0; aNmb < level['eventsActions'][event.toString()].length; aNmb++) {
-            actionAndParam = level['eventsActions'][event.toString()][aNmb];
-            engine.translateActions(actionAndParam[0], actionAndParam[1], position);
-        }
+    if (ppx - cpx == 1 && cpy - ppy == 0 && _char.facing == "left") {
+        return true
+    } else if (ppx - cpx == -1 && cpy - ppy == 0 && _char.facing == "right") {
+        return true
+    } else if (ppx - cpx == 0 && cpy - ppy == 1 && _char.facing == "down") {
+        return true
+    } else if (ppx - cpx == 0 && cpy - ppy == -1 && _char.facing == "up") {
         return true
     }
-};
+    return false
+}
 
 engine.addItem = function(param) {
     for (var i = 0; i < param.length; i++) {
@@ -964,3 +696,275 @@ engine.translateActions = function(action, param, position, charsender) {
 engine.update = function(frameCount) {
     engine.frameCount = frameCount;
 };
+
+
+function char(chara, x, y) {
+    this['chara'] = resources['charas'][chara]
+    this['nocolision'] = this.chara.properties.nocolision
+    this['charaset'] = resources['charasets'][this['chara']['charaset']]
+    this['pushable'] = this.chara.properties.pushable
+    this['facing'] = 'down';
+    this['steps'] = 0;
+    this['waits'] = 0;
+    this['mapx'] = x * 32;
+    this['mapy'] = (y - 1) * 32;
+    this['movstack'] = clone(this['chara']['movements']);
+    this['stopped'] = false;
+    this['curr_animation'] = false;
+    this['mapheight'] = engine.currentLevel["Level"]["colision"].length-1;
+    this['mapwidth'] = engine.currentLevel["Level"]["colision"][0].length;
+    this['checkMapBoundaries'] = function(px, py, mapw, maph) {
+        return engine.checkMapBoundaries(this, px, py, mapw, maph)
+    }
+    this['facingPosition'] = function(px, py) {
+        return engine.facingPosition(this, px, py)
+    }
+    this['isFacingPlayer'] = function() {
+        return engine.isCharFacingPlayer(this)
+    }
+    this['imediate'] = (this.chara.actions.type[1] == 1);
+    this['followPlayer'] = function() {
+        this.facing = engine.charaLookToPlayer(this)
+    }
+    this['awayPlayer'] = function() {
+        this.facing = engine.charaLookAwayPlayer(this)
+    }
+
+    this['update'] = function() {
+        if (printer.isShown) return;
+
+        if (this.steps == 0 && this.waits == 0 && this.stopped == false) {
+            if (this['movstack'].length > 0) {
+                var px = Math.floor(this.mapx / 32),
+                    py = Math.floor(this.mapy / 32) + 1;
+                var moveToDo = this['movstack'].shift();
+                if (moveToDo[0] == "move") {
+                    if (moveToDo[1] == "follow") {
+                        this.followPlayer()
+                    } else if (moveToDo[1] == "away") {
+                        this.awayPlayer()
+                    } else if (moveToDo[1] == "random") {
+                        this.facing = engine.randomDirection()
+                    } else {
+                        this.facing = moveToDo[1]
+                    }
+
+
+                    var fpos = this.facingPosition(px, py)
+                    if (this.imediate) {
+                        if (this.isFacingPlayer()) {
+                            var playerpx = Math.floor(player.mapx / 32),
+                                playerpy = Math.floor(player.mapy / 32) + 1;
+                            eventInChar(this, [0, 1], [playerpy - 1, playerpx])
+                        }
+                    }
+                    if (this.checkMapBoundaries(px, py, this.mapwidth, this.mapheight) &&
+                        engine.currentLevel["Level"]["colision"][fpos[0]][fpos[1]] == 0) {
+                        this.steps = 32
+                    } else {
+                        this.waits = 16
+                    }
+
+                }
+                if (moveToDo[0] == "face") {
+                    if (moveToDo[1] == "follow") {
+                        this.followPlayer()
+                    } else if (moveToDo[1] == "away") {
+                        this.awayPlayer()
+                    } else if (moveToDo[1] == "random") {
+                        this.facing = engine.randomDirection()
+                    } else {
+                        this.facing = moveToDo[1]
+                    }
+                    this.waits = 16
+                }
+            } else {
+                if (this['chara']['movements'] != []) {
+                    this['movstack'] = clone(this['chara']['movements'])
+                }
+            }
+
+        } else if (this.steps > 0 && this.waits == 0 && this.stopped == false) {
+            engine.charWalkSteps(this, engine.step)
+        } else if (this.waits > 0 && this.stopped == false) {
+            this.waits -= 2;
+        }
+    };
+}
+
+
+player.setup = function() {
+    player['charaset'] = resources.playerCharaset;
+    player['mapx'] = init['Player']['initPosX'];
+    player['mapy'] = init['Player']['initPosY'];
+    player['facing'] = init['Player']['facing'];
+    player['party'] = init['Player']['party']
+    player['steps'] = 0;
+    player['waits'] = 0;
+    player['running'] = false;
+    player['curr_animation'] = false;
+    player['checkMapBoundaries'] = function(px, py, mapw, maph) {
+        return engine.checkMapBoundaries(player, px, py, mapw, maph)
+    }
+
+    player['update'] = function() {
+
+        if (printer.isShown) return;
+
+        var px = Math.floor(player.mapx / 32),
+            py = Math.floor(player.mapy / 32) + 1;
+        var mapheight = engine.currentLevel["Level"]["colision"].length-1;
+        var mapwidth = engine.currentLevel["Level"]["colision"][0].length;
+
+        if (player.steps == 0 && player.waits == 0) {
+            var dirkey = engine.dirKeyActive()
+            if (dirkey) {
+                engine.mapEventBlocked = false
+                player.mapx = px * 32,
+                    player.mapy = (py - 1) * 32
+                player.facing = dirkey
+                var fpos = player.facingPosition()
+                if (player.checkMapBoundaries(px, py, mapwidth, mapheight)) {
+                    var charFacing = engine.playerFaceChar()
+                    if(charFacing.pushable){
+                        charFacing.movstack.push(['move','away'])
+                    }
+                    if (engine.currentLevel["Level"]["colision"][fpos[0]][fpos[1]] == 0 && !(charFacing.nocolision)) {
+                        player.steps = 32;
+                        if (charFacing) {
+                            eventInChar(charFacing, [0, 1], [py - 1, px])
+                        }
+                    } else {
+                        feedbackEng.play('stop')
+                        HID.inputs[dirkey].active = false
+                    }
+                } else {
+                    feedbackEng.play('stop')
+                    HID.inputs[dirkey].active = false
+                }
+            } else if (HID.inputs["accept"].active) {
+                var charFacing = engine.playerFaceChar()
+                if (charFacing) {
+                    if (eventInChar(charFacing, [1, 0], [py - 1, px])) {
+                        HID.inputs["accept"].active = false
+                        engine.waitTime(400);
+                    } else {
+                        player.waits = 16
+                    }
+                } else {
+                    if (py - 1 > 0 && px - 1 > 0 && px + 1 < engine.currentLevel["Level"]["events"].length && px + 1 < engine.currentLevel["Level"]["events"].length) {
+                        var fpos = player.facingPosition()
+                        if (eventInMap(engine.currentLevel["Level"], [1, 0], fpos)) {
+                            HID.inputs["accept"].active = false
+                            engine.waitTime(400);
+                        }
+                    }
+
+                }
+            } else if (HID.inputs["cancel"].active) {
+                HID.inputs["cancel"].active = false
+                engine.mapMenu.activate()
+            }
+
+        } else if (player.waits == 0) {
+            engine.charWalkSteps(player, engine.step)
+
+            if (player.running) {
+                if (!(player.steps == 0)) {
+                    engine.charWalkSteps(player, engine.step)
+                }
+            }
+            if ((player.mapx%32==0) && (player.mapy%32==0)) {
+                var px = Math.floor(player.mapx / 32),
+                    py = Math.floor(player.mapy / 32) + 1;
+                if (eventInMap(engine.currentLevel["Level"], [0, 1], [py, px])) {
+                    HID.inputs["accept"].active = false
+                    engine.mapEventBlocked = true
+                }
+            }
+        } else {
+            player.waits -= 1
+        }
+    };
+}
+
+player.charaFacingTo = function(chara) {
+    var ppx = Math.floor(player.mapx / 32),
+        ppy = Math.floor(player.mapy / 32) + 1;
+    var cpx = Math.floor(chara.mapx / 32),
+        cpy = Math.floor(chara.mapy / 32) + 1;
+
+    var resx = cpx - ppx
+    var resy = cpy - ppy
+
+    if (resx == 0 && resy < 0)
+        return "down"
+    else if (resx == 0 && resy > 0)
+        return "up"
+    else if (resx < 0 && resy == 0)
+        return "right"
+    else
+        return "left"
+
+    console.log("error facing!")
+    return false
+
+}
+
+player.facingPosition = function() {
+    var px = Math.floor(player.mapx / 32),
+        py = Math.floor(player.mapy / 32) + 1;
+    return engine.facingPosition(player, px, py)
+}
+
+eventInMap = function(level, evType, position) {
+    if (engine.mapEventBlocked) {
+        return false
+    }
+
+    var event = level["events"][position[0]][position[1]]
+
+    if (event == 0) {
+        return false
+    }
+
+    engine.resetBlocks()
+    if (level['eventsType'][event.toString()][0] == evType[0] && level['eventsType'][event.toString()][1] == evType[1]) {
+        var aNmb, action, actionAndParam;
+        for (aNmb = 0; aNmb < level['eventsActions'][event.toString()].length; aNmb++) {
+            actionAndParam = level['eventsActions'][event.toString()][aNmb];
+            engine.translateActions(actionAndParam[0], actionAndParam[1], position);
+        }
+        return true
+    }
+};
+
+eventInChar = function(char, evType, position) {
+    if (char['chara']['actions']['type'][0] == evType[0] && char['chara']['actions']['type'][1] == evType[1]) {
+        char.charwasfacingfirst = char.facing
+        char.waits = 16
+        var newfacing = player.charaFacingTo(char)
+        if (newfacing) {
+            char.facing = newfacing
+        }
+        char.stopped = true
+        engine.resetBlocks()
+        var aNmb, action, actionAndParam;
+        for (aNmb = 0; aNmb < char['chara']['actions']['list'].length; aNmb++) {
+            actionAndParam = char['chara']['actions']['list'][aNmb];
+            engine.translateActions(actionAndParam[0], actionAndParam[1], position, char);
+        }
+        engine.atomStack.push([function() {
+            char.stopped = false;
+            char.facing = char.charwasfacingfirst
+        }, '']);
+        return true;
+    } else {
+        return false;
+    }
+};
+
+evalCondition = function(param) {
+    var value = eval(param[0])
+    return value
+}
