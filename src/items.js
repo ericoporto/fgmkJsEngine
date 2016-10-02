@@ -1,3 +1,10 @@
+//this file defines how the engine deals with items
+////
+//depends on battle.js; because of the heroes and monsters stats.
+//depends on actions.js; because of actions items can perform.
+//depends on menu.js; because of creation of the inventory menu.
+//depends on engine.js; because the inventory menu is pushed to the mapMenu
+
 items = {}
 items.setup = function(itemsjson) {
     this.inventory = {}
@@ -56,12 +63,19 @@ items.setup = function(itemsjson) {
     }
 
     this.effect = {}
-    this.pts = function(itemname) {
+    this.pts = function(itemname, itemuser) {
+        var attributbonus = 0
+        if(typeof itemuser !== 'undefined'){
+            var currHero = battle.heroes[itemuser]
+            var attribut = getkey0(this.inventory[itemname].effect)
+            if(attribut == 'st' || attribut == 'iq' || attribut == 'dx'){
+                 attributbonus = currHero[attribut]
+            }
+        }
         var baseplus = getkey0(this.inventory[itemname].effect, "basep")
         var plus = getkey0(this.inventory[itemname].effect, "plus")
-        var attribut = getkey0(this.inventory[itemname].effect, "atr")
 
-        return Math.max(battle.diceroll(baseplus + attribut) + plus, 0)
+        return Math.max(battle.diceroll(baseplus + attributbonus) + plus, 0)
     }
 
     this.effect.hpup = function(target, pts) {
