@@ -664,7 +664,7 @@ engine.changePlayerAnimation = function(param){
 }
 
 engine.alert = function(param) {
-    var textalert = actions.preText(param[0])
+    var textalert = param
     var textlife = 60
     for (var i = 0; i < engine.alertStack.length; i++) {
         if (engine.alertStack[i][0] == textalert) {
