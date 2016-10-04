@@ -319,6 +319,7 @@ actions.rain = function(param, position) {
     }
 }
 
+// MIT LICENSE
 // Copyright (c) 2016 Érico Vieira Porto
 //
 // Permission is hereby granted, free of charge, to any

@@ -1130,6 +1130,7 @@ addEvent(window, "resize", function() {
     screen.resize()
 });
 
+// MIT LICENSE
 // Copyright (c) 2016 Érico Vieira Porto
 //
 // Permission is hereby granted, free of charge, to any

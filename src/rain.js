@@ -142,6 +142,7 @@ function rain(__context, __width, __height, ___screen) {
     }
 }
 
+// MIT LICENSE
 // Copyright (c) 2016 Érico Vieira Porto
 //
 // Permission is hereby granted, free of charge, to any

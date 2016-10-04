@@ -77,6 +77,7 @@ window.isFirefox = function() {
     return check;
 }
 
+// MIT LICENSE
 // Copyright (c) 2016 Érico Vieira Porto
 //
 // Permission is hereby granted, free of charge, to any

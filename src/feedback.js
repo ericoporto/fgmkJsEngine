@@ -77,6 +77,7 @@ feedbackEng.turnOnceOffTime =function() {
     }, 100.0);
 };
 
+// MIT LICENSE
 // Copyright (c) 2016 Érico Vieira Porto
 //
 // Permission is hereby granted, free of charge, to any
