@@ -1,3 +1,11 @@
+// bootstrap.js
+//  This code contains the function bootstrap.onLoadDOM that
+// is the first function called after the html, js, css and
+// files linked directly in the html have loaded.
+//
+//  This function is responsible for starting all the engine,
+// dealing with each part of the code in the correct order.
+
 var bootstrap = {};
 
 window.forceMobile=false

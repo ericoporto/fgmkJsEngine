@@ -1,3 +1,10 @@
+// hid.js
+//  This code represents the Human Interaction Device, which
+// means things the user really interacts with.
+//  Code related to the touch display, gamepad, keyboard, all
+// this should be here. This function makes then the resulting
+// of this interaction something the rest of the code can use.
+
 var HID = {
     scale: 1,
     bsz: 96,

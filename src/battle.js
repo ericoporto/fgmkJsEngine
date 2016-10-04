@@ -1,10 +1,35 @@
+// battle.js
+//  This code implements the basics of the combat related math,
+// and a little on how things should look. Also the base of
+// Heroes Monsters and Skills is defined here.
+//
+//  The basic attributes are strenght (st), dexterity (dx) and
+// inteligency (iq).
+// - who has bigger dx play first
+// - st is used to do attack
+// - iq is used for skills
+//
+//  The battle ends when everyone of either the Monsters or
+// Heroes side has 0 hp. At the battle end, the variable
+// `battle.lastresult` will either hold the value "win" if
+// the Heroes have won, or "died" if the Heroes have lost.
+// This means that other part of the code has to deal with
+// this information and allow training battles to take place
+// without hacking.
+//
+//  `bch` means battle character, and functions that use this
+// should be able to be applied to either a specific hero or
+// a specific monster.
+//
+//  Monsters can have particular strategy when attacking for
+// selecting which Hero to target.
+// - "hero", always attack the leader of the party;
+// - "weakest", always attack who has less hp;
+// - "splash", try to distribute attacks evenly among targets;
+// - "vengeful", always attack the last one who attacked it.
+//  The current implementation though still hasn't taken into
+// account multiple heroes, but this is planned.
 
-
-
-//most dx play first
-//st is used to attack
-//iq is used to magic
-//target:"hero","weakest","splash","vengeful"
 battle = {};
 battle.atk = {};
 battle.skl = {};

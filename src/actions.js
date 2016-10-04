@@ -20,7 +20,6 @@
 //  Note that actions are executed instantaneously at when an
 // event occurs, but the functions pushed to the atomStack are
 // not.
-//Copyright Erico Vieira Porto 2015
 
 /** creation of the object actions and the helpers.
  *  helpers are not actions, but they are necessary functions
