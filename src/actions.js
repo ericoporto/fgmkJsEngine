@@ -58,49 +58,49 @@ actions.helpers.preText = function(text) {
  */
 actions.changePlayerAnimation = function(param, position) {
     var params = param.split(';')
-    engine.atomStack.push([engine.changePlayerAnimation, params])
+    engine.atomStack.push([engine.actions.changePlayerAnimation, params])
 }
 
 actions.charAutoDelete = function(param, position, charatodel) {
     var params = param.split(';')
-    engine.atomStack.push([engine.charAutoDelete, params, charatodel])
+    engine.atomStack.push([engine.actions.charAutoDelete, params, charatodel])
 }
 
 actions.questionBox = function(param, position) {
     var params = param.split(';')
     engine.questionBoxAnswer = engine.questionBoxUndef
-    engine.atomStack.push([engine.questionBox, params])
+    engine.atomStack.push([engine.actions.questionBox, params])
     engine.atomStack.push(["block", null]);
     engine.atomStack.push(["block", null]);
 }
 
 actions.stopPicture = function(param, position) {
-    engine.atomStack.push([engine.stopPicture, ''])
+    engine.atomStack.push([engine.actions.stopPicture, ''])
 }
 
 actions.showPicture = function(param, position) {
     var params = param.split(';')
-    engine.atomStack.push([engine.showPicture, params])
+    engine.atomStack.push([engine.actions.showPicture, params])
 }
 
 actions.changeState = function(param, position) {
     var params = param.split(';');
-    engine.atomStack.push([engine.changeState, params])
+    engine.atomStack.push([engine.actions.changeState, params])
 }
 
 actions.IF = function(param, position) {
     var params = param.split(';');
     actions.blockCounter++;
     actions.blockStack.push(actions.blockCounter.valueOf());
-    engine.atomStack.push([engine.IF, params, actions.helpers.lastBlock()]);
+    engine.atomStack.push([engine.actions.IF, params, actions.helpers.lastBlock()]);
 }
 
 actions.ELSE = function(param, position) {
-    engine.atomStack.push([engine.ELSE, '', actions.helpers.lastBlock()]);
+    engine.atomStack.push([engine.actions.ELSE, '', actions.helpers.lastBlock()]);
 }
 
 actions.END = function(param, position) {
-    engine.atomStack.push([engine.END, '', actions.helpers.lastBlock()]);
+    engine.atomStack.push([engine.actions.END, '', actions.helpers.lastBlock()]);
     var popped = actions.blockStack.pop();
 }
 
@@ -139,7 +139,7 @@ actions.teleport = function(param, position) {
     engine.atomStack.push([function() {
         screen.paused = true;
     }, '']);
-    engine.atomStack.push([engine.teleport, params]);
+    engine.atomStack.push([engine.actions.teleport, params]);
     engine.atomStack.push([function() {
         screen.paused = false;
     }, '']);
@@ -150,7 +150,7 @@ actions.teleportInPlace = function(param, position) {
     engine.atomStack.push([function() {
         screen.paused = true;
     }, '']);
-    engine.atomStack.push([engine.teleportInPlace, params]);
+    engine.atomStack.push([engine.actions.teleportInPlace, params]);
     engine.atomStack.push([function() {
         screen.paused = false;
     }, '']);
@@ -192,7 +192,7 @@ actions.changeTile = function(param, position) {
         aLevel = params[6]
     }
 
-    engine.atomStack.push([engine.changeTile, [aTileType,
+    engine.atomStack.push([engine.actions.changeTile, [aTileType,
         aLayer, aColision, aEvent, aPositionY, aPositionX,
         aLevel
     ]]);
@@ -227,7 +227,7 @@ actions.changeAllTiles = function(param, position) {
     var aLevel = params[5]
 
     engine.atomStack.push([
-        engine.changeAllTiles, [originalTileType, newTileType,
+        engine.actions.changeAllTiles, [originalTileType, newTileType,
                             aLayer, aColision, aEvent, aLevel]
     ]);
 };
@@ -251,52 +251,46 @@ actions.fadeOut = function(param, position) {
 
 actions.setVar = function(param, position) {
     var params = param.split(';')
-    engine.atomStack.push([engine.setVar, params]);
+    engine.atomStack.push([engine.actions.setVar, params]);
 };
 
 actions.varPlusOne = function(param, position) {
     var params = param.split(';')
-    engine.atomStack.push([engine.varPlusOne, params]);
-};
-
-actions.testVar = function(param, position) {
-    var params = param.split(';')
-    engine.atomStack.push([engine.testVar, params]);
+    engine.atomStack.push([engine.actions.varPlusOne, params]);
 };
 
 actions.noEffect = function(param, position) {
     engine.atomStack.push([screen.effects.noEffect, '']);
 };
 
-
 actions.battle = function(param, position) {
     var params = param.split(';')
     actions.fadeOut('tension1;keepEffect')
     dist.setup(screen.canvas, 'bgimg1', 1)
     actions.changeState('battle')
-    engine.atomStack.push([engine.battle, params]);
+    engine.atomStack.push([engine.actions.battle, params]);
 };
 
 actions.addItem = function(param, position) {
     var params = param.split(';')
-    engine.atomStack.push([engine.addItem, params]);
+    engine.atomStack.push([engine.actions.addItem, params]);
 }
 
 actions.dropItem = function(param, position) {
     var params = param.split(';')
-    engine.atomStack.push([engine.subtractItem, params]);
+    engine.atomStack.push([engine.actions.subtractItem, params]);
 }
 
 actions.proceedBattleTurn = function(param, position) {
     battle.herodecision = ""
     engine.questionBoxAnswer = engine.questionBoxUndef
-    engine.atomStack.push([engine.proceedBattleTurn, [""]])
+    engine.atomStack.push([engine.actions.proceedBattleTurn, [""]])
 }
 
 actions.alert = function(param, position) {
     var params = param.split(';')
     var text = actions.helpers.preText(params[0]);
-    engine.atomStack.push([engine.alert, text])
+    engine.atomStack.push([engine.actions.alert, text])
 }
 
 actions.waitCycle = function(param, position) {
