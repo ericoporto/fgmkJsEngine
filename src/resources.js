@@ -22,44 +22,41 @@ var resources = {
     hms: {}
 };
 
-
-/** jsonGet is deprecated and should vanish soon enough
- *  every part of the code should be updated to use
- *  jsonGetCallback instead.
- */
-jsonGet = function(urlToGet) {
-    var request = new XMLHttpRequest();
-    request.open('get', urlToGet, false /*async*/ );
-    request.send(); // blocks because async is false
-    var json = request.responseText; // string
-    return JSON.parse(json); // do string parsing and returns an object
-}
-
-var jsonGetCallback = function(urlToGet, callback, that) {
-  var request = new XMLHttpRequest();
-  request.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-          var json_obj = JSON.parse(this.responseText);
-          callback(json_obj, that);
-      }
-  };
-  request.open('GET', urlToGet, true  /*async*/ );
-  request.send();
-};
-
 resources.harvest = function(callback) {
 
+    /** jsonGet is deprecated and should vanish soon enough
+     *  every part of the code should be updated to use
+     *  jsonGetCallback instead.
+     */
+    var jsonGet = function(urlToGet) {
+        var request = new XMLHttpRequest();
+        request.open('get', urlToGet, false /*async*/ );
+        request.send(); // blocks because async is false
+        var json = request.responseText; // string
+        return JSON.parse(json); // do string parsing and returns an object
+    }
+
+    var jsonGetCallback = function(urlToGet, callback, that) {
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var json_obj = JSON.parse(this.responseText);
+                callback(json_obj, that);
+            }
+        };
+        request.open('GET', urlToGet, true  /*async*/ );
+        request.send();
+    };
+
     init = jsonGet(descriptors+'init.json');
+
+
     var filecount = 0;
     document.getElementsByTagName('canvas')[0].getContext('2d').fillStyle = '#FFFFFF';
 
     var getresource = function(getthis) {
         var toreturn = jsonGet(getthis)
-        if (!(typeof toreturn.resources === "undefined")) {
-            if (!(typeof toreturn.resources.audio === "undefined")) {
 
-            }
-        }
         filecount += 1
         if (!(typeof toreturn.Level === "undefined")) {
             document.getElementsByTagName('canvas')[0].getContext('2d').fillText(".", filecount, filecount)
