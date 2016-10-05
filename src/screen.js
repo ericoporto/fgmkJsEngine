@@ -1,3 +1,14 @@
+// screen.js
+//  This code defines the biggest chunk of how things are draw
+// in the canvas. This code is gigantic, it should be split
+// somehow, but I have no idea how.
+//  The camera enables drawing things in the map. It must be
+// attached to a chara, and the screen will scroll following
+// that chara - it's hard coded panToChara(player), so it
+// will follow the player, but this can be loosen to follow
+// any chara.
+//  The screen.loop defines the drawing order of everything.
+
 var camera = {};
 //camera.width = 16;
 //camera.height = 10;
@@ -1129,3 +1140,32 @@ debug.FPS = {
 addEvent(window, "resize", function() {
     screen.resize()
 });
+
+// MIT LICENSE
+// Copyright (c) 2016 Érico Vieira Porto
+//
+// Permission is hereby granted, free of charge, to any
+// person obtaining a copy of this software and associated
+// documentation files (the "Software"), to deal in the
+// Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// You can't claim ownership, use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell any software, images or
+// documents that includes characters, assets, or story elements
+// of the game distributed along with this engine.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.

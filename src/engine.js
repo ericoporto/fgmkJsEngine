@@ -1,9 +1,24 @@
-//defines the base of the engine
+// engine.js
+//  It's the base of the engine, this code is big and someday
+// it must be broken in separated things.
+//  This contains the engine, that deals with main game logic
+// related to the map state, the atomStack that can load
+// functions with parameters from a buffer and manipulate it
+// in game time.
+//  This also contains the player element, that can take user
+// input standardized by the HID and also deals with the chara
+// that the user controls - in map state.
+//  Last this defines the chars array, that contains all charas
+// defined in the loaded map, and deals with their movements.
+//  Since the actions.js only contains instant functions, the
+// engine.actions usually deals with game time execution of the
+// functions
 
 
 var engine = {};
-var player = {};
+engine.actions = {}
 
+var player = {};
 var chars = []
 
 function charalist() {
@@ -377,103 +392,6 @@ engine.isCharFacingPlayer = function(_char) {
     return false
 }
 
-engine.addItem = function(param) {
-    for (var i = 0; i < param.length; i++) {
-        items.addItem(param[i])
-    }
-}
-
-engine.subtractItem = function(param) {
-    for (var i = 0; i < param.length; i++) {
-        items.subtractItem(param[i])
-    }
-}
-
-engine.battle = function(param) {
-    battle.start(param)
-}
-
-engine.changeState = function(param) {
-    engine.state = param[0]
-}
-
-engine.teleportInPlace = function(param) {
-    var px = Math.floor(player.mapx / 32),
-        py = Math.floor(player.mapy / 32) + 1;
-    var map = param[0]
-    engine.teleport([px, py, map])
-}
-
-engine.teleport = function(param) {
-    //param = [positionX,positionY,level]
-    engine.state = "map"
-    engine.currentLevel = resources['levels'][param[2]];
-    resources.tileset = resources.tile[engine.currentLevel.Level.tileImage]
-    player.mapx = parseInt(param[0], 10) * 32;
-    player.mapy = (parseInt(param[1], 10) - 1) * 32;
-    player.steps = 0;
-    //    player.facing = "down";
-    HID.cleanInputs()
-    HID.clearInputs()
-    chars = new charalist();
-    chars.push(player)
-    engine.waitTime(100);
-}
-
-engine.changeTile = function(param) {
-    //param = [tileType,layer,colision,event,positionY,positionX,level]
-    //          0      , 1   , 2      , 3   , 4       , 5       , 6
-    ///////////////////////////////////////////////////////////////////
-
-    if (param[6] == null || param[6] == "this") {
-        var levelToChange = engine.currentLevel
-    } else {
-        var levelToChange = resources['levels'][param[6]];
-    }
-    if (param[2] != -1) {
-        levelToChange["Level"]["colision"][param[4]][param[5]] = param[2]
-    }
-    if (param[3] != -1) {
-        levelToChange["Level"]["events"][param[4]][param[5]] = param[3]
-    }
-
-    levelToChange["Level"][param[1]][param[4]][param[5]] = param[0]
-}
-
-engine.changeAllTiles = function(param) {
-    //param = [originalTileType, newTileType,layer,colision,event,level]
-    //              0          ,     1      ,  2  ,   3    ,  4  ,  5
-    ///////////////////////////////////////////////////////////////////
-
-    var originalTile = param[0]
-    var newTile = param[1]
-    var layer = param[2]
-
-    if (param[5] == null || param[5] == "this") {
-        var levelToChange = engine.currentLevel
-    } else {
-        var levelToChange = resources['levels'][param[5]];
-    }
-    var h = levelToChange["Level"]["colision"].length
-    var w = levelToChange["Level"]["colision"][0].length
-
-    for(var y=0; y<h; y++){
-        for (var x=0; x<w; x++){
-            var currTile = levelToChange["Level"][layer][y][x]
-            if(currTile == originalTile){
-                if (param[3] != -1) {
-                    levelToChange["Level"]["colision"][y][x] = param[3]
-                }
-                if (param[4] != -1) {
-                    levelToChange["Level"]["events"][y][x] = param[4]
-                }
-
-                levelToChange["Level"][layer][y][x] = param[1]
-            }
-        }
-    }
-}
-
 engine.evalNum = function(number) {
     var value = number.slice(0)
     if (isNaN(value)) {
@@ -505,50 +423,6 @@ engine.evalNum = function(number) {
     } else {
         return +value
     }
-}
-
-
-engine.IF = function(param, blockId) {
-    if (engine.testVar(param)) {
-        var removeActions = false
-        for (var i = 0; i < engine.atomStack.length; i++) {
-            if (engine.atomStack[i][0] == engine.ELSE && engine.atomStack[i][2] == blockId) {
-                removeActions = true
-
-            }
-            if (engine.atomStack[i][0] == engine.END && engine.atomStack[i][2] == blockId) {
-                return
-            }
-            if (removeActions) {
-                engine.atomStack.splice(i, 1)
-                i--
-            }
-
-        }
-    } else {
-        var actToRun = [0, 0, 0]
-        while (engine.atomStack.length > 0 &&
-            actToRun[0] != engine.END &&
-            actToRun[0] != engine.ELSE ||
-            actToRun[2] != blockId) {
-            actToRun = engine.atomStack.shift();
-        }
-    }
-}
-
-engine.END = function() {}
-
-engine.ELSE = function() {}
-
-engine.setVar = function(param) {
-    engine.st.vars[param[0]] = engine.evalNum(param[1])
-}
-
-engine.varPlusOne = function(param) {
-    if (isNaN(engine.st.vars[param[0]])) {
-        engine.st.vars[param[0]] = 0
-    }
-    engine.st.vars[param[0]]++
 }
 
 engine.testVar = function(param) {
@@ -598,25 +472,175 @@ engine.testVar = function(param) {
     return test[operator](var1, var2)
 }
 
-engine.showPicture = function(param) {
-    var picture = {}
-    picture["image"] = param[0]
-    picture["position"] = [param[1], param[2]]
+
+engine.actions.addItem = function(param) {
+    for (var i = 0; i < param.length; i++) {
+        items.addItem(param[i])
+    }
+}
+
+engine.actions.subtractItem = function(param) {
+    for (var i = 0; i < param.length; i++) {
+        items.subtractItem(param[i])
+    }
+}
+
+engine.actions.battle = function(param) {
+    battle.start(param)
+}
+
+engine.actions.changeState = function(param) {
+    engine.state = param[0]
+}
+
+engine.actions.teleportInPlace = function(param) {
+    var px = Math.floor(player.mapx / 32),
+        py = Math.floor(player.mapy / 32) + 1;
+    var map = param[0]
+    engine.actions.teleport([px, py, map])
+}
+
+engine.actions.teleport = function(param) {
+    //param = [positionX,positionY,level]
+    engine.state = "map"
+    engine.currentLevel = resources['levels'][param[2]];
+    resources.tileset = resources.tile[engine.currentLevel.Level.tileImage]
+    player.mapx = parseInt(param[0], 10) * 32;
+    player.mapy = (parseInt(param[1], 10) - 1) * 32;
+    player.steps = 0;
+    //    player.facing = "down";
+    HID.cleanInputs()
+    HID.clearInputs()
+    chars = new charalist();
+    chars.push(player)
+    engine.waitTime(100);
+}
+
+engine.actions.changeTile = function(param) {
+    //param = [tileType,layer,colision,event,positionY,positionX,level]
+    //          0      , 1   , 2      , 3   , 4       , 5       , 6
+    ///////////////////////////////////////////////////////////////////
+
+    if (param[6] == null || param[6] == "this") {
+        var levelToChange = engine.currentLevel
+    } else {
+        var levelToChange = resources['levels'][param[6]];
+    }
+    if (param[2] != -1) {
+        levelToChange["Level"]["colision"][param[4]][param[5]] = param[2]
+    }
+    if (param[3] != -1) {
+        levelToChange["Level"]["events"][param[4]][param[5]] = param[3]
+    }
+
+    levelToChange["Level"][param[1]][param[4]][param[5]] = param[0]
+}
+
+engine.actions.changeAllTiles = function(param) {
+    //param = [originalTileType, newTileType,layer,colision,event,level]
+    //              0          ,     1      ,  2  ,   3    ,  4  ,  5
+    ///////////////////////////////////////////////////////////////////
+
+    var originalTile = param[0]
+    var newTile = param[1]
+    var layer = param[2]
+
+    if (param[5] == null || param[5] == "this") {
+        var levelToChange = engine.currentLevel
+    } else {
+        var levelToChange = resources['levels'][param[5]];
+    }
+    var h = levelToChange["Level"]["colision"].length
+    var w = levelToChange["Level"]["colision"][0].length
+
+    for(var y=0; y<h; y++){
+        for (var x=0; x<w; x++){
+            var currTile = levelToChange["Level"][layer][y][x]
+            if(currTile == originalTile){
+                if (param[3] != -1) {
+                    levelToChange["Level"]["colision"][y][x] = param[3]
+                }
+                if (param[4] != -1) {
+                    levelToChange["Level"]["events"][y][x] = param[4]
+                }
+
+                levelToChange["Level"][layer][y][x] = param[1]
+            }
+        }
+    }
+}
+
+
+
+
+engine.actions.IF = function(param, blockId) {
+    if (engine.testVar(param)) {
+        var removeActions = false
+        for (var i = 0; i < engine.atomStack.length; i++) {
+            if (engine.atomStack[i][0] == engine.actions.ELSE && engine.atomStack[i][2] == blockId) {
+                removeActions = true
+
+            }
+            if (engine.atomStack[i][0] == engine.actions.END && engine.atomStack[i][2] == blockId) {
+                return
+            }
+            if (removeActions) {
+                engine.atomStack.splice(i, 1)
+                i--
+            }
+
+        }
+    } else {
+        var actToRun = [0, 0, 0]
+        while (engine.atomStack.length > 0 &&
+            actToRun[0] != engine.actions.END &&
+            actToRun[0] != engine.actions.ELSE ||
+            actToRun[2] != blockId) {
+            actToRun = engine.atomStack.shift();
+        }
+    }
+}
+
+engine.actions.END = function() {}
+
+engine.actions.ELSE = function() {}
+
+engine.actions.setVar = function(param) {
+    engine.st.vars[param[0]] = engine.evalNum(param[1])
+}
+
+engine.actions.varPlusOne = function(param) {
+    if (isNaN(engine.st.vars[param[0]])) {
+        engine.st.vars[param[0]] = 0
+    }
+    engine.st.vars[param[0]]++
+}
+
+
+
+engine.actions.showPicture = function(param) {
+    var picture = {} ;
+    picture["image"] = param[0] ;
+    picture["position"] = [param[1], param[2]] ;
     if(param[3]=="sys"){
-        picture["sys"] = true
+        picture["sys"] = true ;
     }
     screen.pictureStack.push(picture)
 }
 
-engine.stopPicture = function(param) {
+engine.actions.stopPicture = function(param) {
     screen.clearPicture()
 }
 
-engine.charAutoDelete = function(param, charatodel) {
-    var k = -2
+engine.actions.charAutoDelete = function(param, charatodel) {
+    if(typeof charatodel === 'undefined'){
+        return;
+    }
+
+    var k = -2;
     for (var i = 0; i < chars.length; i++) {
         if (chars[i] == charatodel) {
-            k = i
+            k = i;
             break
         }
     }
@@ -626,7 +650,7 @@ engine.charAutoDelete = function(param, charatodel) {
     }
 }
 
-engine.questionBox = function(param) {
+engine.actions.questionBox = function(param) {
     var answers = {}
     engine.questionBoxAnswer = engine.questionBoxUndef
     if (!(typeof engine.questionBoxMenu === "undefined")) {
@@ -650,11 +674,11 @@ engine.questionBox = function(param) {
     engine.questionBoxMenu.activate()
 }
 
-engine.proceedBattleTurn = function(param) {
+engine.actions.proceedBattleTurn = function(param) {
     battle.waitherodecision = false
 }
 
-engine.changePlayerAnimation = function(param){
+engine.actions.changePlayerAnimation = function(param){
     var animation = param[0]
     if(param[0]=='default'){
         player.curr_animation = false
@@ -663,8 +687,8 @@ engine.changePlayerAnimation = function(param){
     }
 }
 
-engine.alert = function(param) {
-    var textalert = actions.preText(param[0])
+engine.actions.alert = function(param) {
+    var textalert = param
     var textlife = 60
     for (var i = 0; i < engine.alertStack.length; i++) {
         if (engine.alertStack[i][0] == textalert) {
@@ -964,7 +988,31 @@ eventInChar = function(char, evType, position) {
     }
 };
 
-evalCondition = function(param) {
-    var value = eval(param[0])
-    return value
-}
+// MIT LICENSE
+// Copyright (c) 2016 Érico Vieira Porto
+//
+// Permission is hereby granted, free of charge, to any
+// person obtaining a copy of this software and associated
+// documentation files (the "Software"), to deal in the
+// Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// You can't claim ownership, use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell any software, images or
+// documents that includes characters, assets, or story elements
+// of the game distributed along with this engine.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.

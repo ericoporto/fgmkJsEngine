@@ -1,9 +1,35 @@
-//Copyright Erico 2015
-//This work must not be copied and all assets here are proprietary.
-//most r play first
-//w is used to attack
-//m is used to magic
-//target:"hero","weakest","splash","vengeful"
+// battle.js
+//  This code implements the basics of the combat related math,
+// and a little on how things should look. Also the base of
+// Heroes Monsters and Skills is defined here.
+//
+//  The basic attributes are strenght (st), dexterity (dx) and
+// inteligency (iq).
+// - who has bigger dx play first
+// - st is used to do attack
+// - iq is used for skills
+//
+//  The battle ends when everyone of either the Monsters or
+// Heroes side has 0 hp. At the battle end, the variable
+// `battle.lastresult` will either hold the value "win" if
+// the Heroes have won, or "died" if the Heroes have lost.
+// This means that other part of the code has to deal with
+// this information and allow training battles to take place
+// without hacking.
+//
+//  `bch` means battle character, and functions that use this
+// should be able to be applied to either a specific hero or
+// a specific monster.
+//
+//  Monsters can have particular strategy when attacking for
+// selecting which Hero to target.
+// - "hero", always attack the leader of the party;
+// - "weakest", always attack who has less hp;
+// - "splash", try to distribute attacks evenly among targets;
+// - "vengeful", always attack the last one who attacked it.
+//  The current implementation though still hasn't taken into
+// account multiple heroes, but this is planned.
+
 battle = {};
 battle.atk = {};
 battle.skl = {};
@@ -574,3 +600,32 @@ battle.update = function() {
     }
 
 }
+
+// MIT LICENSE
+// Copyright (c) 2016 Érico Vieira Porto
+//
+// Permission is hereby granted, free of charge, to any
+// person obtaining a copy of this software and associated
+// documentation files (the "Software"), to deal in the
+// Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// You can't claim ownership, use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell any software, images or
+// documents that includes characters, assets, or story elements
+// of the game distributed along with this engine.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
