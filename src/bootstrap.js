@@ -25,7 +25,7 @@ for (var i = 0, max = query.length; i < max; i++)
 
 }
 
-var init = jsonGet(descriptors+'init.json');
+var init = []
 
 bootstrap.onLoadDOM = function(){
 	try{

@@ -42,8 +42,6 @@ feedbackEng.setup = function() {
         return video.paused;
     };
 
-    console.log("test")
-
     this.removeBehaviorsRestrictions  = function () {
         window.removeEventListener('keydown', feedbackEng.removeBehaviorsRestrictions);
         window.removeEventListener('mousedown',  feedbackEng.removeBehaviorsRestrictions);

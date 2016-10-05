@@ -3,30 +3,6 @@
 // places that had nothing in common and there was no place
 // appropriate at the time to receive the code.
 
-/** jsonGet is deprecated and should vanish soon enough
- *  every part of the code should be updated to use
- *  jsonGetCallback instead.
- */
-jsonGet = function(urlToGet) {
-    var request = new XMLHttpRequest();
-    request.open('get', urlToGet, false /*async*/ );
-    request.send(); // blocks because async is false
-    var json = request.responseText; // string
-    return JSON.parse(json); // do string parsing and returns an object
-}
-
-var jsonGetCallback = function(urlToGet, callback, that) {
-  var request = new XMLHttpRequest();
-  request.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-          var json_obj = JSON.parse(this.responseText);
-          callback(json_obj, that);
-      }
-  };
-  request.open('GET', urlToGet, true  /*async*/ );
-  request.send();
-};
-
 isInt = Number.isInteger || function(val) {
   return typeof val === "number" &&
     isFinite(val) &&
