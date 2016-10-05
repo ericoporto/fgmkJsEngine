@@ -5,6 +5,7 @@ This a javascipt engine to play games made with [fgmk](https://github.com/ericop
 
 ![Game Screenshot](gamescreenshot.png)
 
+
 Engine demo
 ----------
 
@@ -16,15 +17,21 @@ in vertical position.
 If you are in a computer, this demo is compatible with a Xbox360 gamepad, just
 plug it in the usb port of your computer and you are good to go.
 
+
 How does this works
 -------------------
 
 It uses a specific set of json files that are read by the engine. There is some
-[description on here](https://github.com/ericoporto/fangamk/tree/master/Descriptor).
+[description on here, in the fgmk docs](http://ericoporto.github.io/fgmk/Specification/Specification.html).
+
 
 Author
 ------
 
-Code made by Érico Vieira Porto.
+Made by Érico Vieira Porto
 
-Assets (\*.png and \*.json) available here are not free to use.
+
+License
+-------
+
+Distributed under MIT license. See [`LICENSE`](LICENSE) for more information.
