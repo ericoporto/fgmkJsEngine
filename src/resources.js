@@ -1,3 +1,8 @@
+// resources.js
+//  This module should be responsable for loading things.
+// every request made by the engine should be centralized in
+// this module.
+
 var descriptors = "descriptors/"
 var charaset = "charaset/"
 var levelsFolder = "levels/"

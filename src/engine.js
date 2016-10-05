@@ -1,4 +1,18 @@
-//defines the base of the engine
+// engine.js
+//  It's the base of the engine, this code is big and someday
+// it must be broken in separated things.
+//  This contains the engine, that deals with main game logic
+// related to the map state, the atomStack that can load
+// functions with parameters from a buffer and manipulate it
+// in game time.
+//  This also contains the player element, that can take user
+// input standardized by the HID and also deals with the chara
+// that the user controls - in map state.
+//  Last this defines the chars array, that contains all charas
+// defined in the loaded map, and deals with their movements.
+//  Since the actions.js only contains instant functions, the
+// engine.actions usually deals with game time execution of the
+// functions
 
 
 var engine = {};

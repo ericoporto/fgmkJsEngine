@@ -1,3 +1,7 @@
+// rain.js
+//  The rain effect that can be draw in the screen is defined
+// in this module. 
+
 function rain(__context, __width, __height, ___screen) {
     var that = this;
 

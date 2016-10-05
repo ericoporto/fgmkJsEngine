@@ -1,3 +1,14 @@
+// screen.js
+//  This code defines the biggest chunk of how things are draw
+// in the canvas. This code is gigantic, it should be split
+// somehow, but I have no idea how.
+//  The camera enables drawing things in the map. It must be
+// attached to a chara, and the screen will scroll following
+// that chara - it's hard coded panToChara(player), so it
+// will follow the player, but this can be loosen to follow
+// any chara.
+//  The screen.loop defines the drawing order of everything.
+
 var camera = {};
 //camera.width = 16;
 //camera.height = 10;

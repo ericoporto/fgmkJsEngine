@@ -1,3 +1,9 @@
+// title.js
+//  This module deals with the Title Screen.
+//  Not enough thought was put on this module, a way to
+// configure the title screen and some effects would probably
+// be a good idea.
+
 var title = {};
 
 title.setup = function() {

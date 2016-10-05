@@ -1,3 +1,7 @@
+// printer.js
+//  This code deals with the basics of writing text in the
+// screen - the canvas.
+
 var printer = {};
 
 printer.currentText = null;

@@ -1,3 +1,15 @@
+// feedback.js
+//  Some engine related things needs that happen, needs to be
+// passed back to the user in non visual ways. The feedbackEng
+// deals with sounds and vibration for these informatives
+// that are not graphical. This allows the player using the
+// smartphone or tablet with sound disabled to still have some
+// minimum feedback from what's happening even without sounds.
+//  At the same time, sounds are always important to the person
+// playing in a computer.
+//  Game dependent sounds are not part of the feedbackEng, these
+// will be part of a new, still not implemented js file.
+
 feedbackEng = {}
 
 feedbackEng.setup = function() {

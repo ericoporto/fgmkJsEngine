@@ -1,3 +1,15 @@
+// dist.js
+//  This code makes the cool distortions in the background
+// image of the battle screen.
+//  Alpha is a number from 0 to 133 that varies the effect,
+// viewCanvas is the canvas for the effect to happen and
+// backgroundImage is the image that will be distorted and
+// placed in the canvas.
+//  Right now the backgroundImage is taken directly from the
+// html. A better loading process needs to be implemented.
+//  A possible improvement would be to just pass the canvas
+// and take the image from whatever was drawn there.
+
 var dist = {}
 dist.setup = function(viewCanvas, backgroundImage, alpha) {
     dist.alpha = alpha

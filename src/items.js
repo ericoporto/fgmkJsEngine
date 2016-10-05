@@ -1,4 +1,5 @@
-//this file defines how the engine deals with items
+// items.js
+//  This file defines how the engine deals with game items
 ////
 //depends on battle.js; because of the heroes and monsters stats.
 //depends on actions.js; because of actions items can perform.

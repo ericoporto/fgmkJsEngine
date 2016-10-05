@@ -1,3 +1,13 @@
+// menu.js
+//  Menus are the basic user interface of the game engine,
+// they should be concise and fast since using this user
+// interface is generally not fun.
+//  They are important for doing things like using an item in
+// the map state, asking questions and configuration.
+//  This code creates the basic elements needed for creating
+// menus but it doesn't call it or define the mapMenu, this
+// is left as a task to the engine do deal with.
+
 var menus = {
     allMenus: [],
     isAnyMenuEnabled: function() {
