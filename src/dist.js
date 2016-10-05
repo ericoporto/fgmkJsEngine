@@ -1,3 +1,15 @@
+// dist.js
+//  This code makes the cool distortions in the background
+// image of the battle screen.
+//  Alpha is a number from 0 to 133 that varies the effect,
+// viewCanvas is the canvas for the effect to happen and
+// backgroundImage is the image that will be distorted and
+// placed in the canvas.
+//  Right now the backgroundImage is taken directly from the
+// html. A better loading process needs to be implemented.
+//  A possible improvement would be to just pass the canvas
+// and take the image from whatever was drawn there.
+
 var dist = {}
 dist.setup = function(viewCanvas, backgroundImage, alpha) {
     dist.alpha = alpha
@@ -315,3 +327,32 @@ dist.setup = function(viewCanvas, backgroundImage, alpha) {
     }
 
 }
+
+// MIT LICENSE
+// Copyright (c) 2016 Érico Vieira Porto
+//
+// Permission is hereby granted, free of charge, to any
+// person obtaining a copy of this software and associated
+// documentation files (the "Software"), to deal in the
+// Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// You can't claim ownership, use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell any software, images or
+// documents that includes characters, assets, or story elements
+// of the game distributed along with this engine.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.

@@ -1,3 +1,32 @@
+// helperf.js
+//  This code contains functions that are used in different
+// places that had nothing in common and there was no place
+// appropriate at the time to receive the code.
+
+/** jsonGet is deprecated and should vanish soon enough
+ *  every part of the code should be updated to use
+ *  jsonGetCallback instead.
+ */
+jsonGet = function(urlToGet) {
+    var request = new XMLHttpRequest();
+    request.open('get', urlToGet, false /*async*/ );
+    request.send(); // blocks because async is false
+    var json = request.responseText; // string
+    return JSON.parse(json); // do string parsing and returns an object
+}
+
+var jsonGetCallback = function(urlToGet, callback, that) {
+  var request = new XMLHttpRequest();
+  request.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+          var json_obj = JSON.parse(this.responseText);
+          callback(json_obj, that);
+      }
+  };
+  request.open('GET', urlToGet, true  /*async*/ );
+  request.send();
+};
+
 isInt = Number.isInteger || function(val) {
   return typeof val === "number" &&
     isFinite(val) &&
@@ -53,14 +82,6 @@ window.mobilecheck = function() {
     return (window.forceMobile || window.__mobilecheck())
 }
 
-jsonGet = function(urlToGet) {
-    var request = new XMLHttpRequest();
-    request.open('get', urlToGet, false /*async*/ );
-    request.send(); // bloqueia porque async esta false
-    var json = request.responseText; // string
-    return JSON.parse(json); // faz o parse da string e retorna objeto
-}
-
 window.__mobilecheck = function() {
     var check = false;
     (function(a) {
@@ -76,3 +97,32 @@ window.isFirefox = function() {
     })(navigator.userAgent || navigator.vendor || window.opera);
     return check;
 }
+
+// MIT LICENSE
+// Copyright (c) 2016 Érico Vieira Porto
+//
+// Permission is hereby granted, free of charge, to any
+// person obtaining a copy of this software and associated
+// documentation files (the "Software"), to deal in the
+// Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so,
+// subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// You can't claim ownership, use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell any software, images or
+// documents that includes characters, assets, or story elements
+// of the game distributed along with this engine.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
