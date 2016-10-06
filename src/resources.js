@@ -3,11 +3,6 @@
 // every request made by the engine should be centralized in
 // this module.
 
-var descriptors = "descriptors/"
-var charaset = "charaset/"
-var levelsFolder = "levels/"
-var charasetsFolder = "charaset/"
-var charasFolder = "charas/"
 var resources = {
     tileset: null,
     playerChara: null,
@@ -24,9 +19,12 @@ var resources = {
 
 resources.harvest = function(callback) {
 
+    var DESCRIPTORS = "descriptors/"
+    var CHARASETS = "charaset/"
+    var LEVELS = "levels/"
+
     /** jsonGet is deprecated and should vanish soon enough
-     *  every part of the code should be updated to use
-     *  jsonGetCallback instead.
+     *  every part of the code should be updated
      */
     var jsonGet = function(urlToGet) {
         var request = new XMLHttpRequest();
@@ -36,24 +34,9 @@ resources.harvest = function(callback) {
         return JSON.parse(json); // do string parsing and returns an object
     }
 
-    var jsonGetCallback = function(urlToGet, callback, that) {
-        var request = new XMLHttpRequest();
-        request.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                var json_obj = JSON.parse(this.responseText);
-                callback(json_obj, that);
-            }
-        };
-        request.open('GET', urlToGet, true  /*async*/ );
-        request.send();
-    };
-
-    init = jsonGet(descriptors+'init.json');
-
-
-    var filecount = 0;
     document.getElementsByTagName('canvas')[0].getContext('2d').fillStyle = '#FFFFFF';
 
+    var filecount = 0;
     var getresource = function(getthis) {
         var toreturn = jsonGet(getthis)
 
@@ -63,6 +46,10 @@ resources.harvest = function(callback) {
         }
         return toreturn
     }
+
+    init = jsonGet(DESCRIPTORS+'init.json');
+
+
 
     this.tileset = []
     this.faceset = document.getElementById("faceset");
@@ -78,14 +65,14 @@ resources.harvest = function(callback) {
     this.syspictures.keys2 = document.getElementById("keys2");
     this.syspictures.controllers = document.getElementById("controllers");
 
-    this.feedback = getresource(descriptors + "feedback.json")['Feedback'];
+    this.feedback = getresource(DESCRIPTORS + "feedback.json")['Feedback'];
     this.tileslist = []
 
     LevelsList = init['LevelsList']
     for (var level in LevelsList) {
         var levelItem = LevelsList[level]
-        console.log(descriptors + levelsFolder + levelItem)
-        resources['levels'][level] = getresource(descriptors + levelsFolder + levelItem);
+        console.log(DESCRIPTORS + LEVELS + levelItem)
+        resources['levels'][level] = getresource(DESCRIPTORS + LEVELS + levelItem);
         var tileimage = resources['levels'][level]['Level']['tileImage']
         if (this.tileslist.indexOf(tileimage) < 0) {
             this.tileslist.push(tileimage)
@@ -94,13 +81,13 @@ resources.harvest = function(callback) {
     CharasetFileList = init['CharasetFileList']
     for (var charasetfilep in CharasetFileList) {
         var charasetfile = CharasetFileList[charasetfilep]
-        console.log(descriptors + charasetsFolder + charasetfile)
-        resources['charasets'] = getresource(descriptors + charasetsFolder + charasetfile)['Charaset'];
+        console.log(DESCRIPTORS + CHARASETS + charasetfile)
+        resources['charasets'] = getresource(DESCRIPTORS + CHARASETS + charasetfile)['Charaset'];
     }
-    resources['charas'] = getresource(descriptors + "charas.json")['Charas'];
+    resources['charas'] = getresource(DESCRIPTORS + "charas.json")['Charas'];
     this.playerCharaset = resources['charasets'][init['Player']['charaSet']];
-    this.hms = getresource(descriptors + init["HMSFile"])
-    this.items = getresource(descriptors + init["itemsFile"])['Items']
+    this.hms = getresource(DESCRIPTORS + init["HMSFile"])
+    this.items = getresource(DESCRIPTORS + init["itemsFile"])['Items']
 
     this.pictureList = init['PictureList']
 
@@ -137,15 +124,6 @@ resources.harvest = function(callback) {
     }
 
     loadImages(resources.tileslist[index], callback)
-
-
-    //CharasFileList = init['CharasFileList']
-    //for (var charasfilep in CharasFileList) {
-    //    var charasfile = CharasFileList[charasfilep]
-    //    console.log(descriptors+charasFolder+charasfile)
-    //    resources['charas'] = jsonGet(descriptors+charasFolder+charasfile)['Charas'];
-    //}
-
 
 }
 
