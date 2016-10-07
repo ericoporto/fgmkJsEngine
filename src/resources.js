@@ -19,9 +19,60 @@ var resources = {
 
 resources.harvest = function(callback) {
 
+    this.finalCallback = callback
     var DESCRIPTORS = "descriptors/"
     var CHARASETS = "charaset/"
     var LEVELS = "levels/"
+
+    resources.loadingList = [];
+
+    var scheduleLoad = function(toWhere, fromUrl, fileType, tinyCallback){
+        resources.loadingList.push({
+            to: toWhere,
+            from: fromUrl,
+            fileType: fileType,
+            loaded: false,
+            isScheduled: false,
+            tinyCallback: tinyCallback
+        });
+    };
+
+    var loadFromSchedule = function(){
+        for(var i=0; i<resources.loadingList.length ; i++){
+            resources.doLoad(i);
+        }
+    };
+
+    var checkAllLoaded = function(){
+        var allLoaded = true
+        for(var i=0; i<resources.loadingList.length ; i++){
+            var resDict = resources.loadingList[i]
+            allLoaded = allLoaded && resDict.loaded;
+        }
+        return allLoaded
+    }
+
+    this.doLoad = function(i){
+        var resDict = resources.loadingList[i]
+        if(resDict.isScheduled){
+            return;
+        }
+
+        if(resDict.fileType == 'json'){
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    if(resDict.fileType == '')
+                    resDict.to = JSON.parse(this.responseText); //this is fake code!!!!
+                    resDict.loaded = true
+                    resDict.tinyCallback();
+                }
+            };
+            request.open('GET', resDict.from, true);
+            request.send();
+            resDict.isScheduled = true
+        }
+    }
 
     /** jsonGet is deprecated and should vanish soon enough
      *  every part of the code should be updated
