@@ -19,13 +19,52 @@ var resources = {
 };
 
 resources.harvest = function(callback) {
+    // the idea here is to loadInit, and then
+    // analyze the init file in loadAfterInit
+    // and scheduleLoad of all needed json files.
+    //
+    // than, ask for the loading of all of them with
+    // loadFromSchedule.
+    // 
+    // doLoad should be asked in the return and
+    // if checkAllLoaded, should load all needed
+    // images and then, after all images are loaded
+    // throw the finalCallback
+    //
+    //
 
-    this.finalCallback = callback
+    resources.finalCallback = callback
     var DESCRIPTORS = "descriptors/"
     var CHARASETS = "charaset/"
     var LEVELS = "levels/"
 
+    this.faceset = document.getElementById("faceset");
+    this.charasetimg = document.getElementById("charasetimg");
+    this.printerset = document.getElementById("printerimg");
+    this.monsterimg = document.getElementById("monsterbattleimg");
+    this.tile = {}
+    this.pictures = {}
+    this.syspictures = {}
+    this.syspictures.title = document.getElementById("titleimg");
+    this.syspictures.keys0 = document.getElementById("keys0");
+    this.syspictures.keys1 = document.getElementById("keys1");
+    this.syspictures.keys2 = document.getElementById("keys2");
+    this.syspictures.controllers = document.getElementById("controllers");
+
     resources.loadingList = [];
+
+    var loadInit = function(){
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                resources.init = JSON.parse(this.responseText); //this is fake code!!!!
+                resources.loadAfterInit();
+            }
+        };
+        request.open('GET', DESCRIPTORS + 'init.json', true);
+        request.send();
+        resDict.isScheduled = true
+    };
 
     var scheduleLoad = function(toWhere, fromUrl, fileType, tinyCallback){
         resources.loadingList.push({
@@ -50,8 +89,11 @@ resources.harvest = function(callback) {
             var resDict = resources.loadingList[i]
             allLoaded = allLoaded && resDict.loaded;
         }
-        return allLoaded
-    }
+       
+        if(allLoaded){
+            resources.finalCallback()
+        }
+    };
 
     this.doLoad = function(i){
         var resDict = resources.loadingList[i]
@@ -71,9 +113,34 @@ resources.harvest = function(callback) {
             };
             request.open('GET', resDict.from, true);
             request.send();
-            resDict.isScheduled = true
+            resDict.isScheduled = true;
         }
-    }
+    };
+    
+    this.loadAfterInit = function(){
+        var LevelsList = resources.init['LevelsList'];
+        for (var level in LevelsList) {
+            var levelItem = LevelsList[level];
+            scheduleLoad(['levels',level],
+                         DESCRIPTORS + LEVELS + levelItem,
+                         'json',
+                         function(){
+                            var tileimage = resources['levels'][level]['Level']['tileImage'];
+                            if (resources.tileslist.indexOf(tileimage) < 0) {
+                                resources.tileslist.push(tileimage);
+                            }            
+                         });        
+        }
+        var CharasetFileList = this.init['CharasetFileList'];
+        for (var charasetfilep in CharasetFileList) {
+            var charasetfile = CharasetFileList[charasetfilep];
+            scheduleLoad(['charasets'],
+                         DESCRIPTORS + CHARASETS + charasetfile,
+                         'json');
+                         
+        }
+        
+    };
 
     /** jsonGet is deprecated and should vanish soon enough
      *  every part of the code should be updated
@@ -104,18 +171,6 @@ resources.harvest = function(callback) {
 
 
     this.tileset = []
-    this.faceset = document.getElementById("faceset");
-    this.charasetimg = document.getElementById("charasetimg");
-    this.printerset = document.getElementById("printerimg");
-    this.monsterimg = document.getElementById("monsterbattleimg");
-    this.tile = {}
-    this.pictures = {}
-    this.syspictures = {}
-    this.syspictures.title = document.getElementById("titleimg");
-    this.syspictures.keys0 = document.getElementById("keys0");
-    this.syspictures.keys1 = document.getElementById("keys1");
-    this.syspictures.keys2 = document.getElementById("keys2");
-    this.syspictures.controllers = document.getElementById("controllers");
 
     this.feedback = getresource(DESCRIPTORS + "feedback.json")['Feedback'];
     this.tileslist = []
