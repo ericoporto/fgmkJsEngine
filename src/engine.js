@@ -819,10 +819,10 @@ function char(chara, x, y) {
 
 player.setup = function() {
     player['charaset'] = resources.playerCharaset;
-    player['mapx'] = init['Player']['initPosX'];
-    player['mapy'] = init['Player']['initPosY'];
-    player['facing'] = init['Player']['facing'];
-    player['party'] = init['Player']['party']
+    player['mapx'] = resources.init['Player']['initPosX'];
+    player['mapy'] = resources.init['Player']['initPosY'];
+    player['facing'] = resources.init['Player']['facing'];
+    player['party'] = resources.init['Player']['party']
     player['steps'] = 0;
     player['waits'] = 0;
     player['running'] = false;

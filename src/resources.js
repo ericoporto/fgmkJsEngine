@@ -4,6 +4,7 @@
 // this module.
 
 var resources = {
+    init: {},
     tileset: null,
     playerChara: null,
     printerset: null,
@@ -98,7 +99,7 @@ resources.harvest = function(callback) {
         return toreturn
     }
 
-    init = jsonGet(DESCRIPTORS+'init.json');
+    this.init = jsonGet(DESCRIPTORS+'init.json');
 
 
 
@@ -119,7 +120,7 @@ resources.harvest = function(callback) {
     this.feedback = getresource(DESCRIPTORS + "feedback.json")['Feedback'];
     this.tileslist = []
 
-    LevelsList = init['LevelsList']
+    LevelsList = this.init['LevelsList']
     for (var level in LevelsList) {
         var levelItem = LevelsList[level]
         console.log(DESCRIPTORS + LEVELS + levelItem)
@@ -129,18 +130,18 @@ resources.harvest = function(callback) {
             this.tileslist.push(tileimage)
         }
     }
-    CharasetFileList = init['CharasetFileList']
+    CharasetFileList = this.init['CharasetFileList']
     for (var charasetfilep in CharasetFileList) {
         var charasetfile = CharasetFileList[charasetfilep]
         console.log(DESCRIPTORS + CHARASETS + charasetfile)
         resources['charasets'] = getresource(DESCRIPTORS + CHARASETS + charasetfile)['Charaset'];
     }
     resources['charas'] = getresource(DESCRIPTORS + "charas.json")['Charas'];
-    this.playerCharaset = resources['charasets'][init['Player']['charaSet']];
-    this.hms = getresource(DESCRIPTORS + init["HMSFile"])
-    this.items = getresource(DESCRIPTORS + init["itemsFile"])['Items']
+    this.playerCharaset = resources['charasets'][this.init['Player']['charaSet']];
+    this.hms = getresource(DESCRIPTORS + this.init["HMSFile"])
+    this.items = getresource(DESCRIPTORS + this.init["itemsFile"])['Items']
 
-    this.pictureList = init['PictureList']
+    this.pictureList = this.init['PictureList']
 
     pic_count = 0
     index = 0
