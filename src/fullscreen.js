@@ -76,6 +76,5 @@ var fullscreen = {
                 document.getElementById('fullscreen_button').style['color'] = '#666';
             }
         })
-        console.log('button created')
     }
 }
