@@ -348,21 +348,6 @@ screen.init = function() {
     screen.rains = new rain(this.ctx, this.GWIDTH, this.GHEIGHT, screen)
 
     screen.requestAnimationFrame = window.requestAnimationFrame
-
-
-    window.addEventListener("click", function() {
-        if (engine.state == "startScreen") {
-            var el = document.documentElement
-            var rfs = el.requestFullScreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
-            rfs.call(el);
-            window.setTimeout(function() {
-                screen.resize();
-                console.log("should had resized!")
-            }, 1500);
-
-        }
-    });
-
 }
 
 screen.resize = function() {
@@ -373,6 +358,10 @@ screen.resize = function() {
     if (screen.mobile) {
         this.currentHeight = window.innerHeight;
         this.currentWidth = this.currentHeight * this.RATIO;
+        if(window.innerWidth < this.currentWidth){
+            this.currentWidth = window.innerWidth;
+            this.currentHeight = this.currentWidth  / this.RATIO;
+        }
     } else {
         if(window.innerHeight > 0.8*window.innerWidth){
             this.GHEIGHT = 416;

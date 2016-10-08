@@ -51,6 +51,7 @@ bootstrap.onLoadDOM = function(){
       debug.FPS.loop();
       chars = new charalist();
       chars.push(player)
+      fullscreen.setup()
     });
 
 	}catch (err){
