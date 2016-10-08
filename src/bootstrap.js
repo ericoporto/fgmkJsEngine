@@ -25,7 +25,6 @@ for (var i = 0, max = query.length; i < max; i++)
 
 }
 
-var init = []
 
 bootstrap.onLoadDOM = function(){
 	try{
@@ -40,7 +39,7 @@ bootstrap.onLoadDOM = function(){
       engine.setup();
       screen.setEngine(engine);
       HID.setup(screen)
-      engine.currentLevel = resources['levels'][init['World']['initLevel']];
+      engine.currentLevel = resources['levels'][resources.init['World']['initLevel']];
       resources.tileset = resources.tile[engine.currentLevel.Level.tileImage]
       screen.printBox.setup(resources.printerset);
       feedbackEng.setup();

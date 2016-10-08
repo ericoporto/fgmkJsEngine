@@ -4,6 +4,7 @@
 // this module.
 
 var resources = {
+    init: {},
     tileset: null,
     playerChara: null,
     printerset: null,
@@ -18,113 +19,206 @@ var resources = {
 };
 
 resources.harvest = function(callback) {
+    // the idea here is to loadInit, and then
+    // analyze the init file in loadAfterInit
+    // and scheduleLoad of all needed json files.
+    //
+    // than, ask for the loading of all of them with
+    // loadFromSchedule.
+    //
+    // doLoad should be asked in the return and
+    // if checkAllLoaded, should load all needed
+    // images and then, after all images are loaded
+    // throw the finalCallback
+    //
+    //
 
-    var DESCRIPTORS = "descriptors/"
-    var CHARASETS = "charaset/"
-    var LEVELS = "levels/"
+    resources.finalCallback = callback;
+    var DESCRIPTORS = "descriptors/";
+    var CHARASETS = "charaset/";
+    var LEVELS = "levels/";
 
-    /** jsonGet is deprecated and should vanish soon enough
-     *  every part of the code should be updated
-     */
-    var jsonGet = function(urlToGet) {
-        var request = new XMLHttpRequest();
-        request.open('get', urlToGet, false /*async*/ );
-        request.send(); // blocks because async is false
-        var json = request.responseText; // string
-        return JSON.parse(json); // do string parsing and returns an object
-    }
-
-    document.getElementsByTagName('canvas')[0].getContext('2d').fillStyle = '#FFFFFF';
-
-    var filecount = 0;
-    var getresource = function(getthis) {
-        var toreturn = jsonGet(getthis)
-
-        filecount += 1
-        if (!(typeof toreturn.Level === "undefined")) {
-            document.getElementsByTagName('canvas')[0].getContext('2d').fillText(".", filecount, filecount)
-        }
-        return toreturn
-    }
-
-    init = jsonGet(DESCRIPTORS+'init.json');
-
-
-
-    this.tileset = []
     this.faceset = document.getElementById("faceset");
     this.charasetimg = document.getElementById("charasetimg");
     this.printerset = document.getElementById("printerimg");
     this.monsterimg = document.getElementById("monsterbattleimg");
-    this.tile = {}
-    this.pictures = {}
-    this.syspictures = {}
+    this.tile = {};
+    this.pictures = {};
+    this.syspictures = {};
     this.syspictures.title = document.getElementById("titleimg");
     this.syspictures.keys0 = document.getElementById("keys0");
     this.syspictures.keys1 = document.getElementById("keys1");
     this.syspictures.keys2 = document.getElementById("keys2");
     this.syspictures.controllers = document.getElementById("controllers");
 
-    this.feedback = getresource(DESCRIPTORS + "feedback.json")['Feedback'];
-    this.tileslist = []
+    this.tileslist = [];
 
-    LevelsList = init['LevelsList']
-    for (var level in LevelsList) {
-        var levelItem = LevelsList[level]
-        console.log(DESCRIPTORS + LEVELS + levelItem)
-        resources['levels'][level] = getresource(DESCRIPTORS + LEVELS + levelItem);
-        var tileimage = resources['levels'][level]['Level']['tileImage']
-        if (this.tileslist.indexOf(tileimage) < 0) {
-            this.tileslist.push(tileimage)
+    this.loadingList = [];
+
+    var loadInit = function(){
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                resources.init = JSON.parse(this.responseText); //this is fake code!!!!
+                resources.loadAfterInit();
+            }
+        };
+        request.open('GET', DESCRIPTORS + 'init.json', true);
+        request.send();
+    };
+
+    var scheduleLoad = function(toWhere, fromUrl, fileType, tinyCallback){
+        resources.loadingList.push({
+            to: toWhere,
+            from: fromUrl,
+            fileType: fileType,
+            loaded: false,
+            isScheduled: false,
+            tinyCallback: tinyCallback
+        });
+    };
+
+    var loadFromSchedule = function(){
+        for(var i=0; i<resources.loadingList.length ; i++){
+            resources.doLoad(i);
         }
-    }
-    CharasetFileList = init['CharasetFileList']
-    for (var charasetfilep in CharasetFileList) {
-        var charasetfile = CharasetFileList[charasetfilep]
-        console.log(DESCRIPTORS + CHARASETS + charasetfile)
-        resources['charasets'] = getresource(DESCRIPTORS + CHARASETS + charasetfile)['Charaset'];
-    }
-    resources['charas'] = getresource(DESCRIPTORS + "charas.json")['Charas'];
-    this.playerCharaset = resources['charasets'][init['Player']['charaSet']];
-    this.hms = getresource(DESCRIPTORS + init["HMSFile"])
-    this.items = getresource(DESCRIPTORS + init["itemsFile"])['Items']
+    };
 
-    this.pictureList = init['PictureList']
+    var loadAllImages = function(){
 
-    pic_count = 0
-    index = 0
+        pic_i = 0
+        tile_i = 0
 
-    function loadImages(src, callback) {
-        if(index < resources.tileslist.length){
-            resources.tile[src] = new Image();
-            resources.tile[src].onload = function() {
-                index++;
-                if (index < resources.tileslist.length) {
-                    loadImages(resources.tileslist[index], callback);
-                } else if (pic_count < resources.pictureList.length){
-                    loadImages(resources.pictureList[pic_count], callback);
-                } else {
-                    callback()
+        function loadImages(src, callback) {
+            if(tile_i < resources.tileslist.length){
+                resources.tile[src] = new Image();
+                resources.tile[src].onload = function() {
+                    tile_i++;
+                    if (tile_i < resources.tileslist.length) {
+                        loadImages(resources.tileslist[tile_i], callback);
+                    } else if (pic_i < resources.pictureList.length){
+                        loadImages(resources.pictureList[pic_i], callback);
+                    } else {
+                        callback();
+                    }
+                };
+                resources.tile[src].src = src;
+            } else {
+                var name = src;
+                resources.pictures[name] = new Image();
+                resources.pictures[name].onload = function() {
+                    pic_i++;
+                    if(pic_i < resources.pictureList.length){
+                        loadImages(resources.pictureList[pic_i], callback);
+                    } else {
+                        callback();
+                    }
+                };
+                resources.pictures[name].src = 'img/pictures/'+name+'.png';
+            }
+        }
+
+        loadImages(resources.tileslist[tile_i], resources.finalCallback);
+    };
+
+    this.checkAllLoaded = function(){
+        var allLoaded = true;
+        for(var i=0; i<resources.loadingList.length ; i++){
+            var resDict = resources.loadingList[i];
+            allLoaded = allLoaded && resDict.loaded;
+        }
+
+        if(allLoaded){
+            loadAllImages();
+        }
+    };
+
+    this.doLoad = function(i){
+        var resDict = resources.loadingList[i];
+        if(resDict.isScheduled){
+            return;
+        }
+
+        if(resDict.fileType == 'json'){
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    if(resDict.to[0]=='charasets'){
+                        resources['charasets'] = JSON.parse(this.responseText)['Charaset'];
+                    } else if (resDict.to[0]=='feedback') {
+                        resources['feedback'] = JSON.parse(this.responseText)['Feedback'];
+                    } else if (resDict.to[0]=='charas'){
+                        resources['charas'] = JSON.parse(this.responseText)['Charas'];
+                    } else if (resDict.to[0]=='items'){
+                        resources['items'] = JSON.parse(this.responseText)['Items'];
+                    } else {
+                        if(resDict.to.length == 1){
+                            resources[resDict.to[0]] = JSON.parse(this.responseText);
+                        } else if(resDict.to.length == 2){
+                            resources[resDict.to[0]][resDict.to[1]] = JSON.parse(this.responseText);
+                        } else  if(resDict.to.length == 3){
+                            resources[resDict.to[0]][resDict.to[1]][resDict.to[2]] = JSON.parse(this.responseText);
+                        }
+                    }
+                    resDict.loaded = true;
+                    if(typeof resDict.tinyCallback === 'function'){
+                        resDict.tinyCallback();
+                    }
+                    resources.checkAllLoaded();
                 }
             };
-            resources.tile[src].src = src;
-        } else {
-            var name = src
-            resources.pictures[name] = new Image();
-            resources.pictures[name].onload = function() {
-                pic_count++;
-                if(pic_count < resources.pictureList.length){
-                    loadImages(resources.pictureList[pic_count], callback)
-                } else {
-                    callback()
-                }
-            };
-            resources.pictures[name].src = 'img/pictures/'+name+'.png'
+            request.open('GET', resDict.from, true);
+            request.send();
+            resDict.isScheduled = true;
         }
-    }
+    };
 
-    loadImages(resources.tileslist[index], callback)
+    this.loadAfterInit = function(){
+        resources.pictureList = resources.init['PictureList']
+        var LevelsList = resources.init['LevelsList'];
+        for (var level in LevelsList) {
+            var levelItem = LevelsList[level];
+            scheduleLoad(['levels',level],
+                         DESCRIPTORS + LEVELS + levelItem,
+                         'json',
+                         (function(level){
+                              return function(){
+                                  var tileimage = resources['levels'][level]['Level']['tileImage'];
+                                  if (resources.tileslist.indexOf(tileimage) < 0) {
+                                      resources.tileslist.push(tileimage);
+                                  }
+                              };})(level)
+                         );
+        }
+        var CharasetFileList = this.init['CharasetFileList'];
+        for (var charasetfilep in CharasetFileList) {
+            var charasetfile = CharasetFileList[charasetfilep];
+            scheduleLoad(['charasets'],
+                         DESCRIPTORS + CHARASETS + charasetfile,
+                         'json',
+                          function(){
+                              resources.playerCharaset = resources['charasets'][resources.init['Player']['charaSet']];
+                          });
 
+        }
+        scheduleLoad(['charas'],
+                     DESCRIPTORS + "charas.json",
+                     'json');
+        scheduleLoad(['feedback'],
+                     DESCRIPTORS + "feedback.json",
+                     'json');
+        scheduleLoad(['hms'],
+                     DESCRIPTORS + resources.init["HMSFile"],
+                     'json');
+        scheduleLoad(['items'],
+                     DESCRIPTORS + resources.init["itemsFile"],
+                    'json');
+
+        loadFromSchedule();
+
+    };
+
+    loadInit()
 }
 
 // MIT LICENSE
