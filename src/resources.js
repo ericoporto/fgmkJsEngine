@@ -46,7 +46,6 @@ resources.harvest = function(callback) {
     this.pictures = {};
     this.syspictures = {};
     this.syspictures.title = document.getElementById("titleimg");
-    this.syspictures.keys0 = document.getElementById("keys0");
     this.syspictures.keys1 = document.getElementById("keys1");
     this.syspictures.keys2 = document.getElementById("keys2");
     this.syspictures.controllers = document.getElementById("controllers");

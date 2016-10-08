@@ -34,7 +34,6 @@ title.setup = function() {
     actions.showPicture("title;0;0;sys")
     setTimeout(function() {
         if (engine.state == "startScreen") {
-            engine.actions.showPicture(["keys0", "160", "8", "sys"])
             engine.actions.showPicture(["controllers", "8", (screen.GHEIGHT - 32).toString(), "sys"])
         }
     }, 1000);
