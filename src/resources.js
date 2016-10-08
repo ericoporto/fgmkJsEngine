@@ -85,13 +85,9 @@ resources.harvest = function(callback) {
     };
 
     var loadAllImages = function(){
-        console.log('load all images')
 
         pic_i = 0
         tile_i = 0
-
-        console.log(resources.tileslist)
-        console.log(resources.pictureList)
 
         function loadImages(src, callback) {
             if(tile_i < resources.tileslist.length){
@@ -103,7 +99,6 @@ resources.harvest = function(callback) {
                     } else if (pic_i < resources.pictureList.length){
                         loadImages(resources.pictureList[pic_i], callback);
                     } else {
-                        console.log('final call is going in')
                         callback();
                     }
                 };
@@ -116,7 +111,6 @@ resources.harvest = function(callback) {
                     if(pic_i < resources.pictureList.length){
                         loadImages(resources.pictureList[pic_i], callback);
                     } else {
-                        console.log('final call is going in')
                         callback();
                     }
                 };
@@ -180,8 +174,6 @@ resources.harvest = function(callback) {
     };
 
     this.loadAfterInit = function(){
-        console.log("init loaded")
-
         resources.pictureList = resources.init['PictureList']
         var LevelsList = resources.init['LevelsList'];
         for (var level in LevelsList) {
@@ -191,7 +183,6 @@ resources.harvest = function(callback) {
                          'json',
                          (function(level){
                               return function(){
-                                  console.log(level)
                                   var tileimage = resources['levels'][level]['Level']['tileImage'];
                                   if (resources.tileslist.indexOf(tileimage) < 0) {
                                       resources.tileslist.push(tileimage);
