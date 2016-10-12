@@ -242,17 +242,17 @@ var HID = {
 
     handleTouchDown: function(evnt) {
         evnt.preventDefault();
-        HID.processTouches(event.touches, "down");
+        HID.processTouches(evnt.touches, "down");
     },
 
     handleTouchMove: function(evnt) {
         evnt.preventDefault();
-        HID.processTouches(event.touches, "move");
+        HID.processTouches(evnt.touches, "move");
     },
 
     handleTouchUp: function(evnt) {
         evnt.preventDefault();
-        HID.processTouches(event.touches, "up");
+        HID.processTouches(evnt.touches, "up");
     },
 
     processTouches: function(touches, kind) {
