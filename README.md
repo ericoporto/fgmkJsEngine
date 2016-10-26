@@ -17,6 +17,8 @@ in vertical position.
 If you are in a computer, this demo is compatible with a Xbox360 gamepad, just
 plug it in the usb port of your computer and you are good to go.
 
+![Game Screenshot](fgmkJsEngif.gif)
+
 **NOTE:** if you clone, go into `src/` and the `index.html` doesn't run in Chrome, open with Firefox. 
 Chrome requires a server (I use [node http-server](https://www.npmjs.com/package/http-server)) for loading the json files.
 
