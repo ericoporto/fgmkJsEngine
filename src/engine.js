@@ -145,7 +145,7 @@ engine.menuSetup = function() {
             action: 'exit',
             index: 3
         }
-    });
+    },null, false, null, 2);
     menus.setParent(engine.mapMenu);
 }
 
@@ -871,7 +871,7 @@ player.setup = function() {
                 if (charFacing) {
                     if (eventInChar(charFacing, [1, 0], [py - 1, px])) {
                         HID.inputs["accept"].active = false
-                        engine.waitTime(400);
+                        engine.waitTime(300);
                     } else {
                         player.waits = 16
                     }
@@ -880,7 +880,7 @@ player.setup = function() {
                         var fpos = player.facingPosition()
                         if (eventInMap(engine.currentLevel["Level"], [1, 0], fpos)) {
                             HID.inputs["accept"].active = false
-                            engine.waitTime(400);
+                            engine.waitTime(300);
                         }
                     }
 

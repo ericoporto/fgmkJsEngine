@@ -193,11 +193,9 @@ screen.drawChara = function(charaset, animation, frameNumber, position) {
         32, 64);
 }
 
-screen.drawText = function(text, posx, posy) {
-    screen.ctx.fillStyle = '#221100';
-    screen.ctx.fillText(text, screen.GSTARTX + posx, screen.GSTARTY + posy);
-    screen.ctx.fillStyle = '#FFFFFF';
-    screen.ctx.fillText(text, screen.GSTARTX + posx - 2, screen.GSTARTY + posy - 2);
+screen.drawText = function(text, posx, posy, size) {
+    size = (typeof size === "undefined") ? 2 : size;
+    textBuffer.drawText(text, posx, posy, size);
 }
 
 screen.drawTile = function(tileset, tile, position) {
@@ -422,6 +420,10 @@ screen.drawHID = function() {
 }
 
 screen.HIDcsetup = function() {
+    function blendColors(c0, c1, p) {
+      var f=parseInt(c0.slice(1),16),t=parseInt(c1.slice(1),16),R1=f>>16,G1=f>>8&0x00FF,B1=f&0x0000FF,R2=t>>16,G2=t>>8&0x00FF,B2=t&0x0000FF;
+      return "#"+(0x1000000+(Math.round((R2-R1)*p)+R1)*0x10000+(Math.round((G2-G1)*p)+G1)*0x100+(Math.round((B2-B1)*p)+B1)).toString(16).slice(1);
+    }
     screen.HIDButtons = document.createElement('canvas');
     screen.HIDButtons.width = screen.WIDTH;
     screen.HIDButtons.height = screen.HEIGHT - screen.GHEIGHT;
@@ -435,8 +437,8 @@ screen.HIDcsetup = function() {
 
         hx.fillStyle = HIDItem.color;
         hx.fillRect(HIDItem.mapX, HIDItem.mapY, 96, 96);
-        hx.fillStyle = '#FFFFFF';
-        hx.fillText(HIDItem.letter, HIDItem.mapX + 32, HIDItem.mapY + 64);
+        png_font.ctx = hx;
+        png_font.drawText(HIDItem.letter, [HIDItem.mapX + 32, HIDItem.mapY + 8],blendColors('#FFFFFF',HIDItem.color,0.5),4,'#221100');
 
     }
 
@@ -470,84 +472,34 @@ screen.printBox = {
     },
 
     printSet: {
-        background: {
-            x: 0,
-            y: 0,
-            sizex: 64,
-            sizey: 64
-        },
-        topLeftBox: {
-            x: 64,
-            y: 0,
-            sizex: 16,
-            sizey: 16
-        },
-        topRightBox: {
-            x: 112,
-            y: 0,
-            sizex: 16,
-            sizey: 16
-        },
-        bottomLeftBox: {
-            x: 64,
-            y: 48,
-            sizex: 16,
-            sizey: 16
-        },
-        bottomRightBox: {
-            x: 112,
-            y: 48,
-            sizex: 16,
-            sizey: 16
-        },
-        LeftBox: {
-            x: 64,
-            y: 16,
-            sizex: 16,
-            sizey: 32
-        },
-        RightBox: {
-            x: 112,
-            y: 16,
-            sizex: 16,
-            sizey: 32
-        },
-        TopBox: {
-            x: 80,
-            y: 0,
-            sizex: 32,
-            sizey: 16
-        },
-        BottomBox: {
-            x: 80,
-            y: 48,
-            sizex: 32,
-            sizey: 16
-        },
-        acceptUp: {
-            x: 0,
-            y: 64,
-            sizex: 16,
-            sizey: 16
-        },
-        acceptDown: {
-            x: 16,
-            y: 64,
-            sizex: 16,
-            sizey: 16
-        },
-        upArrow: {
-            x: 64,
-            y: 64,
-            sizex: 32,
-            sizey: 16
-        },
-        downArrow: {
-            x: 64,
-            y: 80,
-            sizex: 32,
-            sizey: 16
-        }
+      background: { x: 0, y: 0, sizex: 64, sizey: 64 },
+      topLeftBox: { x: 64, y: 0, sizex: 16, sizey: 16 },
+      topRightBox: { x: 112, y: 0, sizex: 16, sizey: 16 },
+      bottomLeftBox: { x: 64, y: 48, sizex: 16, sizey: 16 },
+      bottomRightBox: { x: 112, y: 48, sizex: 16, sizey: 16 },
+      LeftBox: { x: 64, y: 16, sizex: 16, sizey: 32 },
+      RightBox: { x: 112, y: 16, sizex: 16, sizey: 32 },
+      TopBox: { x: 80, y: 0, sizex: 32, sizey: 16 },
+      BottomBox: { x: 80, y: 48, sizex: 32, sizey: 16 },
+      acceptUp: { x: 0, y: 64, sizex: 16, sizey: 16 },
+      acceptDown: { x: 16, y: 64, sizex: 16, sizey: 16 },
+      upArrow: { x: 64, y: 64, sizex: 32, sizey: 16 },
+      downArrow: { x: 64, y: 80, sizex: 32, sizey: 16 }
+    },
+    printSet_05: {
+        background: { x: 0, y: 0, sizex: 64, sizey: 64 },
+        topLeftBox: { x: 160, y: 64, sizex: 8, sizey: 8 },
+        topRightBox: { x: 184, y: 64, sizex: 8, sizey: 8 },
+        bottomLeftBox: { x: 160, y: 88, sizex: 8, sizey: 8 },
+        bottomRightBox: { x: 184, y: 88, sizex: 8, sizey: 8 },
+        LeftBox: { x: 160, y: 72, sizex: 8, sizey: 16 },
+        RightBox: { x: 184, y: 72, sizex: 8, sizey: 16 },
+        TopBox: { x: 168, y: 64, sizex: 16, sizey: 8 },
+        BottomBox: { x: 168, y: 88, sizex: 16, sizey: 8 },
+        acceptUp: { x: 0, y: 64, sizex: 16, sizey: 16 },
+        acceptDown: { x: 16, y: 64, sizex: 16, sizey: 16 },
+        upArrow: { x: 64, y: 64, sizex: 32, sizey: 16 },
+        downArrow: { x: 64, y: 80, sizex: 32, sizey: 16}
     },
 
     getIcon: function(i) {
@@ -570,10 +522,12 @@ screen.printBox = {
             screen.GSTARTX + screen.GWIDTH - 32, screen.GSTARTY + screen.GHEIGHT - 32, accept['sizex'], accept['sizey'])
     },
 
-    drawElement: function(element, x, y, sizex, sizey, imgPrintSet, select) {
+    drawElement: function(element, x, y, sizex, sizey, imgPrintSet, select, size, ctx) {
+        size = (typeof size === "undefined") ? 2 : size;
         select = (typeof select === "undefined") ? 0 : select;
-        screen.ctx.drawImage(imgPrintSet,
-            element['x'] + select * 64, element['y'],
+        ctx = (typeof ctx === "undefined") ? screen.ctx : ctx;
+        ctx.drawImage(imgPrintSet,
+            element['x'] + select * 32 * size, element['y'],
             element['sizex'], element['sizey'],
             screen.GSTARTX + x, screen.GSTARTY + y, sizex, sizey);
     },
@@ -619,49 +573,54 @@ screen.printBox = {
         screen.printBox.drawElement(arrow, x, y, arrow.sizex, arrow.sizey, imgPrintSet)
     },
 
-    drawBox: function(x, y, sizex, sizey, select) {
-
+    drawBox: function(x, y, sizex, sizey, select,size, ctx) {
         select = (typeof select === "undefined") ? 0 : select;
-
+        size = (typeof size === "undefined") ? 2 : size;
+        ctx = (typeof ctx === "undefined") ? screen.ctx : ctx;
 
         imgPrintSet = screen.printBox.imgPrintSet;
 
-        s = screen['printBox']['printSet']
+
+        if(size==2){
+          var s = screen['printBox']['printSet']
+        } else {
+          var s = screen['printBox']['printSet_05']
+        }
 
         if (select == 0) {
-            screen.printBox.drawElement(s['background'], x, y, sizex, sizey, imgPrintSet);
+            screen.printBox.drawElement(s['background'], x, y, sizex, sizey, imgPrintSet,0,2,ctx);
         }
-        screen.printBox.drawElement(s['topLeftBox'], x, y, s['topLeftBox']['sizex'], s['topLeftBox']['sizey'], imgPrintSet, select);
+        screen.printBox.drawElement(s['topLeftBox'], x, y, s['topLeftBox']['sizex'], s['topLeftBox']['sizey'], imgPrintSet, select, size,ctx);
         screen.printBox.drawElement(s['TopBox'],
             x + s['topLeftBox']['sizex'], y,
             sizex - s['topLeftBox']['sizex'] - s['topRightBox']['sizex'], s['TopBox']['sizey'],
-            imgPrintSet, select);
+            imgPrintSet, select, size,ctx);
         screen.printBox.drawElement(s['topRightBox'],
             x + sizex - s['topRightBox']['sizex'], y,
             s['topRightBox']['sizex'], s['topRightBox']['sizey'],
-            imgPrintSet, select);
+            imgPrintSet, select, size,ctx);
 
         screen.printBox.drawElement(s['LeftBox'],
             x, y + s['topLeftBox']['sizey'],
             s['LeftBox']['sizex'], sizey - s['topLeftBox']['sizey'] - s['bottomLeftBox']['sizey'],
-            imgPrintSet, select);
+            imgPrintSet, select, size,ctx);
         screen.printBox.drawElement(s['RightBox'],
             x + sizex - s['topRightBox']['sizex'], y + s['topRightBox']['sizey'],
             s['RightBox']['sizex'], sizey - s['topRightBox']['sizey'] - s['bottomRightBox']['sizey'],
-            imgPrintSet, select);
+            imgPrintSet, select, size,ctx);
 
         screen.printBox.drawElement(s['bottomLeftBox'],
             x, y + sizey - s['bottomLeftBox']['sizey'],
             s['bottomLeftBox']['sizex'], s['bottomLeftBox']['sizey'],
-            imgPrintSet, select);
+            imgPrintSet, select, size,ctx);
         screen.printBox.drawElement(s['BottomBox'],
             x + s['bottomLeftBox']['sizex'], y + sizey - s['bottomRightBox']['sizey'],
             sizex - s['bottomLeftBox']['sizex'] - s['bottomRightBox']['sizex'], s['BottomBox']['sizey'],
-            imgPrintSet, select);
+            imgPrintSet, select, size,ctx);
         screen.printBox.drawElement(s['bottomRightBox'],
             x + sizex - s['bottomRightBox']['sizex'], y + sizey - s['bottomRightBox']['sizey'],
             s['bottomRightBox']['sizex'], s['bottomRightBox']['sizey'],
-            imgPrintSet, select);
+            imgPrintSet, select, size,ctx);
 
     }
 
@@ -895,7 +854,7 @@ screen.drawMonsters = function() {
 screen.drawMenu = function(menu) {
     var maxOnScreen = menu.maxOnScreen
     var maxItems = menu.itemsLength
-    var maxItemStringLength = menu.maxItemStringSize()
+  //  var maxItemStringLength = menu.maxItemStringSize()
     var selectedIndex = menu.selectedItem.index
 
     if (typeof menu.firstItem === "undefined"){
@@ -921,23 +880,27 @@ screen.drawMenu = function(menu) {
     }
 
     screen.printBox.drawBox(menu['drawx'], menu['drawy'],
-                            menu['width'], menu['height']);
+                            menu['width'], menu['height'],
+                            0,
+                            menu.menuScale);
 
     var k=0;
     for (var i = menu.firstItem; i < menu.finalItem; i += 1) {
         if (menu.items[Object.keys(menu.items)[i]].selected) {
             if (menu.wait) {
-                screen.printBox.drawBox(menu['drawx'] + 8,
-                    menu['drawy'] + 8 + 32 * k,
-                    menu['width'] - 16,
-                    32,
-                    1);
+                screen.printBox.drawBox(menu['drawx'] + 4*menu.menuScale,
+                    menu['drawy'] + 8 + menu.fontHeight * k,
+                    menu['width'] - 8*menu.menuScale,
+                    16*menu.menuScale,
+                    1,
+                    menu.menuScale);
             } else {
-                screen.printBox.drawBox(menu['drawx'] + 8,
-                    menu['drawy'] + 8 + 32 * k,
-                    menu['width'] - 16,
-                    32,
-                    1 + Math.floor(screen.frameCount / 4) % 2);
+                screen.printBox.drawBox(menu['drawx'] + 4*menu.menuScale,
+                    menu['drawy'] + 8 + menu.fontHeight * k,
+                    menu['width'] - 8*menu.menuScale,
+                    16*menu.menuScale,
+                    1 + Math.floor(screen.frameCount / 4) % 2,
+                    menu.menuScale);
             }
 
             if (isInt(menu.items[Object.keys(menu.items)[i]].icon)) {
@@ -947,12 +910,13 @@ screen.drawMenu = function(menu) {
                 screen.printBox.drawBox(menu['drawx'] + menu['width'],
                     menu['drawy'],
                     icon.sizex + 16,
-                    icon.sizey + 16);
-                screen.printBox.drawElement(icon, menu['drawx'] + menu['width'] + 8, menu['drawy'] + 8, icon.sizex, icon.sizey, imgPrintSet)
+                    icon.sizey + 16,
+                    0);
+                screen.printBox.drawElement(icon, menu['drawx'] + menu['width'] + 8, menu['drawy'] + 8, icon.sizex, icon.sizey, imgPrintSet, 0)
             }
 
         }
-        screen.drawText(Object.keys(menu.items)[i], +menu['drawx'] + 16, menu['drawy'] + 32+k*32);
+        screen.drawText(Object.keys(menu.items)[i], menu['drawx'] + 16, menu['drawy'] + 32+k*menu.fontHeight, menu.menuScale);
         k+=1;
     }
 
@@ -960,41 +924,26 @@ screen.drawMenu = function(menu) {
 
 screen.drawStatus = function(heroch) {
     var hero = heroch
-    var statw = screen.GWIDTH - 32 - 96
+    var statx = engine.mapMenu.drawx + engine.mapMenu.width;
+    var staty = engine.mapMenu.drawy ;
+    var statw = screen.GWIDTH - 8 -(engine.mapMenu.drawx + engine.mapMenu.width);
     var stath = screen.GHEIGHT - 16
-    var statx = 16 + 96 + 8
-    var staty = 8
-
-    screen.printBox.drawBox(statx,
-        staty,
-        statw,
-        stath);
 
     screen.printBox.drawBox(statx,
         staty,
         statw,
         stath,
-        0);
-
-    var keys = ["name", "st", "dx", "iq", "level", "xp"]
-        // heroch.name,
-        // heroch.st,	heroch.dx, heroch.iq, heroch.level, heroch.xp,
-        // heroch.xpnextlevel                               heroch.hp, heroch.hpmax
-
-    for (var i = 0; i < keys.length; i++) {
-        var atr = keys[i]
-        var atrval = heroch[atr]
-        if (atr != "name") {
-            screen.drawText(atr + ": " + atrval, statx + 16, staty + 32 * (1 + i));
-        } else {
-            screen.drawText(atrval, statx + 16, staty + 32 * (1 + i));
-        }
-    }
-    screen.drawText("xp to next level: " + heroch.xpnextlevel, statx + 16, staty + 32 * (1 + i));
-    screen.drawText("hp: " + heroch.hp + "/" + heroch.hpmax, statx + 144, staty + 32 * i);
-    //screen.ctx.fillText("      "+heroch.hpmax, screen.GSTARTX+32+screen.GWIDTH/2,screen.GSTARTY+32*5+16);
-    //screen.ctx.fillText(heroch.name, statx+statw/2-48,staty+32);
-    screen.drawFace(resources.faceset, heroch.face, [statx + 144, staty + 16])
+        0,
+        2);
+    screen.drawFace(resources.faceset, heroch.face, [statx + 112, staty + 16])
+    var stats =  heroch.name + "\n" +
+                "st: " + heroch.st + "\n" +
+                "dx: " + heroch.dx + "\n" +
+                "iq: " + heroch.iq + "\n" +
+                "hp: " + heroch.hp + "/" + heroch.hpmax + "\n" +
+                "level: " + heroch.level + "\n" +
+                "xp: "+heroch.xp+ "/" +  heroch.xpnextlevel+"\n" ;
+    screen.drawText(stats,statx+8,staty+8+24,2);
     screen.printBox.drawButtonAccept()
 }
 
@@ -1030,8 +979,6 @@ screen.drawAlerts = function() {
 }
 
 screen.loop = function() {
-
-    try {
 
         // draw
         screen.frameCount += 1;
@@ -1093,9 +1040,6 @@ screen.loop = function() {
         //screen.timer = setTimeout("screen.loop()", 1000/60.0); dropped..
         screen.requestAnimationFrame.call(window, screen.loop)
 
-    } catch (err) {
-        alert("screen loop error: " + err);
-    }
 }
 
 debug = {};
@@ -1114,7 +1058,7 @@ debug.FPS = {
     draw: function() {
         this.counter += 1;
         if (this.show) {
-            screen.ctx.fillText(this.FPS.toString() + " fps", screen.GSTARTX + 2, screen.GSTARTY + 16);
+            screen.drawText(this.FPS.toString() + " fps", screen.GSTARTX + 2, screen.GSTARTY + 32);
         }
     },
     loop: function() {
