@@ -47,10 +47,17 @@ var menus = {
             menuToDraw['height'] = finalItem * menuToDraw.fontHeight + 32;
             menuToDraw['width'] = menuToDraw.maxItemStringSize() + 32;
         } else {
+          if (menuToDraw.stacked) {
+            menuToDraw['drawx'] = menuToDraw.parent.drawx + 32;
+            menuToDraw['drawy'] = menuToDraw.parent.drawy + 32;
+            menuToDraw['height'] = finalItem * menuToDraw.fontHeight + 32;
+            menuToDraw['width'] = menuToDraw.maxItemStringSize() + 32;
+          } else {
             menuToDraw['drawx'] = menuToDraw.parent.drawx + menuToDraw.parent.width;
             menuToDraw['drawy'] = menuToDraw.parent.drawy;
             menuToDraw['height'] = finalItem * menuToDraw.fontHeight + 32;
             menuToDraw['width'] = menuToDraw.maxItemStringSize() + 32;
+          }
         }
     },
     setAllDrawables: function() {
@@ -62,7 +69,7 @@ var menus = {
     }
 };
 
-function menu(_items, _index, _noexit, _icon, _scale) {
+function menu(_items, _index, _noexit, _icon, _scale, _stacked) {
 
     var tempArray = [];
 
@@ -70,14 +77,15 @@ function menu(_items, _index, _noexit, _icon, _scale) {
     _noexit = (typeof _noexit === "undefined") ? false : _noexit;
     _icon = (typeof _icon === "undefined") ? null : _icon;
     _scale = (typeof _scale === "undefined") ? 2 : _scale;
+    _stacked = (typeof _stacked === "undefined") ? false : _stacked;
     this.items = _items;
+    this.index = _index;
     this.noexit = _noexit;
-
+    this.icon = _icon;
     this.menuScale = _scale;
+    this.stacked = _stacked;
     this.maxOnScreen = 5;
     this.parent = null;
-    this.index = _index;
-    this.icon = _icon;
     this.enabled = false;
     this.selectedItem = null;
     this.wait = false;
@@ -111,6 +119,7 @@ function menu(_items, _index, _noexit, _icon, _scale) {
             }
 
             this.items[tempArray[i][0]].itemy = 32 + i * 32
+            this.items[tempArray[i][0]].selected = false;
 
         }
 

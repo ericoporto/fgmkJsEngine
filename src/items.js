@@ -249,7 +249,7 @@ items.setup = function(itemsjson) {
             itemactions["back"]["action"] = 'exit'
             itemactions["back"]["index"] = k++
 
-                items2add[item] = new menu(itemactions, i,false,this.inventory[iitem].icon)
+            items2add[item] = new menu(itemactions, i,false,this.inventory[iitem].icon,2,true)
 
 
             i++

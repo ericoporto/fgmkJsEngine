@@ -140,7 +140,7 @@ engine.menuSetup = function() {
                 action: 'exit',
                 index: 3
             }
-        }, 2),
+        }, 2, false, null, 2, true),
         exit: {
             action: 'exit',
             index: 3
