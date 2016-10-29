@@ -38,7 +38,7 @@ printer.showText = function(_text) {
     for (var nboxes = 0; nboxes < total_boxes; nboxes++) {
         engine.atomStack.unshift([function() {
             printer.nextBox();
-            engine.waitTime(400);
+            engine.waitTime(300);
         }, '']);
         engine.atomStack.unshift(["block", null]);
         engine.atomStack.unshift([engine.waitForKey, true]);

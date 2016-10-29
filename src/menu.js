@@ -62,17 +62,18 @@ var menus = {
     }
 };
 
-function menu(_items, _index, _noexit, _icon) {
+function menu(_items, _index, _noexit, _icon, _scale) {
 
     var tempArray = [];
 
     _index = (typeof _index === "undefined") ? null : _index;
-    _icon = (typeof _icon === "undefined") ? null : _icon;
     _noexit = (typeof _noexit === "undefined") ? false : _noexit;
+    _icon = (typeof _icon === "undefined") ? null : _icon;
+    _scale = (typeof _scale === "undefined") ? 2 : _scale;
     this.items = _items;
     this.noexit = _noexit;
 
-    this.menuScale = 1;
+    this.menuScale = _scale;
     this.maxOnScreen = 5;
     this.parent = null;
     this.index = _index;
@@ -150,7 +151,7 @@ function menu(_items, _index, _noexit, _icon) {
 
         if (this.parent != null) {
             this.parent.wait = false;
-            this.parent.menuKeyWasPressed = 32
+            this.parent.menuKeyWasPressed = 16
         } else {
             engine.atomStack.push(engine.atomStack.push([function() {
                 engine.atomStack = menus.holdAtomStack
@@ -179,7 +180,7 @@ function menu(_items, _index, _noexit, _icon) {
                     this.selectedItem = this.items[this.selectedItem.previous]
                     this.selectedItem.selected = true
                     HID.inputs["up"].active = false
-                    this.menuKeyWasPressed = 32
+                    this.menuKeyWasPressed = 16
                 } else if (HID.inputs["left"].active) {
 
 
@@ -191,7 +192,7 @@ function menu(_items, _index, _noexit, _icon) {
                     this.selectedItem = this.items[this.selectedItem.next]
                     this.selectedItem.selected = true
                     HID.inputs["down"].active = false
-                    this.menuKeyWasPressed = 32
+                    this.menuKeyWasPressed = 16
                 } else if (HID.inputs["accept"].active) {
 
                     HID.inputs["accept"].active = false
@@ -217,17 +218,17 @@ function menu(_items, _index, _noexit, _icon) {
                         if (typeof this.selectedItem.isMenu === "undefined") {
                             this.selectedItem.action();
                         } else {
-                            this.selectedItem.menuKeyWasPressed = 32
+                            this.selectedItem.menuKeyWasPressed = 16
                             this.selectedItem.action();
                         }
                     }
-                    this.menuKeyWasPressed = 32
+                    this.menuKeyWasPressed = 16
                 } else if (HID.inputs["cancel"].active) {
                     if (this._counter >= 20 && this.noexit == false) {
                         HID.inputs["cancel"].active = false
                         this.exit()
                         engine.waitTime(200)
-                        this.menuKeyWasPressed = 32
+                        this.menuKeyWasPressed = 16
                     }
                 }
             }
