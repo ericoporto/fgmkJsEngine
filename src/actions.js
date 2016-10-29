@@ -121,16 +121,6 @@ actions.showText = function(param, position) {
     var params = param.split(';')
     var text = actions.helpers.preText(params[0]);
     engine.atomStack.push([printer.showText, text]);
-    var linesTotal = printer.textLines(text);
-    var lineNumber;
-    for (lineNumber = 0; lineNumber < linesTotal; lineNumber += 2) {
-        engine.atomStack.push([engine.waitForKey, true]);
-        engine.atomStack.push(["block", null]);
-        engine.atomStack.push([function() {
-            printer.nextLine();
-            engine.waitTime(400);
-        }, '']);
-    }
 };
 
 actions.teleport = function(param, position) {

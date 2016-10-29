@@ -194,10 +194,13 @@ screen.drawChara = function(charaset, animation, frameNumber, position) {
 }
 
 screen.drawText = function(text, posx, posy) {
-    screen.ctx.fillStyle = '#221100';
-    screen.ctx.fillText(text, screen.GSTARTX + posx, screen.GSTARTY + posy);
-    screen.ctx.fillStyle = '#FFFFFF';
-    screen.ctx.fillText(text, screen.GSTARTX + posx - 2, screen.GSTARTY + posy - 2);
+    png_font.ctx = screen.ctx
+    png_font.drawText(text,[ screen.GSTARTX + posx,screen.GSTARTY +posy-28],'#FFFFFF',size,'#221100');
+}
+
+screen.drawTextSize = function(text, posx, posy, size) {
+    png_font.ctx = screen.ctx
+    png_font.drawText(text,[ screen.GSTARTX + posx,screen.GSTARTY +posy-28],'#FFFFFF',size,'#221100');
 }
 
 screen.drawTile = function(tileset, tile, position) {
@@ -422,6 +425,10 @@ screen.drawHID = function() {
 }
 
 screen.HIDcsetup = function() {
+    function blendColors(c0, c1, p) {
+      var f=parseInt(c0.slice(1),16),t=parseInt(c1.slice(1),16),R1=f>>16,G1=f>>8&0x00FF,B1=f&0x0000FF,R2=t>>16,G2=t>>8&0x00FF,B2=t&0x0000FF;
+      return "#"+(0x1000000+(Math.round((R2-R1)*p)+R1)*0x10000+(Math.round((G2-G1)*p)+G1)*0x100+(Math.round((B2-B1)*p)+B1)).toString(16).slice(1);
+    }
     screen.HIDButtons = document.createElement('canvas');
     screen.HIDButtons.width = screen.WIDTH;
     screen.HIDButtons.height = screen.HEIGHT - screen.GHEIGHT;
@@ -435,8 +442,8 @@ screen.HIDcsetup = function() {
 
         hx.fillStyle = HIDItem.color;
         hx.fillRect(HIDItem.mapX, HIDItem.mapY, 96, 96);
-        hx.fillStyle = '#FFFFFF';
-        hx.fillText(HIDItem.letter, HIDItem.mapX + 32, HIDItem.mapY + 64);
+        png_font.ctx = hx;
+        png_font.drawText(HIDItem.letter, [HIDItem.mapX + 32, HIDItem.mapY + 8],blendColors('#FFFFFF',HIDItem.color,0.5),4,'#221100');
 
     }
 
@@ -895,7 +902,7 @@ screen.drawMonsters = function() {
 screen.drawMenu = function(menu) {
     var maxOnScreen = menu.maxOnScreen
     var maxItems = menu.itemsLength
-    var maxItemStringLength = menu.maxItemStringSize()
+  //  var maxItemStringLength = menu.maxItemStringSize()
     var selectedIndex = menu.selectedItem.index
 
     if (typeof menu.firstItem === "undefined"){
@@ -921,23 +928,27 @@ screen.drawMenu = function(menu) {
     }
 
     screen.printBox.drawBox(menu['drawx'], menu['drawy'],
-                            menu['width'], menu['height']);
+                            menu['width'], menu['height'],
+                            0,
+                            menu.menuScale);
 
     var k=0;
     for (var i = menu.firstItem; i < menu.finalItem; i += 1) {
         if (menu.items[Object.keys(menu.items)[i]].selected) {
             if (menu.wait) {
                 screen.printBox.drawBox(menu['drawx'] + 8,
-                    menu['drawy'] + 8 + 32 * k,
+                    menu['drawy'] + 8 + menu.fontHeight * k,
                     menu['width'] - 16,
                     32,
-                    1);
+                    1,
+                    menu.menuScale);
             } else {
                 screen.printBox.drawBox(menu['drawx'] + 8,
-                    menu['drawy'] + 8 + 32 * k,
+                    menu['drawy'] + 8 + menu.fontHeight * k,
                     menu['width'] - 16,
                     32,
-                    1 + Math.floor(screen.frameCount / 4) % 2);
+                    1 + Math.floor(screen.frameCount / 4) % 2,
+                    menu.menuScale);
             }
 
             if (isInt(menu.items[Object.keys(menu.items)[i]].icon)) {
@@ -947,12 +958,13 @@ screen.drawMenu = function(menu) {
                 screen.printBox.drawBox(menu['drawx'] + menu['width'],
                     menu['drawy'],
                     icon.sizex + 16,
-                    icon.sizey + 16);
-                screen.printBox.drawElement(icon, menu['drawx'] + menu['width'] + 8, menu['drawy'] + 8, icon.sizex, icon.sizey, imgPrintSet)
+                    icon.sizey + 16,
+                    menu.menuScale);
+                screen.printBox.drawElement(icon, menu['drawx'] + menu['width'] + 8, menu['drawy'] + 8, icon.sizex, icon.sizey, imgPrintSet, menu.menuScale)
             }
 
         }
-        screen.drawText(Object.keys(menu.items)[i], +menu['drawx'] + 16, menu['drawy'] + 32+k*32);
+        screen.drawTextSize(Object.keys(menu.items)[i], +menu['drawx'] + 16, menu['drawy'] + 32+k*menu.fontHeight, menu.menuScale);
         k+=1;
     }
 
@@ -1114,7 +1126,7 @@ debug.FPS = {
     draw: function() {
         this.counter += 1;
         if (this.show) {
-            screen.ctx.fillText(this.FPS.toString() + " fps", screen.GSTARTX + 2, screen.GSTARTY + 16);
+            screen.drawText(this.FPS.toString() + " fps", screen.GSTARTX + 2, screen.GSTARTY + 32);
         }
     },
     loop: function() {

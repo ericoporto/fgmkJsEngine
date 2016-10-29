@@ -44,13 +44,13 @@ var menus = {
         if (menuToDraw.parent == null) {
             menuToDraw['drawx'] = 16;
             menuToDraw['drawy'] = 16;
-            menuToDraw['height'] = finalItem * 32 + 32;
-            menuToDraw['width'] = menuToDraw.maxItemStringSize() * 13 + 32;
+            menuToDraw['height'] = finalItem * menuToDraw.fontHeight + 32;
+            menuToDraw['width'] = menuToDraw.maxItemStringSize() + 32;
         } else {
             menuToDraw['drawx'] = menuToDraw.parent.drawx + menuToDraw.parent.width;
             menuToDraw['drawy'] = menuToDraw.parent.drawy;
-            menuToDraw['height'] = finalItem * 32 + 32;
-            menuToDraw['width'] = menuToDraw.maxItemStringSize() * 13 + 32;
+            menuToDraw['height'] = finalItem * menuToDraw.fontHeight + 32;
+            menuToDraw['width'] = menuToDraw.maxItemStringSize() + 32;
         }
     },
     setAllDrawables: function() {
@@ -72,13 +72,14 @@ function menu(_items, _index, _noexit, _icon) {
     this.items = _items;
     this.noexit = _noexit;
 
-    this.maxOnScreen = 5
-    this.parent = null
-    this.index = _index
-    this.icon = _icon
+    this.menuScale = 1;
+    this.maxOnScreen = 5;
+    this.parent = null;
+    this.index = _index;
+    this.icon = _icon;
     this.enabled = false;
     this.selectedItem = null;
-    this.wait = false
+    this.wait = false;
     this.isMenu = true;
 
     this.updateOrder = function() {
@@ -118,19 +119,21 @@ function menu(_items, _index, _noexit, _icon) {
 
         this.selectedItem.selected = true
 
-    }
+    };
 
-    this.updateOrder()
+    this.updateOrder();
+
+    this.fontHeight = png_font.getHeight(this.menuScale);
 
     this.maxItemStringSize = function() {
         var returnValue = 0
 
         for (var i = 0; i < Object.keys(this.items).length; i++) {
             var _itemKey = Object.keys(this.items)[i];
+            var _itemKeyLength = png_font.getTextWidth(_itemKey,this.menuScale)
 
-
-            if (returnValue < _itemKey.length) {
-                returnValue = _itemKey.length;
+            if (returnValue < _itemKeyLength) {
+                returnValue = _itemKeyLength;
             }
         }
 
