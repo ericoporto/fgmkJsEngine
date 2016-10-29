@@ -1,3 +1,12 @@
+// textbuffer.js
+// small trick to make text drawing faster. Up to the last 29 texts
+// drawed by using the textBuffer.drawText function will be stored.
+// then if they are needed again, we just copy then to the screen
+// canvas.
+// I needed to do this because the current version of the png font
+// uses too much resources by coloring text and other things, so
+// the garbage collection was slow to catch all the homeless canvas...
+
 textBuffer = {
   buffer: [],
   drawText: function(text, posx, posy, size) {
@@ -12,10 +21,12 @@ textBuffer = {
       }
     }
 
+    //let's make the maximum number of texts 29.
     if(this.buffer.length>29){
       this.buffer.shift()
     }
 
+    //since we couldn't find the text, we need to store it.
     var newcanvas = document.createElement('canvas')
     newcanvas.width = screen.GWIDTH-posx
     newcanvas.height = screen.GHEIGHT-posy
