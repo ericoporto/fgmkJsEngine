@@ -43,7 +43,7 @@ parse_dom () {
         else
             echo "$FULLCONTENT"
         fi
-        
+
 
     elif [[ $TAG_NAME != "" ]] ; then
         echo "$FULLCONTENT"
@@ -64,5 +64,4 @@ mv "$minindexhtml" "$indexhtml"
 cp -r "$gamefolder/img" .
 cp -r "$gamefolder/descriptors" .
 cp -r "$gamefolder/audio" .
-cp -r "$gamefolder/font" .
 cp "$gamefolder/icon.png" .
