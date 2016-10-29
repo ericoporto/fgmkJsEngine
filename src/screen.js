@@ -936,27 +936,14 @@ screen.drawStatus = function(heroch) {
         0,
         2);
     screen.drawFace(resources.faceset, heroch.face, [statx + 112, staty + 16])
-
-
-    var keys = ["name", "st", "dx", "iq"]
-
-    var stats = ""
-    for (var i = 0; i < keys.length; i++) {
-        var atr = keys[i]
-        var atrval = heroch[atr]
-        if (atr != "name") {
-            stats = stats.concat(atr + ": " + atrval +"\n");
-        } else {
-            stats = stats.concat(atrval + "\n");
-        }
-    }
-
-    stats = stats.concat("hp: " + heroch.hp + "/" + heroch.hpmax + "\n")
-    stats = stats.concat("level: " + heroch.level + "\n")
-    stats = stats.concat("xp:"+heroch.xp+ "/" +  heroch.xpnextlevel+"\n");
-    screen.drawText(stats,statx+8,staty+8+24,2)
-      //screen.ctx.fillText("      "+heroch.hpmax, screen.GSTARTX+32+screen.GWIDTH/2,screen.GSTARTY+32*5+16);
-    //screen.ctx.fillText(heroch.name, statx+statw/2-48,staty+32);
+    var stats =  heroch.name + "\n" +
+                "st: " + heroch.st + "\n" +
+                "dx: " + heroch.dx + "\n" +
+                "iq: " + heroch.iq + "\n" +
+                "hp: " + heroch.hp + "/" + heroch.hpmax + "\n" +
+                "level: " + heroch.level + "\n" +
+                "xp: "+heroch.xp+ "/" +  heroch.xpnextlevel+"\n" ;
+    screen.drawText(stats,statx+8,staty+8+24,2);
     screen.printBox.drawButtonAccept()
 }
 
@@ -992,8 +979,6 @@ screen.drawAlerts = function() {
 }
 
 screen.loop = function() {
-
-    try {
 
         // draw
         screen.frameCount += 1;
@@ -1055,9 +1040,6 @@ screen.loop = function() {
         //screen.timer = setTimeout("screen.loop()", 1000/60.0); dropped..
         screen.requestAnimationFrame.call(window, screen.loop)
 
-    } catch (err) {
-        alert("screen loop error: " + err);
-    }
 }
 
 debug = {};

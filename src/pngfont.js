@@ -68,6 +68,35 @@
     return charWidth
   },
 
+  predictSize: function(text, pos, size, wrap){
+      if(typeof size === 'undefined' || size === null){
+        size = 1
+      }
+      if(typeof wrap === 'undefined' || size === null){
+        wrap = [this.ctx.canvas.width-pos[0],this.ctx.canvas.height-pos[1],0]
+      }
+
+      var wrapped2DArray;
+      var missing;
+      [wrapped2DArray , missing] = this.wrapText(text,wrap,size);
+
+      var width =0;
+      var height =0;
+      for(var i=0; i<wrapped2DArray.length; i++){
+        height+=this.getHeight(size)
+        var charCodeArray = wrapped2DArray[i];
+        var textWidth=0;
+        for(var j=0;j<charCodeArray.length; j++){
+          textWidth+=this.getCharwidthFromCharcode(charCodeArray[j]);
+        }
+        if(textWidth>width){
+          width=textWidth;
+        }
+      }
+
+      return width*1024+height
+  },
+
   getTextWidth: function(text, size){
     if(typeof size === 'undefined'){
       size=1;
@@ -145,8 +174,7 @@
     if(typeof size === 'undefined' || size === null || size == 1 ){
       ctx.drawImage(buffer,pos[0],pos[1]);
     } else {
-      var bufferSize = this.createBufferCanvas(width*size,
-                                           height*size);
+      var bufferSize = this.createBufferCanvas(width*size,height*size);
       var bSx = bufferSize.getContext('2d');
 
       bSx.drawImage(buffer, 0, 0, width*size , height*size);

@@ -1,5 +1,5 @@
 // textbuffer.js
-// small trick to make text drawing faster. Up to the last 29 texts
+// small trick to make text drawing faster. Up to the last 24 texts
 // drawed by using the textBuffer.drawText function will be stored.
 // then if they are needed again, we just copy then to the screen
 // canvas.
@@ -21,21 +21,25 @@ textBuffer = {
       }
     }
 
-    //let's make the maximum number of texts 29.
-    if(this.buffer.length>29){
+    //let's make the maximum number of texts 24.
+    if(this.buffer.length>24){
       this.buffer.shift()
     }
 
     //since we couldn't find the text, we need to store it.
-    var newcanvas = document.createElement('canvas')
-    newcanvas.width = screen.GWIDTH-posx
-    newcanvas.height = screen.GHEIGHT-posy
-    png_font.ctx =newcanvas.getContext('2d')
+    var newcanvas = document.createElement('canvas');
+    newcanvas.width = screen.GWIDTH-posx;
+    newcanvas.height = screen.GHEIGHT;
+    png_font.ctx =newcanvas.getContext('2d');
     png_font.drawText(text,[ 0,0],'#FFFFFF',size,'#221100');
+
+    var img = new Image();   // Create new img element
+    img.src = newcanvas.toDataURL('image/png');
     this.buffer.push({text: text,
                  posx: posx,
                  posy: posy,
                  size: size,
-                 canvas: newcanvas});
+                 canvas: img});
+    newcanvas=0;
   }
 }
