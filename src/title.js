@@ -12,7 +12,9 @@ title.setup = function() {
             action: [function() {
                     actions.showText("let's play!");
                     actions.fadeOut("blackFadeOut;keepEffect");
-                    actions.changeState("map")
+                    actions.teleport(Math.floor(resources.init['Player']['initPosX']/32)+";"+
+                                     (Math.floor(resources.init['Player']['initPosY']/32)+1)+";"+
+                                     resources.init['World']['initLevel'])
                 },
                 function() {
                     actions.stopPicture("")

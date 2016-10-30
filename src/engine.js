@@ -53,7 +53,6 @@ engine.setup = function() {
     engine.levels = null;
     engine.paused = false;
     engine.mapEventBlocked = false;
-    engine.frameCount = 0;
     engine.timer = null;
     engine.waitKey = false;
     engine.waitTimeSwitch = false;
@@ -230,43 +229,38 @@ engine.dirKeyActive = function() {
 }
 
 engine.loop = function() {
-    try {
-        if (!this.paused) {
+    if (!this.paused) {
 
-            // update
-            if (!engine.waitKey && !engine.waitTimeSwitch) {
-                if (menus.isAnyMenuEnabled()) {
-                    menus.updateMenuEnabled();
-                    engine.runatomStack();
-                } else {
-                    if (engine.state == "map") {
-                        engine.updateChars();
-                    } else if (engine.state == "startScreen") {
-                        title.startScreen();
-                    } else if (engine.state == "battle") {
-                        battle.update()
-                    }
-                    engine.runatomStack();
+        // update
+        if (!engine.waitKey && !engine.waitTimeSwitch) {
+            if (menus.isAnyMenuEnabled()) {
+                menus.updateMenuEnabled();
+                engine.runatomStack();
+            } else {
+                if (engine.state == "map") {
+                    engine.updateChars();
+                } else if (engine.state == "startScreen") {
+                    title.startScreen();
+                } else if (engine.state == "battle") {
+                    battle.update()
                 }
-                engine.alertupdate()
-
-            } else if (this.minimumWait) {
-                this.testWaitForKey();
+                engine.runatomStack();
             }
+            engine.alertupdate()
 
-
+        } else if (this.minimumWait) {
+            this.testWaitForKey();
         }
 
-        HID.clearInputs();
-        if(engine.toggle){
-            HID.processGamepad();
-        }
-        engine.toggle = !(engine.toggle)
-        engine.timer = setTimeout("engine.loop()", 1000 / 60.0);
 
-    } catch (err) {
-        alert("engine loop error: " + err);
     }
+
+    HID.clearInputs();
+    if(engine.toggle){
+        HID.processGamepad();
+    }
+    engine.toggle = !(engine.toggle)
+    engine.timer = setTimeout("engine.loop()", 1000 / 60.0);
 };
 
 engine.runatomStack = function() {
@@ -505,6 +499,7 @@ engine.actions.teleport = function(param) {
     engine.state = "map"
     engine.currentLevel = resources['levels'][param[2]];
     resources.tileset = resources.tile[engine.currentLevel.Level.tileImage]
+    camera.setupMap(engine.currentLevel)
     player.mapx = parseInt(param[0], 10) * 32;
     player.mapy = (parseInt(param[1], 10) - 1) * 32;
     player.steps = 0;
@@ -717,11 +712,6 @@ engine.translateActions = function(action, param, position, charsender) {
     actions[action](param, position, charsender)
 };
 
-engine.update = function(frameCount) {
-    engine.frameCount = frameCount;
-};
-
-
 function char(chara, x, y) {
     this['chara'] = resources['charas'][chara]
     this['nocolision'] = this.chara.properties.nocolision
@@ -819,8 +809,8 @@ function char(chara, x, y) {
 
 player.setup = function() {
     player['charaset'] = resources.playerCharaset;
-    player['mapx'] = resources.init['Player']['initPosX'];
-    player['mapy'] = resources.init['Player']['initPosY'];
+    // player['mapx'] = resources.init['Player']['initPosX'];
+    // player['mapy'] = resources.init['Player']['initPosY'];
     player['facing'] = resources.init['Player']['facing'];
     player['party'] = resources.init['Player']['party']
     player['steps'] = 0;

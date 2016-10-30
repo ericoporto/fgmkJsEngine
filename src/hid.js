@@ -195,13 +195,13 @@ var HID = {
     keyDown: function(e) {
         var evtobj = window.event ? event : e;
         var unicode = evtobj.charCode ? evtobj.charCode : evtobj.keyCode;
-        var actualkey = String.fromCharCode(unicode);
 
         for (var key in HID.inputs) {
             var HIDItem = HID.inputs[key];
 
-            if (actualkey == HIDItem.letter) {
+            if (unicode == HIDItem.unicode) {
                 HIDItem.active = true;
+                return
             }
         }
 
@@ -210,21 +210,22 @@ var HID = {
     keyUp: function(e) {
         var evtobj = window.event ? event : e;
         var unicode = evtobj.charCode ? evtobj.charCode : evtobj.keyCode;
-        var actualkey = String.fromCharCode(unicode);
 
         for (var key in HID.inputs) {
             var HIDItem = HID.inputs[key];
 
-            if (actualkey == HIDItem.letter) {
+            if (unicode == HIDItem.unicode) {
                 HIDItem.active = false;
+                return
             }
         }
 
         for (var key in HID.debugKeys) {
             var HIDItem = HID.debugKeys[key];
 
-            if (actualkey == HIDItem.letter) {
+            if (unicode == HIDItem.unicode) {
                 HIDItem.toggle();
+                return
             }
         }
 
@@ -273,8 +274,6 @@ var HID = {
                     x: ((touches[i].pageX - offsetLeft) / scale),
                     y: ((touches[i].pageY - offsetTop) / scale)
                 };
-
-
 
                 if (position.x > HIDItem.mapX && position.y > this.offset + HIDItem.mapY) {
                     if (position.x < HIDItem.mapX + this.bsz && position.y < this.offset + HIDItem.mapY + this.bsz) {
@@ -389,6 +388,14 @@ var HID = {
     },
 
     setup: function(screentosetup) {
+        for (var key in HID.inputs) {
+            var HIDItem = HID.inputs[key];
+            if('letter' in HIDItem){
+              HIDItem['unicode'] = HIDItem.letter.charCodeAt(0)
+            }
+
+        }
+
         this.setupTouchZone(screentosetup);
         this.setupListeners();
         this.setupKeyboardListeners();

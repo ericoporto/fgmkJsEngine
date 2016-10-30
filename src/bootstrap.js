@@ -44,17 +44,17 @@ bootstrap.onLoadDOM = function(){
           screen.setEngine(engine);
           HID.setup(screen)
           engine.currentLevel = resources['levels'][resources.init['World']['initLevel']];
-          resources.tileset = resources.tile[engine.currentLevel.Level.tileImage]
+          //resources.tileset = resources.tile[engine.currentLevel.Level.tileImage]
           screen.printBox.setup(resources.printerset);
           feedbackEng.setup();
           title.setup();
           battle.setup();
           menus.setAllDrawables();
-          engine.loop();
-          screen.requestAnimationFrame.call(window,function(){screen.loop()})
           debug.FPS.loop();
           chars = new charalist();
           chars.push(player)
+          engine.loop();
+          screen.requestAnimationFrame.call(window,function(){screen.loop()})
           fullscreen.setup()
         }
       );
