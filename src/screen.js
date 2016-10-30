@@ -834,13 +834,14 @@ screen.clearPicture = function() {
     screen.pictureStack.length = 0
 }
 
-screen.drawAlert = function(text, index, xpos) {
-    screen.drawText(text, xpos, index * 32 + 32)
+screen.drawAlert = function(text, index) {
+    var xpos = Math.floor(screen.GWIDTH/2-text.length*8);
+    screen.drawText(text, xpos, index * 32 + 32);
 }
 
 screen.drawAlerts = function() {
     for (var i = 0; i < engine.alertStack.length; i++) {
-        screen.drawAlert(engine.alertStack[i][0], i, engine.alertStack[i][2])
+        screen.drawAlert(engine.alertStack[i][0], i)
     }
 }
 
