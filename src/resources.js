@@ -173,15 +173,20 @@ resources.harvest = function(callback) {
             resDict.isScheduled = true;
         }
         if(resDict.fileType == 'ogg'){
-          resources[resDict.to[0]][resDict.to[1]]  = new Audio();
-          resources[resDict.to[0]][resDict.to[1]].addEventListener('canplaythrough',
-            function() {
-              resDict.loaded = true;
-              if(typeof resDict.tinyCallback === 'function'){
-                  resDict.tinyCallback();
+          var canplaythrough = (function(resDict){
+              return function() {
+                resDict.loaded = true;
+                if(typeof resDict.tinyCallback === 'function'){
+                    resDict.tinyCallback();
+                }
+                resources.checkAllLoaded();
+                resources[resDict.to[0]][resDict.to[1]].removeEventListener('canplaythrough',canplaythrough);
               }
-              resources.checkAllLoaded();
-            });
+            })(resDict);
+          resources[resDict.to[0]][resDict.to[1]]  = document.createElement('audio');
+          resources[resDict.to[0]][resDict.to[1]].id = resDict.to[1];
+          resources[resDict.to[0]][resDict.to[1]].loop = true;
+          resources[resDict.to[0]][resDict.to[1]].addEventListener('canplaythrough',canplaythrough);
           resources[resDict.to[0]][resDict.to[1]].src = resDict.from;
           resDict.isScheduled = true;
         }

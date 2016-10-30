@@ -42,22 +42,9 @@ feedbackEng.setup = function() {
         return video.paused;
     };
 
-    this.removeBehaviorsRestrictions  = function () {
-        window.removeEventListener('keydown', feedbackEng.removeBehaviorsRestrictions);
-        window.removeEventListener('mousedown',  feedbackEng.removeBehaviorsRestrictions);
-        window.removeEventListener('touchstart',  feedbackEng.removeBehaviorsRestrictions);
-        for(var sound in feedbackEng.loadedSounds){
-            feedbackEng.loadedSounds[sound].play()
-        }
-    };
-
     if (mediaPlaybackRequiresUserGesture()) {
         this.restrictions = true
         this.soundOn = false;
-        console.log('wait for input event');
-        window.addEventListener('keydown',  feedbackEng.removeBehaviorsRestrictions);
-        window.addEventListener('mousedown',  feedbackEng.removeBehaviorsRestrictions);
-        window.addEventListener('touchstart',  feedbackEng.removeBehaviorsRestrictions);
     }
 };
 

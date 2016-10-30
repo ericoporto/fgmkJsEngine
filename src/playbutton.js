@@ -41,6 +41,9 @@ playbutton = {
 
       this.gameStart = function(){
         var button = document.getElementById('play_button');
+        for(var sound in feedbackEng.loadedSounds){
+            feedbackEng.loadedSounds[sound].play()
+        }
         bgmusic.play(resources.init['World']['initMusic']);
         button.removeEventListener('click',this.gameStart)
         button.removeEventListener('touchstart',this.gameStart)

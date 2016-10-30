@@ -15,6 +15,7 @@ title.setup = function() {
                     actions.teleport(Math.floor(resources.init['Player']['initPosX']/32)+";"+
                                      (Math.floor(resources.init['Player']['initPosY']/32)+1)+";"+
                                      resources.init['World']['initLevel'])
+                    actions.playMusic('villa')
                 },
                 function() {
                     actions.stopPicture("")
@@ -52,6 +53,7 @@ title.setup = function() {
               engine.actions.showPicture(["title", "0", "0", "sys"])
               engine.actions.showPicture(["keys1", "150", "16", "sys"]);
               engine.actions.showPicture(["controllers", "8", (screen.GHEIGHT - 32).toString(), "sys"])
+
           }
       }, 10000);
 

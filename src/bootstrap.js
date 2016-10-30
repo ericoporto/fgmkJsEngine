@@ -38,6 +38,7 @@ bootstrap.onLoadDOM = function(){
         screen.ctx,
         "img/unifont.png",
         function(){
+          bgmusic.setup()
           screen.init();
           player.setup();
           engine.setup();
@@ -56,7 +57,6 @@ bootstrap.onLoadDOM = function(){
             debug.FPS.loop();
             engine.loop();
             screen.requestAnimationFrame.call(window,function(){screen.loop()})
-            bgmusic.setup()
             fullscreen.setup()
           });
         }
