@@ -5,6 +5,13 @@
     "CharasetFileList": {
         "charaset1": "charaset1.json"
     },
+    "MusicList":{
+        "villa" : "villa.ogg",
+        "battle_1": "battle_1.ogg",
+        "battle_win": "battle_win.ogg",
+        "opening": "opening.ogg",
+        "forest": "forest.ogg"
+    },
     "HMSFile": "hms.json",
     "LevelsList": {
         "beach": "beach.map.json",
@@ -27,7 +34,8 @@
         ]
     },
     "World": {
-        "initLevel": "playerhouse"
+        "initLevel": "playerhouse",
+        "initMusic": "opening"
     },
     "itemsFile": "items.json"
 }

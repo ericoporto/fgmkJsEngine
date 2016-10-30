@@ -37,6 +37,7 @@ resources.harvest = function(callback) {
     var DESCRIPTORS = "descriptors/";
     var CHARASETS = "charaset/";
     var LEVELS = "levels/";
+    var MUSIC = "audio/music/";
 
     this.faceset = document.getElementById("faceset");
     this.charasetimg = document.getElementById("charasetimg");
@@ -45,6 +46,7 @@ resources.harvest = function(callback) {
     this.tile = {};
     this.pictures = {};
     this.syspictures = {};
+    this.music = {};
     this.syspictures.title = document.getElementById("titleimg");
     this.syspictures.keys1 = document.getElementById("keys1");
     this.syspictures.keys2 = document.getElementById("keys2");
@@ -170,6 +172,19 @@ resources.harvest = function(callback) {
             request.send();
             resDict.isScheduled = true;
         }
+        if(resDict.fileType == 'ogg'){
+          resources[resDict.to[0]][resDict.to[1]]  = new Audio();
+          resources[resDict.to[0]][resDict.to[1]].addEventListener('canplaythrough',
+            function() {
+              resDict.loaded = true;
+              if(typeof resDict.tinyCallback === 'function'){
+                  resDict.tinyCallback();
+              }
+              resources.checkAllLoaded();
+            });
+          resources[resDict.to[0]][resDict.to[1]].src = resDict.from;
+          resDict.isScheduled = true;
+        }
     };
 
     this.loadAfterInit = function(){
@@ -212,6 +227,16 @@ resources.harvest = function(callback) {
         scheduleLoad(['items'],
                      DESCRIPTORS + resources.init["itemsFile"],
                     'json');
+
+
+        var MusicList = this.init['MusicList'];
+        for (var music in MusicList) {
+            var musicFile = MusicList[music];
+            scheduleLoad(['music',music],
+                         MUSIC + musicFile,
+                         'ogg');
+
+        }
 
         loadFromSchedule();
 

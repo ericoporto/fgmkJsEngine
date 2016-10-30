@@ -487,6 +487,11 @@ engine.actions.changeState = function(param) {
     engine.state = param[0]
 }
 
+engine.actions.playMusic = function(param) {
+  bgmusic.play(param[0]);
+  console.log(param[0])
+}
+
 engine.actions.teleportInPlace = function(param) {
     var px = Math.floor(player.mapx / 32),
         py = Math.floor(player.mapy / 32) + 1;
