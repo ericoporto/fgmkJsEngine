@@ -38,7 +38,6 @@ bootstrap.onLoadDOM = function(){
         screen.ctx,
         "img/unifont.png",
         function(){
-          bgmusic.setup()
           screen.init();
           player.setup();
           engine.setup();
@@ -49,6 +48,7 @@ bootstrap.onLoadDOM = function(){
           screen.printBox.setup(resources.printerset);
           feedbackEng.setup();
           battle.setup();
+          bgmusic.setup()
           title.setup();
           menus.setAllDrawables();
           chars = new charalist();

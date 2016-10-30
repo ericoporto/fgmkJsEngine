@@ -44,6 +44,10 @@ playbutton = {
         for(var sound in feedbackEng.loadedSounds){
             feedbackEng.loadedSounds[sound].play()
         }
+        for(var song in resources.music){
+          resources.music[song].play();
+          resources.music[song].pause();
+        }
         bgmusic.play(resources.init['World']['initMusic']);
         button.removeEventListener('click',this.gameStart)
         button.removeEventListener('touchstart',this.gameStart)
