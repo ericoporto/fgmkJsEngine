@@ -691,7 +691,8 @@ engine.actions.alert = function(param) {
             return
         }
     }
-    engine.alertStack.push([textalert, textlife])
+    var textxposition = Math.floor(screen.GWIDTH/2-textalert.length*8)
+    engine.alertStack.push([textalert, textlife, textxposition])
 }
 
 engine.alertupdate = function() {
