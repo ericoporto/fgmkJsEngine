@@ -190,6 +190,7 @@ resources.harvest = function(callback) {
           resources[resDict.to[0]][resDict.to[1]].loop = true;
           resources[resDict.to[0]][resDict.to[1]].addEventListener('loadeddata',loadeddata);
           resources[resDict.to[0]][resDict.to[1]].src = resDict.from;
+          resources[resDict.to[0]][resDict.to[1]].load();
           resDict.isScheduled = true;
         }
     };
