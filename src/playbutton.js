@@ -5,7 +5,7 @@ playbutton = {
 
 
     playbutton.callback = callback;
-    if(true/*mobilecheck()*/){
+    if(window.mobilecheck()){
       var createButton = function(buttonname, context, func) {
           var button = document.createElement("input");
           button.type = "button";
@@ -66,6 +66,7 @@ playbutton = {
 
     } else {
       playbutton.callback();
+      bgmusic.play(resources.init['World']['initMusic']);
       playbutton.callback = 0;
     }
   }
