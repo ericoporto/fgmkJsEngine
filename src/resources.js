@@ -188,6 +188,27 @@ resources.harvest = function(callback) {
           resources[resDict.to[0]][resDict.to[1]]  = document.createElement('audio');
           resources[resDict.to[0]][resDict.to[1]].id = resDict.to[1];
           resources[resDict.to[0]][resDict.to[1]].loop = true;
+          resources[resDict.to[0]][resDict.to[1]].addEventListener('error', function failed(e) {
+             // audio playback failed - show a message saying why
+             // to get the source of the audio element use $(this).src
+             switch (e.target.error.code) {
+               case e.target.error.MEDIA_ERR_ABORTED:
+                 alert('You aborted the video playback.');
+                 break;
+               case e.target.error.MEDIA_ERR_NETWORK:
+                 alert('A network error caused the audio download to fail.');
+                 break;
+               case e.target.error.MEDIA_ERR_DECODE:
+                 alert('The audio playback was aborted due to a corruption problem or because the video used features your browser did not support.');
+                 break;
+               case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                 alert('The video audio not be loaded, either because the server or network failed or because the format is not supported.');
+                 break;
+               default:
+                 alert('An unknown error occurred.');
+                 break;
+             }
+           }, true);
           resources[resDict.to[0]][resDict.to[1]].addEventListener('loadeddata',loadeddata);
           resources[resDict.to[0]][resDict.to[1]].src = resDict.from;
           resources[resDict.to[0]][resDict.to[1]].load();
