@@ -35,7 +35,9 @@
     },
     "World": {
         "initLevel": "playerhouse",
-        "initMusic": "opening"
+        "initMusic": "opening",
+        "battleMusic": "battle_1",
+        "battleVictoryMusic": "battle_win"
     },
     "itemsFile": "items.json"
 }

@@ -480,7 +480,20 @@ engine.actions.subtractItem = function(param) {
 }
 
 engine.actions.battle = function(param) {
-    battle.start(param)
+    var monsterlist = [];
+    var musicBattle = resources.init['World']['battleMusic'];
+    var musicHuzzah = resources.init['World']['battleVictoryMusic'];
+    for(var i=0; i<param.length; i++){
+      if(param[i].indexOf("music:") == 0){
+        musicBattle = value.split('music:')[1];
+      } else if (param[i].indexOf("musicwin:") == 0) {
+        musicHuzzah = value.split('musicwin:')[1];
+      } else {
+        monsterlist.push(param[i]);
+      }
+    }
+    bgmusic.pushSong()
+    battle.start(monsterlist, musicBattle, musicHuzzah)
 }
 
 engine.actions.changeState = function(param) {

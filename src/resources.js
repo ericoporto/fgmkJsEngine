@@ -211,7 +211,8 @@ resources.harvest = function(callback) {
            }, true);
           resources[resDict.to[0]][resDict.to[1]].addEventListener('loadeddata',loadeddata);
           resources[resDict.to[0]][resDict.to[1]].src = resDict.from;
-          resources[resDict.to[0]][resDict.to[1]].load();
+          resources[resDict.to[0]][resDict.to[1]].preload = 'auto';
+          resources[resDict.to[0]][resDict.to[1]].load(); //triggers download for browsers that don't detect change of src
           resDict.isScheduled = true;
         }
     };
