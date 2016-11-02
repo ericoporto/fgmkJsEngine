@@ -56,6 +56,31 @@ resources.harvest = function(callback) {
 
     this.loadingList = [];
 
+    var audioSupport = function() {
+        var audioTest = (typeof Audio !== 'undefined') ? new Audio() : null;
+
+        if (!audioTest || typeof audioTest.canPlayType !== 'function') {
+        return {
+            mp3: false,
+            ogg: false,
+            wav: false,
+            aac: false
+          };
+        }
+
+        var mpegTest = audioTest.canPlayType('audio/mpeg;').replace(/^no$/, '');
+
+        return {
+            mp3: !!(mpegTest || audioTest.canPlayType('audio/mp3;').replace(/^no$/, '')),
+            ogg: !!audioTest.canPlayType('audio/ogg; codecs="vorbis"').replace(/^no$/, ''),
+            wav: !!audioTest.canPlayType('audio/wav; codecs="1"').replace(/^no$/, ''),
+            aac: !!audioTest.canPlayType('audio/aac;').replace(/^no$/, '')
+        };
+
+    };
+
+    this.audioSupport = audioSupport()
+
     var loadInit = function(){
         var request = new XMLHttpRequest();
         request.onreadystatechange = function() {
@@ -262,10 +287,19 @@ resources.harvest = function(callback) {
         var MusicList = this.init['MusicList'];
         for (var music in MusicList) {
             var musicFile = MusicList[music];
-            scheduleLoad(['music',music],
-                         MUSIC + musicFile,
-                         'ogg');
-
+            if(this.audioSupport.ogg && 'ogg' in musicFile){
+              scheduleLoad(['music',music],
+                           MUSIC + musicFile.ogg,
+                           'ogg');
+            } else if(this.audioSupport.mp3 && 'mp3' in musicFile){
+              scheduleLoad(['music',music],
+                           MUSIC + musicFile.mp3,
+                           'ogg');
+            } else if(this.audioSupport.wav && 'wav' in musicFile){
+              scheduleLoad(['music',music],
+                           MUSIC + musicFile.wav,
+                           'ogg');
+            }
         }
 
         loadFromSchedule();

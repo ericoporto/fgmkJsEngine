@@ -8,6 +8,9 @@ bgmusic = {
   play: function(song, volume, currentTime) {
     volume = (typeof volume === "undefined") ? 0.7 : volume;
     currentTime = (typeof currentTime === "undefined") ? 0 : currentTime;
+    if(!(song in resources.music))
+      return
+
     if(this.playing != song){
       if(this.playing in resources.music){
         resources.music[this.playing].pause();

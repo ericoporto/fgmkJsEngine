@@ -479,6 +479,13 @@ engine.actions.subtractItem = function(param) {
     }
 }
 
+engine.actions.runScript = function(param) {
+  var fpos = player.facingPosition()
+  for (var i = 0; i < param.length; i++) {
+    engine.translateActions(param[i][0], param[i][1], fpos);
+  }
+}
+
 engine.actions.battle = function(param) {
     var monsterlist = [];
     var musicBattle = resources.init['World']['battleMusic'];
