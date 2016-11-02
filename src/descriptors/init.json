@@ -38,7 +38,7 @@
         "initMusic": "opening",
         "battleMusic": "battle_1",
         "battleVictoryMusic": "battle_win",
-        "initEvent": [["playMusic","villa"]]
+        "initActions": [["playMusic","villa"]]
     },
     "itemsFile": "items.json"
 }

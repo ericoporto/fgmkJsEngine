@@ -15,7 +15,7 @@ title.setup = function() {
                     actions.teleport(Math.floor(resources.init['Player']['initPosX']/32)+";"+
                                      (Math.floor(resources.init['Player']['initPosY']/32)+1)+";"+
                                      resources.init['World']['initLevel'])
-                    engine.actions.runScript(resources.init['World']['initEvent'])
+                    engine.actions.runScript(resources.init['World']['initActions'])
                 },
                 function() {
                     actions.stopPicture("")
