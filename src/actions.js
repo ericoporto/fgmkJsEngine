@@ -123,6 +123,11 @@ actions.showText = function(param, position) {
     engine.atomStack.push([printer.showText, text]);
 };
 
+actions.playMusic = function(param) {
+  var params = param.split(';')
+  engine.atomStack.push([engine.actions.playMusic, params]);
+}
+
 actions.teleport = function(param, position) {
     var params = param.split(';')
     engine.atomStack.push([function() {

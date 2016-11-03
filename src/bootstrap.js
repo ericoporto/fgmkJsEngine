@@ -47,15 +47,18 @@ bootstrap.onLoadDOM = function(){
           //resources.tileset = resources.tile[engine.currentLevel.Level.tileImage]
           screen.printBox.setup(resources.printerset);
           feedbackEng.setup();
-          title.setup();
           battle.setup();
+          bgmusic.setup()
+          title.setup();
           menus.setAllDrawables();
-          debug.FPS.loop();
           chars = new charalist();
           chars.push(player)
-          engine.loop();
-          screen.requestAnimationFrame.call(window,function(){screen.loop()})
-          fullscreen.setup()
+          playbutton.setup(function(){
+            debug.FPS.loop();
+            engine.loop();
+            screen.requestAnimationFrame.call(window,function(){screen.loop()})
+            fullscreen.setup()
+          });
         }
       );
     });

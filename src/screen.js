@@ -181,6 +181,9 @@ screen.init = function() {
     this.ctx.mozImageSmoothingEnabled = false;
     this.ctx.webkitImageSmoothingEnabled = false;
     this.ctx.imageSmoothingEnabled = false;
+    addEvent(window, "resize", function() {
+        screen.resize()
+    });
 
     (function() {
         var lastTime = 0;
@@ -934,10 +937,6 @@ debug.FPS = {
 
 
 }
-
-addEvent(window, "resize", function() {
-    screen.resize()
-});
 
 // MIT LICENSE
 // Copyright (c) 2016 Érico Vieira Porto

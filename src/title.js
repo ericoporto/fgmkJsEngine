@@ -15,6 +15,7 @@ title.setup = function() {
                     actions.teleport(Math.floor(resources.init['Player']['initPosX']/32)+";"+
                                      (Math.floor(resources.init['Player']['initPosY']/32)+1)+";"+
                                      resources.init['World']['initLevel'])
+                    engine.actions.runScript(resources.init['World']['initActions'])
                 },
                 function() {
                     actions.stopPicture("")
@@ -32,27 +33,34 @@ title.setup = function() {
         }
     }, undefined, true);
     menus.setParent(title.startMenu);
-    title.startMenu.activate()
-    actions.showPicture("title;0;0;sys")
-    setTimeout(function() {
-        if (engine.state == "startScreen") {
-            engine.actions.showPicture(["controllers", "8", (screen.GHEIGHT - 32).toString(), "sys"])
-        }
-    }, 1000);
+    var onTitleLoad = function (){
+      title.startMenu.activate()
+      actions.showPicture("title;0;0;sys")
+      setTimeout(function() {
+          if (engine.state == "startScreen") {
+              engine.actions.showPicture(["controllers", "8", (screen.GHEIGHT - 32).toString(), "sys"])
+          }
+      }, 1000);
 
-    setTimeout(function() {
-        if (engine.state == "startScreen") {
-            engine.actions.showPicture(["keys2", "160", "24", "sys"])
-        }
-    }, 4000);
-    setTimeout(function() {
-        if (engine.state == "startScreen") {
-            engine.actions.stopPicture("");
-            engine.actions.showPicture(["title", "0", "0", "sys"])
-            engine.actions.showPicture(["keys1", "150", "16", "sys"]);
-            engine.actions.showPicture(["controllers", "8", (screen.GHEIGHT - 32).toString(), "sys"])
-        }
-    }, 10000);
+      setTimeout(function() {
+          if (engine.state == "startScreen") {
+              engine.actions.showPicture(["keys2", "160", "24", "sys"])
+          }
+      }, 4000);
+      setTimeout(function() {
+          if (engine.state == "startScreen") {
+              engine.actions.stopPicture("");
+              engine.actions.showPicture(["title", "0", "0", "sys"])
+              engine.actions.showPicture(["keys1", "150", "16", "sys"]);
+              engine.actions.showPicture(["controllers", "8", (screen.GHEIGHT - 32).toString(), "sys"])
+
+          }
+      }, 10000);
+
+    };
+
+    engine.atomStack.push([onTitleLoad]);
+    //actions.playMusic()
 }
 
 title.startScreen = function() {

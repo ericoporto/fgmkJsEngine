@@ -177,7 +177,9 @@ battle.action.skill = function(skill) {
     actions.showText(skill)
 }
 
-battle.start = function(monsterlist) {
+battle.start = function(monsterlist, musicBattle, musicHuzzah) {
+    battle.musicHuzzah = musicHuzzah
+    battle.musicBattle = musicBattle
     battle.holdAtomStack = engine.atomStack
     engine.atomStack = new Array();
     battle.monster = [];
@@ -204,6 +206,7 @@ battle.start = function(monsterlist) {
     battle.skills = resources.hms.Skills
 
     battle.setOrderStack();
+    bgmusic.play(battle.musicBattle)
     actions.fadeIn('blackFadeIn;doNotKeep')
 
 }
@@ -265,6 +268,7 @@ battle.resolveIfSideDead = function() {
             battle.order.pop();
         }
         battle.ended = true
+        bgmusic.play(battle.musicHuzzah)
         actions.showText("You win!")
         battle.end("win")
         return true
@@ -541,6 +545,10 @@ battle.end = function(battleresult) {
     engine.atomStack.push([function() {
         engine.atomStack = battle.holdAtomStack
     }, ''])
+    battle.holdAtomStack.push([function() {
+        bgmusic.popSong()
+    }, ''])
+
 }
 
 battle.isPartyAlive = function() {
