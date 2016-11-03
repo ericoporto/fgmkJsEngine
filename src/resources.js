@@ -197,7 +197,8 @@ resources.harvest = function(callback) {
             request.send();
             resDict.isScheduled = true;
         }
-        if(resDict.fileType == 'ogg'){
+        if(resDict.fileType == 'ogg' || resDict.fileType == 'mp3' || resDict.fileType == 'wav' ){
+          var internetMediaType={'ogg':'audio/ogg','mp3':'audio/mpeg','wav':'audio/wav'}
           var loadeddata = (function(resDict){
               return function() {
                 resDict.loaded = true;
@@ -206,36 +207,42 @@ resources.harvest = function(callback) {
                 }
                 resources.checkAllLoaded();
                 resources[resDict.to[0]][resDict.to[1]].removeEventListener('loadeddata',loadeddata);
+                resources[resDict.to[0]][resDict.to[1]].childNodes[0].removeEventListener('loadeddata',loadeddata);
               }
             })(resDict);
 
-
-          resources[resDict.to[0]][resDict.to[1]]  = document.createElement('audio');
-          resources[resDict.to[0]][resDict.to[1]].id = resDict.to[1];
-          resources[resDict.to[0]][resDict.to[1]].loop = true;
-          resources[resDict.to[0]][resDict.to[1]].addEventListener('error', function failed(e) {
+          var checkError = function failed(e) {
              // audio playback failed - show a message saying why
              // to get the source of the audio element use $(this).src
              switch (e.target.error.code) {
                case e.target.error.MEDIA_ERR_ABORTED:
-                 alert('You aborted the video playback.');
+                 alert('1 - You aborted the video playback.');
                  break;
                case e.target.error.MEDIA_ERR_NETWORK:
-                 alert('A network error caused the audio download to fail.');
+                 alert('2 - A network error caused the audio download to fail.');
                  break;
                case e.target.error.MEDIA_ERR_DECODE:
-                 alert('The audio playback was aborted due to a corruption problem or because the video used features your browser did not support.');
+                 alert('3 - The audio playback was aborted due to a corruption problem or because the video used features your browser did not support.');
                  break;
                case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-                 alert('The video audio not be loaded, either because the server or network failed or because the format is not supported.');
+                 alert('4 - The video audio not be loaded, either because the server or network failed or because the format is not supported.');
                  break;
                default:
-                 alert('An unknown error occurred.');
+                 alert('5 - An unknown error occurred.');
                  break;
              }
-           }, true);
+           };
+
+          resources[resDict.to[0]][resDict.to[1]]  = document.createElement('audio');
+          resources[resDict.to[0]][resDict.to[1]].id = resDict.to[1];
+          resources[resDict.to[0]][resDict.to[1]].loop = true;
+          resources[resDict.to[0]][resDict.to[1]].addEventListener('error',checkError , true);
           resources[resDict.to[0]][resDict.to[1]].addEventListener('loadeddata',loadeddata);
-          resources[resDict.to[0]][resDict.to[1]].src = resDict.from;
+          var source = document.createElement('source');
+          source.type = internetMediaType[resDict.fileType];
+          source.src = resDict.from;
+
+          resources[resDict.to[0]][resDict.to[1]].appendChild(source);
           resources[resDict.to[0]][resDict.to[1]].preload = 'auto';
           resources[resDict.to[0]][resDict.to[1]].load(); //triggers download for browsers that don't detect change of src
           resDict.isScheduled = true;
