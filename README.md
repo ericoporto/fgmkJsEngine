@@ -9,7 +9,7 @@ This a javascipt engine to play games made with [fgmk](https://github.com/ericop
 Engine demo
 ----------
 
-Use WASD to move and IJ to interact in this demo: https://ericoporto.github.io/fgmkJsEngine/index.html
+Use WASD to move and IJ to interact in this demo (4MB): https://ericoporto.github.io/fgmkJsEngine/index.html
 
 On mobile these keys will be displayed on the touch area, just hold the phone
 in vertical position.
@@ -19,7 +19,7 @@ plug it in the usb port of your computer and you are good to go.
 
 ![Game Screenshot](fgmkJsEngif.gif)
 
-**NOTE:** if you clone, go into `src/` and the `index.html` doesn't run in Chrome, open with Firefox. 
+**NOTE:** if you clone, go into `src/` and the `index.html` doesn't run in Chrome, open with Firefox.
 Chrome requires a server (I use [node http-server](https://www.npmjs.com/package/http-server)) for loading the json files.
 
 
