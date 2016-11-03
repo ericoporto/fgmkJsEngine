@@ -5,6 +5,12 @@
     "CharasetFileList": {
         "charaset1": "charaset1.json"
     },
+    "MusicList":{
+        "villa" : {"ogg":"villa.ogg"},
+        "battle_1": {"ogg":"battle_1.ogg"},
+        "battle_win": {"ogg":"battle_win.ogg"},
+        "opening": {"ogg": "opening.ogg"}
+    },
     "HMSFile": "hms.json",
     "LevelsList": {
         "beach": "beach.map.json",
@@ -27,7 +33,11 @@
         ]
     },
     "World": {
-        "initLevel": "playerhouse"
+        "initLevel": "playerhouse",
+        "initMusic": "opening",
+        "battleMusic": "battle_1",
+        "battleVictoryMusic": "battle_win",
+        "initActions": [["playMusic","villa"]]
     },
     "itemsFile": "items.json"
 }
