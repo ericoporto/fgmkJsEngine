@@ -51,6 +51,7 @@ resources.harvest = function(callback) {
     this.syspictures.keys1 = document.getElementById("keys1");
     this.syspictures.keys2 = document.getElementById("keys2");
     this.syspictures.controllers = document.getElementById("controllers");
+    this.errors = 0;
 
     this.tileslist = [];
 
@@ -80,6 +81,12 @@ resources.harvest = function(callback) {
     };
 
     this.audioSupport = audioSupport()
+
+    var reportLoadingErrors = function(resDict){
+      document.getElementsByTagName('canvas')[0].getContext('2d').fillStyle = '#FF6677';
+      document.getElementsByTagName('canvas')[0].getContext('2d').fillText(resDict.from + " failed!", 64, 96+32*resources.error )
+      resources.error += 1
+    }
 
     var loadInit = function(){
         var request = new XMLHttpRequest();
@@ -206,26 +213,29 @@ resources.harvest = function(callback) {
                     resDict.tinyCallback();
                 }
                 resources.checkAllLoaded();
-                resources[resDict.to[0]][resDict.to[1]].removeEventListener('loadeddata',loadeddata);
-                resources[resDict.to[0]][resDict.to[1]].childNodes[0].removeEventListener('loadeddata',loadeddata);
+              //  resources[resDict.to[0]][resDict.to[1]].removeEventListener('canplaythrough',loadeddata);
               }
             })(resDict);
 
           var checkError = function failed(e) {
              // audio playback failed - show a message saying why
              // to get the source of the audio element use $(this).src
+             if(typeof e.target.error === 'undefined'){
+               alert('0 - an obscure error happened - ' + e);
+               return;
+             }
              switch (e.target.error.code) {
                case e.target.error.MEDIA_ERR_ABORTED:
-                 alert('1 - You aborted the video playback.');
+                 alert('1 - You aborted the audio playback.');
                  break;
                case e.target.error.MEDIA_ERR_NETWORK:
                  alert('2 - A network error caused the audio download to fail.');
                  break;
                case e.target.error.MEDIA_ERR_DECODE:
-                 alert('3 - The audio playback was aborted due to a corruption problem or because the video used features your browser did not support.');
+                 alert('3 - The audio playback was aborted due to a corruption problem or it used features your browser did not support.');
                  break;
                case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-                 alert('4 - The video audio not be loaded, either because the server or network failed or because the format is not supported.');
+                 alert('4 - The audio could not be loaded, either because the server or network failed or because the format is not supported.');
                  break;
                default:
                  alert('5 - An unknown error occurred.');
@@ -237,14 +247,48 @@ resources.harvest = function(callback) {
           resources[resDict.to[0]][resDict.to[1]].id = resDict.to[1];
           resources[resDict.to[0]][resDict.to[1]].loop = true;
           resources[resDict.to[0]][resDict.to[1]].addEventListener('error',checkError , true);
-          resources[resDict.to[0]][resDict.to[1]].addEventListener('loadeddata',loadeddata);
-          var source = document.createElement('source');
-          source.type = internetMediaType[resDict.fileType];
-          source.src = resDict.from;
+          //resources[resDict.to[0]][resDict.to[1]].addEventListener('canplaythrough',loadeddata);
 
-          resources[resDict.to[0]][resDict.to[1]].appendChild(source);
-          resources[resDict.to[0]][resDict.to[1]].preload = 'auto';
-          resources[resDict.to[0]][resDict.to[1]].load(); //triggers download for browsers that don't detect change of src
+          // var source = document.createElement('source');
+          // source.type = internetMediaType[resDict.fileType];
+          // source.src = resDict.from;
+          // resources[resDict.to[0]][resDict.to[1]].appendChild(source);
+          // resources[resDict.to[0]][resDict.to[1]].preload = 'auto';
+          // resources[resDict.to[0]][resDict.to[1]].load(); //triggers download for browsers that don't detect change of src
+
+          var request = new XMLHttpRequest();
+          request.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+                var blob = new Blob([this.response], {type: internetMediaType[resDict.fileType]});
+                var objectUrl = window.URL.createObjectURL(blob);
+                resources[resDict.to[0]][resDict.to[1]].src = objectUrl;
+                // Release resource when it's loaded
+                resources[resDict.to[0]][resDict.to[1]].onload = function(evt) {
+                  window.URL.revokeObjectURL(objectUrl);
+                };
+                this.onerror = null;
+                loadeddata()
+              }
+          };
+          request.onerror = (function(resDict,request){
+            return function() {
+              reportLoadingErrors(resDict)
+              if(request.retry < request.maxRetries){
+                request.responseType = 'blob'
+                request.open('GET', resDict.from, true);
+                request.send();
+                request.retry+=1;
+              } else {
+                alert('error loading: '+resDict.from)
+              }
+            }
+          })(resDict,request);
+          request.retry = 0;
+          request.maxRetries = 4;
+          request.responseType = 'blob'
+          request.open('GET', resDict.from, true);
+          request.send();
+
           resDict.isScheduled = true;
         }
     };
