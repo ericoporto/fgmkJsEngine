@@ -11,15 +11,27 @@ bgmusic = {
     if(!(song in resources.music))
       return
 
+    var playSong = (function(that,song, volume, currentTime){
+        return function() {
+          that.playing = song;
+          resources.music[song].volume = volume;
+          resources.music[song].currentTime = currentTime;
+          resources.music[song].play();
+        }
+      })(this,song, volume, currentTime);
+
     if(this.playing != song){
       if(this.playing in resources.music){
         resources.music[this.playing].pause();
+
+        //setTimeout will help with race conditions
+        //needed for Firefox Mobile
+        setTimeout(playSong,150)
+      } else {
+        setTimeout(playSong,150)
       }
 
-      this.playing = song;
-      resources.music[song].volume = volume;
-      resources.music[song].currentTime = currentTime;
-      resources.music[song].play();
+
     }
   },
   pushSong: function(){
