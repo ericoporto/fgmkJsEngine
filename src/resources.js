@@ -354,11 +354,11 @@ resources.harvest = function(callback) {
             } else if(this.audioSupport.mp3 && 'mp3' in musicFile){
               scheduleLoad(['music',music],
                            MUSIC + musicFile.mp3,
-                           'ogg');
+                           'mp3');
             } else if(this.audioSupport.wav && 'wav' in musicFile){
               scheduleLoad(['music',music],
                            MUSIC + musicFile.wav,
-                           'ogg');
+                           'wav');
             }
         }
 
