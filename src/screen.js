@@ -180,7 +180,9 @@ screen.init = function() {
 
     this.ctx.mozImageSmoothingEnabled = false;
     this.ctx.webkitImageSmoothingEnabled = false;
+    this.ctx.msImageSmoothingEnabled = false;
     this.ctx.imageSmoothingEnabled = false;
+
     addEvent(window, "resize", function() {
         screen.resize()
     });
@@ -220,6 +222,7 @@ screen.init = function() {
 screen.resize = function() {
     screen.ctx.mozImageSmoothingEnabled = false;
     screen.ctx.webkitImageSmoothingEnabled = false;
+    screen.ctx.msImageSmoothingEnabled = false;
     screen.ctx.imageSmoothingEnabled = false;
 
     if (screen.mobile) {
