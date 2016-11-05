@@ -29,6 +29,10 @@ How does this works
 It uses a specific set of json files that are read by the engine. There is some
 [description on here, in the fgmk docs](http://ericoporto.github.io/fgmk/Specification/Specification.html).
 
+Music
+-----
+
+Music by [avgvsta, *from opengameart*](http://opengameart.org/content/generic-8-bit-jrpg-soundtrack).
 
 Author
 ------
