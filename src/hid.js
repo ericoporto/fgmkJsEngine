@@ -13,6 +13,7 @@ var HID = {
     inputs: {
         up: {
             letter: 'W',
+            otherKeys: [38], //keys: up arrow
             active: false,
             mapX: 96,
             mapY: 0,
@@ -27,6 +28,7 @@ var HID = {
         },
         left: {
             letter: 'A',
+            otherKeys: [37], //keys: left arrow
             active: false,
             mapX: 0,
             mapY: 96,
@@ -41,6 +43,7 @@ var HID = {
         },
         down: {
             letter: 'S',
+            otherKeys: [40], //keys: down arrow
             active: false,
             mapX: 96,
             mapY: 192,
@@ -55,6 +58,7 @@ var HID = {
         },
         right: {
             letter: 'D',
+            otherKeys: [39], //keys: right arrow
             active: false,
             mapX: 192,
             mapY: 96,
@@ -69,6 +73,7 @@ var HID = {
         },
         accept: {
             letter: 'I',
+            otherKeys: [90, 32, 17, 13], //keys: z, enter, ctrl, space
             active: false,
             mapX: 304,
             mapY: 32,
@@ -83,6 +88,7 @@ var HID = {
         },
         cancel: {
             letter: 'J',
+            otherKeys: [88, 18, 16], //keys: x, alt, shift
             active: false,
             mapX: 304,
             mapY: 160,
@@ -196,13 +202,10 @@ var HID = {
         var evtobj = window.event ? event : e;
         var unicode = evtobj.charCode ? evtobj.charCode : evtobj.keyCode;
 
-        for (var key in HID.inputs) {
-            var HIDItem = HID.inputs[key];
-
-            if (unicode == HIDItem.unicode) {
-                HIDItem.active = true;
-                return
-            }
+        if (typeof HID.keyboardMap[unicode] !== 'undefined') {
+          e.preventDefault();
+          HID.keyboardMap[unicode].active = true;
+          return
         }
 
     },
@@ -211,13 +214,10 @@ var HID = {
         var evtobj = window.event ? event : e;
         var unicode = evtobj.charCode ? evtobj.charCode : evtobj.keyCode;
 
-        for (var key in HID.inputs) {
-            var HIDItem = HID.inputs[key];
-
-            if (unicode == HIDItem.unicode) {
-                HIDItem.active = false;
-                return
-            }
+        if (typeof HID.keyboardMap[unicode] !== 'undefined') {
+          e.preventDefault();
+          HID.keyboardMap[unicode].active = false;
+          return
         }
 
         for (var key in HID.debugKeys) {
@@ -388,10 +388,16 @@ var HID = {
     },
 
     setup: function(screentosetup) {
+        HID.keyboardMap = {};
         for (var key in HID.inputs) {
             var HIDItem = HID.inputs[key];
             if('letter' in HIDItem){
               HIDItem['unicode'] = HIDItem.letter.charCodeAt(0)
+              HID.keyboardMap[HIDItem['unicode']] = HID.inputs[key]
+            }
+            for(var i in HIDItem.otherKeys) {
+                var otherkey = HIDItem.otherKeys[i];
+                HID.keyboardMap[otherkey] = HID.inputs[key];
             }
 
         }
