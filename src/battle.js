@@ -220,6 +220,7 @@ battle.resolveOrder = function() {
         if (battle.order.length > 0) {
             battle.bchToAttack = battle.order.shift();
             if (battle.bchToAttack[1] == "hero") {
+                battle.currenthero = battle.bchToAttack[0]
                 console.log("hero attack")
                 if (battle.resolveIfSideDead()) {
                     return
@@ -373,7 +374,14 @@ battle.hAct.targetUpdate = function() {
             HID.inputs["accept"].active = false
             this.keyPressed = 32
         } else if (HID.inputs["cancel"].active) {
-
+          //return back to questionBox
+          HID.inputs["cancel"].active = false
+          battle.herodecision = "action"
+          engine.questionBoxAnswer = engine.questionBoxUndef
+          this.selectedMonster.selected = false
+          battle.hAct.targetting = false
+          battle.waitherodecision = false
+          battle.order.unshift([battle.currenthero, "hero"]);
         }
     } else {
         this.keyPressed -= 4
