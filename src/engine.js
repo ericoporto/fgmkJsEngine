@@ -509,7 +509,6 @@ engine.actions.changeState = function(param) {
 
 engine.actions.playMusic = function(param) {
   bgmusic.play(param[0]);
-  console.log(param[0])
 }
 
 engine.actions.teleportInPlace = function(param) {
