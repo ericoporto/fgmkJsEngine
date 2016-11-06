@@ -11,6 +11,26 @@
 // and take the image from whatever was drawn there.
 
 var dist = {}
+
+if(!window.ImageData){
+  window.ImageData = function ImageData() {
+    var i = 0;
+    if(arguments[0] instanceof Uint8ClampedArray) {
+        var data = arguments[i++];
+    }
+    var width = arguments[i++];
+    var height = arguments[i];
+
+    var canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    var ctx = canvas.getContext('2d');
+    var imageData = ctx.createImageData(width, height);
+    if(data) imageData.data.set(data);
+    return imageData;
+  }
+}
+
 dist.tickssy = 0
 dist.efnumb = []
 dist.efnumb[0] = 1
@@ -290,15 +310,16 @@ dist.updateBgEffect = function(effs) {
 
     dist.bfx.effect = dist.bfx.effectsrom[effs];
 
-    dist.ComputeFrame(dist.imageDataDist.data, dist.bdata, dist.bfx.getType(), 0, dist.tickssy, dist.alpha, 0,
+    var tempImageData = new ImageData(256,224);
+
+    dist.ComputeFrame(tempImageData.data, dist.bdata, dist.bfx.getType(), 0, dist.tickssy, dist.alpha, 0,
         dist.bfx.getAmplitude(), dist.bfx.getAmplitudeAcceleration(),
         dist.bfx.getFrequency(), dist.bfx.getFrequencyAcceleration(),
         dist.bfx.getCompression(), dist.bfx.getCompressionAcceleration(),
         dist.bfx.getSpeed());
 
-    dist.dtx.putImageData(dist.imageDataDist, 0, 0);
-    dist.fctx.drawImage(dist.distCanvas, 0, 0, dist.bfx.w, dist.bfx.h, screen.GSTARTX, screen.GSTARTY, screen.GWIDTH, screen.GHEIGHT + 31);
-    dist.imageDataDist.data.set(dist.imageDataClear.data)
+    dist.dtx.putImageData(tempImageData, 0, 0);
+    dist.fctx.drawImage(dist.distCanvas, 0, 0, dist.bfx.w, dist.bfx.h, screen.GSTARTX, screen.GSTARTY, screen.GWIDTH, screen.GHEIGHT+31);
 }
 
 dist.setup = function(viewCanvas, backgroundImage, alpha) {
@@ -320,8 +341,6 @@ dist.setup = function(viewCanvas, backgroundImage, alpha) {
     dist.distCanvas.width = dist.bfx.w;
     dist.distCanvas.height = dist.bfx.h;
     dist.dtx = dist.distCanvas.getContext('2d');
-    dist.imageDataClear = dist.dtx.getImageData(0, 0, dist.bfx.w, dist.bfx.h);
-    dist.imageDataDist = dist.dtx.getImageData(0, 0, dist.bfx.w, dist.bfx.h);
 }
 
 // MIT LICENSE
