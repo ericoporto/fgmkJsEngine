@@ -311,6 +311,8 @@ dist.updateBgEffect = function(effs) {
     dist.bfx.effect = dist.bfx.effectsrom[effs];
 
     var tempImageData = new ImageData(256,224);
+    //create a new ImageData is 82% faster than using ImageData.data.fill(0)
+    //using ImageData.data.set(aClearImageData.data) is fast in Firefox but not Chrome
 
     dist.ComputeFrame(tempImageData.data, dist.bdata, dist.bfx.getType(), 0, dist.tickssy, dist.alpha, 0,
         dist.bfx.getAmplitude(), dist.bfx.getAmplitudeAcceleration(),
