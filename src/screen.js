@@ -879,7 +879,7 @@ screen.loop = function() {
             } else if (engine.state == "startScreen") {
                 //do start screen stuff
             } else if (engine.state == "battle") {
-                dist.test(dist.efnumb[0])
+                dist.updateBgEffect(dist.efnumb[0])
                 screen.drawMonsters()
             }
 
