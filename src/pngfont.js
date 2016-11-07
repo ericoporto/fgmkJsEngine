@@ -68,35 +68,6 @@
     return charWidth
   },
 
-  predictSize: function(text, pos, size, wrap){
-      if(typeof size === 'undefined' || size === null){
-        size = 1
-      }
-      if(typeof wrap === 'undefined' || size === null){
-        wrap = [this.ctx.canvas.width-pos[0],this.ctx.canvas.height-pos[1],0]
-      }
-
-      var wrapped2DArray;
-      var missing;
-      [wrapped2DArray , missing] = this.wrapText(text,wrap,size);
-
-      var width =0;
-      var height =0;
-      for(var i=0; i<wrapped2DArray.length; i++){
-        height+=this.getHeight(size)
-        var charCodeArray = wrapped2DArray[i];
-        var textWidth=0;
-        for(var j=0;j<charCodeArray.length; j++){
-          textWidth+=this.getCharwidthFromCharcode(charCodeArray[j]);
-        }
-        if(textWidth>width){
-          width=textWidth;
-        }
-      }
-
-      return width*1024+height
-  },
-
   getTextWidth: function(text, size){
     if(typeof size === 'undefined'){
       size=1;
@@ -225,6 +196,9 @@
     var word = [];
     var wordWidth = 0;
     wrapped2DArray[line] = [];
+    var spaceWidth = 8*size;
+
+    var maxwidth = 0;
 
     for(var i=0; i<=this.textUTF8Array.length; i++){
       if(this.textUTF8Array[i]!=32 &&
@@ -236,7 +210,7 @@
       } else { //if it is
         if(width+wordWidth<wrap[0]){ //is it smaller then right wrap area?
           wrapped2DArray[line] = wrapped2DArray[line].concat(word).concat([32]); // it is, so add the word to line
-          width=width + wordWidth+8;
+          width=width + wordWidth+spaceWidth
 
           if(this.textUTF8Array[i]==10){
 
@@ -248,7 +222,8 @@
               break;
             }
             wrapped2DArray.push([]);  //let's advance to next line!
-            width = wordWidth+8;
+
+            width = wordWidth+spaceWidth;
             wrapped2DArray[line] = [];
             //end of line advance code block
           }
@@ -265,7 +240,8 @@
             break;
           }
           wrapped2DArray.push([]);  //let's advance to next line!
-          width = wordWidth+8;
+
+          width = wordWidth+spaceWidth;
           wrapped2DArray[line] = [];
           //end of line advance code block
 
@@ -274,9 +250,14 @@
           word = [];
         }
       }
+
+      //stores the maximum width
+      if(width> maxwidth){
+        maxwidth = width;
+      }
     }
 
-    return [wrapped2DArray,missing];
+    return [wrapped2DArray,missing,maxwidth, (line+1)*this.getHeight(size) ];
   },
   /** How to draw texts in a canvas
   *
@@ -286,17 +267,30 @@
   * png_font.drawText("한국어!",[48,64],"#559")
   * png_font.drawText("hello world!",[4,4],'blue',2,'red')
   */
-  drawText: function(text, pos, color, size, shadow,  wrap){
+  drawText: function(text, pos, color, size, shadow,  wrap, forceResize){
     if(typeof size === 'undefined' || size === null){
       size = 1
     }
-    if(typeof wrap === 'undefined' || size === null){
-      wrap = [this.ctx.canvas.width-pos[0],this.ctx.canvas.height-pos[1],0]
+    if(typeof forceResize === 'undefined' || forceResize === null){
+      forceResize = false
+    }
+    if(typeof wrap === 'undefined' || wrap === null){
+      wrap = [this.ctx.canvas.width-pos[0],this.ctx.canvas.height-pos[1],0];
     }
 
     var wrapped2DArray;
     var missing;
-    [wrapped2DArray , missing] = this.wrapText(text,wrap,size);
+    var minWidth;
+    var minHeight;
+
+    [wrapped2DArray , missing, minWidth, minHeight] = this.wrapText(text,wrap,size);
+
+    if(forceResize){
+      this.ctx.canvas.width = minWidth;
+      this.ctx.width = minWidth;
+      this.ctx.canvas.height = minHeight;
+      this.ctx.height = minHeight;
+    }
 
     for(var i=0; i<wrapped2DArray.length; i++){
       var textUTF8Array = wrapped2DArray[i];
@@ -311,6 +305,6 @@
       }
     }
 
-    return missing
+    return missing;
   }
 };

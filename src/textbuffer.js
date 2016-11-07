@@ -31,7 +31,8 @@ textBuffer = {
     newcanvas.width = screen.GWIDTH-posx;
     newcanvas.height = screen.GHEIGHT;
     png_font.ctx =newcanvas.getContext('2d');
-    png_font.drawText(text,[ 0,0],'#FFFFFF',size,'#221100');
+
+    png_font.drawText(text,[ 0,0],'#FFFFFF',size,'#221100',null, true);
 
     var img = new Image();   // Create new img element
     img.src = newcanvas.toDataURL('image/png');
