@@ -19,6 +19,7 @@ feedbackEng.setup = function() {
     this.restrictions = false;
     this.soundOn = true;
     this.flist= {};
+    this.playing = '';
     this.loadedSounds = {};
     this.vibrate= null;
     this.flist = {
@@ -63,17 +64,22 @@ feedbackEng.play = function(feedback) {
             navigator.vibrate(this.flist[feedback].v);
         }
         if(this.soundOn) {
-            if(this.restrictions){
-                this.loadedSounds[feedback].currentTime = 0;
-                this.loadedSounds[feedback].volume = 0.3;
-                this.loadedSounds[feedback].play()
-            } else {
-                var tempSound = this.loadedSounds[feedback].cloneNode(true)
-                tempSound.currentTime = 0;
-                tempSound.volume = 0.3;
-                tempSound.play();
-            }
+          if(this.playing in this.loadedSounds){
+            this.loadedSounds[this.playing].pause()
+          }
 
+          var playSound = (function(that,feedback, volume){
+              return function() {
+                that.playing = feedback;
+                that.loadedSounds[feedback].currentTime = 0;
+                that.loadedSounds[feedback].volume = volume;
+                that.loadedSounds[feedback].play()
+              }
+            })(this,feedback, 0.3);
+
+          //fix for race condition in firefox mobile,
+          //this provides a minimal 100ms delay between pause and play.
+          setTimeout(playSound,100)
         }
         this.once = true;
         this.turnOnceOffTime();
@@ -83,7 +89,7 @@ feedbackEng.play = function(feedback) {
 feedbackEng.turnOnceOffTime =function() {
     this.timer = setTimeout(function() {
         feedbackEng.once = false;
-    }, 160.0);
+    }, 180.0);
 };
 
 // MIT LICENSE
