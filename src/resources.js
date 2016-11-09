@@ -43,6 +43,7 @@ resources.harvest = function(callback) {
     this.printerset = document.getElementById("printerimg");
     this.monsterimg = document.getElementById("monsterbattleimg");
     this.tile = {};
+    this.actx = {};
     this.pictures = {};
     this.syspictures = {};
     this.music = {};
@@ -51,12 +52,27 @@ resources.harvest = function(callback) {
     this.syspictures.keys2 = document.getElementById("keys2");
     this.syspictures.controllers = document.getElementById("controllers");
     this.errors = 0;
-
     this.tileslist = [];
-
     this.loadingList = [];
 
-    var audioSupport = function() {
+    //let's see if webAudioAPI is supported. If it isn't we will default to html5Audio
+    //this is either true (supported) or false (webAudioAPI not supported)
+    this.webAudioApiSupport = (function(){
+      var context;
+      try {
+        // still needed for Safari
+        window.AudioContext = window.AudioContext || window.webkitAudioContext;
+        // create an AudioContext
+        context = new AudioContext();
+        return true
+      } catch(e) {
+        // API not supported
+        return false;
+      }
+    })();
+
+    //let's see what audio codecs are supported
+    this.audioSupport = (function() {
         var audioTest = (typeof Audio !== 'undefined') ? new Audio() : null;
 
         if (!audioTest || typeof audioTest.canPlayType !== 'function') {
@@ -77,9 +93,7 @@ resources.harvest = function(callback) {
             aac: !!audioTest.canPlayType('audio/aac;').replace(/^no$/, '')
         };
 
-    };
-
-    this.audioSupport = audioSupport()
+    })();
 
     var reportLoadingErrors = function(resDict){
       document.getElementsByTagName('canvas')[0].getContext('2d').fillStyle = '#FF6677';
@@ -171,6 +185,7 @@ resources.harvest = function(callback) {
             return;
         }
 
+        //it's a json, so we will read it and parse it as object!
         if(resDict.fileType == 'json'){
             var request = new XMLHttpRequest();
             request.onreadystatechange = function() {
@@ -201,6 +216,7 @@ resources.harvest = function(callback) {
             request.send();
             resDict.isScheduled = true;
         }
+
         //if it's an ogg, a mp3 or a wav, must be audio!
         //we will try to dinamically add an audio element.
         if(resDict.fileType == 'ogg' || resDict.fileType == 'mp3' || resDict.fileType == 'wav' ){
@@ -224,58 +240,102 @@ resources.harvest = function(callback) {
               }
             })(resDict);
 
-          var checkError = function failed(e) {
-             // audio playback failed - show a message saying why
-             if(typeof e.target.error === 'undefined'){
-               alert('0 - an obscure error happened - ' + e); return;
-             }
-             switch (e.target.error.code) {
-               case e.target.error.MEDIA_ERR_ABORTED:
-                 alert('1 - You aborted the audio playback.'); break;
-               case e.target.error.MEDIA_ERR_NETWORK:
-                 alert('2 - A network error caused the audio download to fail.'); break;
-               case e.target.error.MEDIA_ERR_DECODE:
-                 alert('3 - The audio playback was aborted due to a corruption problem or it used features your browser did not support.'); break;
-               case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-                 alert('4 - The audio could not be loaded, either because the server or network failed or because the format is not supported.'); break;
-               default:
-                 alert('5 - An unknown error occurred.');  break;
-             }
-          };
-
-          //create an audio element, make it loopable and let it empty for now.
-          resources[resDict.to[0]][resDict.to[1]]  = document.createElement('audio');
-          resources[resDict.to[0]][resDict.to[1]].id = resDict.to[1];
-          resources[resDict.to[0]][resDict.to[1]].loop = true;
-          resources[resDict.to[0]][resDict.to[1]].addEventListener('error',checkError , true);
-
-          //I am having trouble loading using audio.src, instead a XMLHttpRequest
-          //is a more flexible way to load audio. I don't know if the problem
-          //is github pages, but this is working better!
+          //we will load the audio with XMLHttpRequest no matter what
+          //it's more reliable and we can add retries!
           var request = new XMLHttpRequest();
-          request.onreadystatechange = function() {
-              if (this.readyState == 4 && this.status == 200) {
-                //since the response is the binary audio, we will get it as blob
-                var blob = new Blob([this.response], {type: internetMediaType[resDict.fileType]});
-                //now we need to fake an url to shove in audio.src
-                //this has more support than big base64 src.
-                var objectUrl = window.URL.createObjectURL(blob);
-                resources[resDict.to[0]][resDict.to[1]].src = objectUrl;
-                // Release resource when it's loaded
-                resources[resDict.to[0]][resDict.to[1]].onload = function(evt) {
-                  window.URL.revokeObjectURL(objectUrl);
-                };
-                this.onerror = null;
-                loadeddata()
+
+          //is the webAudioApi supported?
+          if(this.webAudioApiSupport){
+            //let's create a context to play this audio!
+            resources[resDict.to[0]][resDict.to[1]] = {};
+
+            if( typeof resources.actx[resDict.to[0]] === 'undefined')
+              resources.actx[resDict.to[0]] = new AudioContext();
+            //the request will be an arraybuffer because of decodeAudioData!
+            request.responseType = 'arraybuffer';
+
+            request.onreadystatechange = (function(resDict,request){
+              return function() {
+              //isolating the context
+
+                //is the request a success?
+                if (request.readyState == 4 && request.status == 200) {
+                  // request.response is encoded... so decode it now
+                  resources.actx[resDict.to[0]].decodeAudioData(request.response, (function(resDict,request){
+                      return function(buffer) {
+                        resources[resDict.to[0]][resDict.to[1]].buffer = buffer;
+                        if(resDict.to[0] == 'music'){
+                          resources[resDict.to[0]][resDict.to[1]].loop = true; //music should be loopable!
+                        }
+                        resources[resDict.to[0]][resDict.to[1]].currentTime = 0;
+                        resources[resDict.to[0]][resDict.to[1]].pause = function(){
+                          if(resources.actx[resDict.to[0]].state === 'running') {
+                            resources[resDict.to[0]][resDict.to[1]].source.stop();
+                          }
+                        }
+                        resources[resDict.to[0]][resDict.to[1]].play = function(){
+                          //I really hope there's an easier way. Since I couldn't find, when you play, this all happens!
+                          resources[resDict.to[0]][resDict.to[1]].source = resources.actx[resDict.to[0]].createBufferSource();
+                          resources[resDict.to[0]][resDict.to[1]].source.buffer = resources[resDict.to[0]][resDict.to[1]].buffer;
+                          //make it loop
+                          resources[resDict.to[0]][resDict.to[1]].source.loop = resources[resDict.to[0]][resDict.to[1]].loop;
+                          // create a gain node
+                          resources[resDict.to[0]][resDict.to[1]].gainNode = resources.actx[resDict.to[0]].createGain();
+                          // connect the source to the gain node
+                          resources[resDict.to[0]][resDict.to[1]].source.connect(resources[resDict.to[0]][resDict.to[1]].gainNode);
+                          // connect gain node to destination
+                          resources[resDict.to[0]][resDict.to[1]].gainNode.connect(resources.actx[resDict.to[0]].destination);
+                          //
+                          //sets the volume!
+                          resources[resDict.to[0]][resDict.to[1]].gainNode.gain.value = resources[resDict.to[0]][resDict.to[1]].volume;
+                          // play sound
+                          resources[resDict.to[0]][resDict.to[1]].source.start(resources[resDict.to[0]][resDict.to[1]].currentTime);
+                        }
+                      }
+                    })(resDict,request) /* decodeAudioData success */, function(err) {
+                      throw new Error(err);
+                    }); //end of decodeAudioData
+                  request.onerror = null;
+                  loadeddata();
+                }// end of the if request...
               }
-          };
+            })(resDict,request);
+
+
+          } else {
+            //the request will be a blob because it's needed to createObjectURL!
+            request.responseType = 'blob'
+            //create an audio element, make it loopable and let it empty for now.
+            resources[resDict.to[0]][resDict.to[1]]  = document.createElement('audio');
+            resources[resDict.to[0]][resDict.to[1]].id = resDict.to[1];
+            resources[resDict.to[0]][resDict.to[1]].loop = true;
+
+            //I am having trouble loading using audio.src, instead a XMLHttpRequest
+            //is a more flexible way to load audio. I don't know if the problem
+            //is github pages, but this is working better!
+            request.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                  //since the response is the binary audio, we will get it as blob
+                  var blob = new Blob([this.response], {type: internetMediaType[resDict.fileType]});
+                  //now we need to fake an url to shove in audio.src
+                  //this has more support than big base64 src.
+                  var objectUrl = window.URL.createObjectURL(blob);
+                  resources[resDict.to[0]][resDict.to[1]].src = objectUrl;
+                  // Release resource when it's loaded
+                  resources[resDict.to[0]][resDict.to[1]].onload = function(evt) {
+                    window.URL.revokeObjectURL(objectUrl);
+                  };
+                  this.onerror = null;
+                  loadeddata()
+                }
+            };
+          }
 
           //let's retry loading the audio
           request.onerror = (function(resDict,request){
             return function() {
               reportLoadingErrors(resDict)
               if(request.retry < request.maxRetries){
-                request.responseType = 'blob'
                 request.open('GET', resDict.from, true);
                 request.send();
                 request.retry+=1;
@@ -287,7 +347,6 @@ resources.harvest = function(callback) {
           })(resDict,request);
           request.retry = 0;
           request.maxRetries = 3;
-          request.responseType = 'blob'
           request.open('GET', resDict.from, true /* async */);
           //actually do the request!
           request.send();

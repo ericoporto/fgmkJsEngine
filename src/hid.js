@@ -369,16 +369,16 @@ var HID = {
         //the following function checks if there is an already connected gamepad
         setTimeout(function() {
             if(navigator.getGamepads().length>0){
-               var gamepads = navigator.getGamepads()
+               var gamepads = navigator.getGamepads();
                for(var pad=0; pad<gamepads.length ; pad++){
-                   if (!(typeof gamepads[pad] === "undefined")) {
+                   if (!(typeof gamepads[pad] === "undefined" || gamepads[pad] === null)) {
                       HID.gamepads = [];
                   }
                }
                for(var pad=0; pad<gamepads.length ; pad++){
-                   if (!(typeof gamepads[pad] === "undefined")) {
-                      HID.gamepads.push(pad)
-                      actions.alert("gamepad connected!")
+                   if (!(typeof gamepads[pad] === "undefined" || gamepads[pad] === null)) {
+                      HID.gamepads.push(pad);
+                      actions.alert("gamepad connected!");
                   }
                }
             }

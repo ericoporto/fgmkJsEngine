@@ -32,7 +32,7 @@ playbutton = {
           button.style.width = '400px'
 
           button.addEventListener('click', func)
-          button.addEventListener('touchstart', func)
+          button.addEventListener('touchend', func)
 
 
           context.appendChild(button);
@@ -45,13 +45,16 @@ playbutton = {
             feedbackEng.loadedSounds[sound].play()
             feedbackEng.loadedSounds[sound].pause();
         }
-        for(var song in resources.music){
-          resources.music[song].play();
-          resources.music[song].pause();
+        if(!resources.webAudioApiSupport){
+          for(var song in resources.music){
+            resources.music[song].play();
+            resources.music[song].pause();
+          }
         }
+
         bgmusic.play(resources.init['World']['initMusic']);
         button.removeEventListener('click',this.gameStart)
-        button.removeEventListener('touchstart',this.gameStart)
+        button.removeEventListener('touchend',this.gameStart)
         playbutton.callback();
         playbutton.callback = 0;
         button.parentNode.removeChild(button);
