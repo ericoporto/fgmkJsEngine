@@ -11,6 +11,9 @@ title.setup = function() {
         start: {
             action: [function() {
                     actions.showText("let's play!");
+                    engine.atomStack.push([function() {
+                        feedbackEng.play('gamestart')
+                    }, '']);
                     actions.fadeOut("blackFadeOut;keepEffect");
                     actions.teleport(Math.floor(resources.init['Player']['initPosX']/32)+";"+
                                      (Math.floor(resources.init['Player']['initPosY']/32)+1)+";"+

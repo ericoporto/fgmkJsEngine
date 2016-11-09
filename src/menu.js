@@ -190,6 +190,7 @@ function menu(_items, _index, _noexit, _icon, _scale, _stacked) {
                     this.selectedItem.selected = true
                     HID.inputs["up"].active = false
                     this.menuKeyWasPressed = 16
+                    feedbackEng.play('click')
                 } else if (HID.inputs["left"].active) {
 
 
@@ -202,12 +203,16 @@ function menu(_items, _index, _noexit, _icon, _scale, _stacked) {
                     this.selectedItem.selected = true
                     HID.inputs["down"].active = false
                     this.menuKeyWasPressed = 16
+                    feedbackEng.play('click')
                 } else if (HID.inputs["accept"].active) {
 
                     HID.inputs["accept"].active = false
                     if (this.selectedItem.action == 'exit') {
+                        feedbackEng.play('back')
                         this.exit();
                     } else if (Object.prototype.toString.call(this.selectedItem.action) === '[object Array]') {
+                        if(this.selectedItem.action.length>0)
+                            feedbackEng.play('ok');
                         for (var i = 0; i < this.selectedItem.action.length; i++) {
                             if (this.selectedItem.action[i] == 'exit') {
                                 this.exit()
@@ -225,8 +230,10 @@ function menu(_items, _index, _noexit, _icon, _scale, _stacked) {
                         }
                     } else {
                         if (typeof this.selectedItem.isMenu === "undefined") {
+                            feedbackEng.play('ok');
                             this.selectedItem.action();
                         } else {
+                            feedbackEng.play('ok');
                             this.selectedItem.menuKeyWasPressed = 16
                             this.selectedItem.action();
                         }
@@ -235,6 +242,7 @@ function menu(_items, _index, _noexit, _icon, _scale, _stacked) {
                 } else if (HID.inputs["cancel"].active) {
                     if (this._counter >= 20 && this.noexit == false) {
                         HID.inputs["cancel"].active = false
+                        feedbackEng.play('back')
                         this.exit()
                         engine.waitTime(200)
                         this.menuKeyWasPressed = 16

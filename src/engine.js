@@ -691,6 +691,8 @@ engine.actions.questionBox = function(param) {
     menus.setParent(engine.questionBoxMenu)
     menus.setAllDrawables()
     engine.questionBoxMenu.activate()
+    if(engine.state=='map')
+      feedbackEng.play('question');
 }
 
 engine.actions.proceedBattleTurn = function(param) {
@@ -901,6 +903,7 @@ player.setup = function() {
                 }
             } else if (HID.inputs["cancel"].active) {
                 HID.inputs["cancel"].active = false
+                feedbackEng.play('menu')
                 engine.mapMenu.activate()
             }
 
@@ -918,6 +921,9 @@ player.setup = function() {
                 if (eventInMap(engine.currentLevel["Level"], [0, 1], [py, px])) {
                     HID.inputs["accept"].active = false
                     engine.mapEventBlocked = true
+
+                    //solves colision sound played, 8 is how long it takes to fadeOut default
+                    player.waits = 8
                 }
             }
         } else {

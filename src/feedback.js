@@ -21,8 +21,17 @@ feedbackEng.setup = function() {
     this.flist= {};
     this.loadedSounds = {};
     this.vibrate= null;
-
-    this.flist = resources.feedback
+    this.flist = {
+        "stop":{ "s": "audioStop", "v": [10,5,10] },
+        "word":{ "s": "audioWord",  "v": [10]  },
+        "click":{ "s": "audioClick", "v" : [5] },
+        "back":{ "s": "audioBack", "v" : [10] },
+        "ok":{ "s": "audioOk", "v" : [20] },
+        "menu":{ "s": "audioMenu", "v" : [5] },
+        "openprint":{ "s": "audioBoxOpen", "v" : [] },
+        "gamestart":{ "s": "audioGameStart", "v" : [20,10,10,5,10] },
+        "question":{ "s": "audioQuestion", "v" : [20] }
+    };
     navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
     if (navigator.vibrate) {
         // vibration API supported
@@ -44,7 +53,7 @@ feedbackEng.setup = function() {
 
     if (mediaPlaybackRequiresUserGesture()) {
         this.restrictions = true
-        this.soundOn = false;
+        this.soundOn = true;
     }
 };
 
@@ -56,22 +65,25 @@ feedbackEng.play = function(feedback) {
         if(this.soundOn) {
             if(this.restrictions){
                 this.loadedSounds[feedback].currentTime = 0;
+                this.loadedSounds[feedback].volume = 0.3;
                 this.loadedSounds[feedback].play()
             } else {
-                this.loadedSounds[feedback].cloneNode(true).play();
+                var tempSound = this.loadedSounds[feedback].cloneNode(true)
+                tempSound.currentTime = 0;
+                tempSound.volume = 0.3;
+                tempSound.play();
             }
 
         }
-        //this.once = true;
-        //this.turnOnceOffTime();
+        this.once = true;
+        this.turnOnceOffTime();
     }
 };
-
 
 feedbackEng.turnOnceOffTime =function() {
     this.timer = setTimeout(function() {
         feedbackEng.once = false;
-    }, 100.0);
+    }, 160.0);
 };
 
 // MIT LICENSE

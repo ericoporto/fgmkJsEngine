@@ -47,6 +47,8 @@ printer.showText = function(_text) {
 
     printer.isShown = true;
     printBox.show();
+    if(engine.state == 'map')
+      feedbackEng.play('openprint');
 };
 
 printer.dismissText = function() {

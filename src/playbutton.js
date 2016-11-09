@@ -43,6 +43,7 @@ playbutton = {
         var button = document.getElementById('play_button');
         for(var sound in feedbackEng.loadedSounds){
             feedbackEng.loadedSounds[sound].play()
+            feedbackEng.loadedSounds[sound].pause();
         }
         for(var song in resources.music){
           resources.music[song].play();

@@ -286,10 +286,12 @@
     [wrapped2DArray , missing, minWidth, minHeight] = this.wrapText(text,wrap,size);
 
     if(forceResize){
-      this.ctx.canvas.width = minWidth;
-      this.ctx.width = minWidth;
-      this.ctx.canvas.height = minHeight;
-      this.ctx.height = minHeight;
+      //I am adding size below to account for the shadow when present
+
+      this.ctx.canvas.width = minWidth+size*2;
+      this.ctx.width = minWidth+size*2;
+      this.ctx.canvas.height = minHeight+size*2;
+      this.ctx.height = minHeight+size*2;
     }
 
     for(var i=0; i<wrapped2DArray.length; i++){

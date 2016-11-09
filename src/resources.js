@@ -10,7 +10,6 @@ var resources = {
     printerset: null,
     playerCharaset: null,
     faceset: null,
-    feedback: {},
     items: {},
     levels: {},
     charasets: {},
@@ -178,8 +177,6 @@ resources.harvest = function(callback) {
                 if (this.readyState == 4 && this.status == 200) {
                     if(resDict.to[0]=='charasets'){
                         resources['charasets'] = JSON.parse(this.responseText)['Charaset'];
-                    } else if (resDict.to[0]=='feedback') {
-                        resources['feedback'] = JSON.parse(this.responseText)['Feedback'];
                     } else if (resDict.to[0]=='charas'){
                         resources['charas'] = JSON.parse(this.responseText)['Charas'];
                     } else if (resDict.to[0]=='items'){
@@ -330,9 +327,6 @@ resources.harvest = function(callback) {
         }
         scheduleLoad(['charas'],
                      DESCRIPTORS + "charas.json",
-                     'json');
-        scheduleLoad(['feedback'],
-                     DESCRIPTORS + "feedback.json",
                      'json');
         scheduleLoad(['hms'],
                      DESCRIPTORS + resources.init["HMSFile"],
