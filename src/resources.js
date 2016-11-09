@@ -43,7 +43,6 @@ resources.harvest = function(callback) {
     this.printerset = document.getElementById("printerimg");
     this.monsterimg = document.getElementById("monsterbattleimg");
     this.tile = {};
-    this.actx = {};
     this.pictures = {};
     this.syspictures = {};
     this.music = {};
@@ -63,7 +62,7 @@ resources.harvest = function(callback) {
         // still needed for Safari
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
         // create an AudioContext
-        context = new AudioContext();
+        resources.actx = new AudioContext();
         return true
       } catch(e) {
         // API not supported
@@ -249,8 +248,6 @@ resources.harvest = function(callback) {
             //let's create a context to play this audio!
             resources[resDict.to[0]][resDict.to[1]] = {};
 
-            if( typeof resources.actx[resDict.to[0]] === 'undefined')
-              resources.actx[resDict.to[0]] = new AudioContext();
             //the request will be an arraybuffer because of decodeAudioData!
             request.responseType = 'arraybuffer';
 
@@ -261,7 +258,7 @@ resources.harvest = function(callback) {
                 //is the request a success?
                 if (request.readyState == 4 && request.status == 200) {
                   // request.response is encoded... so decode it now
-                  resources.actx[resDict.to[0]].decodeAudioData(request.response, (function(resDict,request){
+                  resources.actx.decodeAudioData(request.response, (function(resDict,request){
                       return function(buffer) {
                         resources[resDict.to[0]][resDict.to[1]].buffer = buffer;
                         if(resDict.to[0] == 'music'){
@@ -269,22 +266,22 @@ resources.harvest = function(callback) {
                         }
                         resources[resDict.to[0]][resDict.to[1]].currentTime = 0;
                         resources[resDict.to[0]][resDict.to[1]].pause = function(){
-                          if(resources.actx[resDict.to[0]].state === 'running') {
+                          if(resources.actx.state === 'running') {
                             resources[resDict.to[0]][resDict.to[1]].source.stop();
                           }
                         }
                         resources[resDict.to[0]][resDict.to[1]].play = function(){
                           //I really hope there's an easier way. Since I couldn't find, when you play, this all happens!
-                          resources[resDict.to[0]][resDict.to[1]].source = resources.actx[resDict.to[0]].createBufferSource();
+                          resources[resDict.to[0]][resDict.to[1]].source = resources.actx.createBufferSource();
                           resources[resDict.to[0]][resDict.to[1]].source.buffer = resources[resDict.to[0]][resDict.to[1]].buffer;
                           //make it loop
                           resources[resDict.to[0]][resDict.to[1]].source.loop = resources[resDict.to[0]][resDict.to[1]].loop;
                           // create a gain node
-                          resources[resDict.to[0]][resDict.to[1]].gainNode = resources.actx[resDict.to[0]].createGain();
+                          resources[resDict.to[0]][resDict.to[1]].gainNode = resources.actx.createGain();
                           // connect the source to the gain node
                           resources[resDict.to[0]][resDict.to[1]].source.connect(resources[resDict.to[0]][resDict.to[1]].gainNode);
                           // connect gain node to destination
-                          resources[resDict.to[0]][resDict.to[1]].gainNode.connect(resources.actx[resDict.to[0]].destination);
+                          resources[resDict.to[0]][resDict.to[1]].gainNode.connect(resources.actx.destination);
                           //
                           //sets the volume!
                           resources[resDict.to[0]][resDict.to[1]].gainNode.gain.value = resources[resDict.to[0]][resDict.to[1]].volume;
