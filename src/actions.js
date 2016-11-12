@@ -152,9 +152,9 @@ actions.teleportInPlace = function(param, position) {
 
 actions.changeTile = function(param, position) {
     //param[4] location (current or x,y,level)
-    var colisionDict = {
+    var collisionDict = {
         keep: -1,
-        noColision: 0,
+        nocollision: 0,
         collidable: 1
     }
     var params3Value
@@ -162,7 +162,7 @@ actions.changeTile = function(param, position) {
 
     var aTileType = params[0]
     var aLayer = params[1]
-    var aColision = colisionDict[params[2]];
+    var acollision = collisionDict[params[2]];
     if (params[3] == "keep") {
         params3Value = -1;
     } else if (params[3] == "remove") {
@@ -187,19 +187,19 @@ actions.changeTile = function(param, position) {
     }
 
     engine.atomStack.push([engine.actions.changeTile, [aTileType,
-        aLayer, aColision, aEvent, aPositionY, aPositionX,
+        aLayer, acollision, aEvent, aPositionY, aPositionX,
         aLevel
     ]]);
 };
 
 
 actions.changeAllTiles = function(param, position) {
-  //param = [otileType,newtiletype, layer,colision,event,level]
+  //param = [otileType,newtiletype, layer,collision,event,level]
   //          0      ,     1      ,   2  ,   3    , 4   , 5
   ///////////////////////////////////////////////////////////////////
-    var colisionDict = {
+    var collisionDict = {
         keep: -1,
-        noColision: 0,
+        nocollision: 0,
         collidable: 1
     }
     var params3Value
@@ -208,7 +208,7 @@ actions.changeAllTiles = function(param, position) {
     var originalTileType = params[0]
     var newTileType = params[1]
     var aLayer = params[2]
-    var aColision = colisionDict[params[3]];
+    var acollision = collisionDict[params[3]];
     if (params[4] == "keep") {
         params3Value = -1;
     } else if (params[4] == "remove") {
@@ -222,7 +222,7 @@ actions.changeAllTiles = function(param, position) {
 
     engine.atomStack.push([
         engine.actions.changeAllTiles, [originalTileType, newTileType,
-                            aLayer, aColision, aEvent, aLevel]
+                            aLayer, acollision, aEvent, aLevel]
     ]);
 };
 

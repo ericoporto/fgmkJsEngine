@@ -536,7 +536,7 @@ engine.actions.teleport = function(param) {
 }
 
 engine.actions.changeTile = function(param) {
-    //param = [tileType,layer,colision,event,positionY,positionX,level]
+    //param = [tileType,layer,collision,event,positionY,positionX,level]
     //          0      , 1   , 2      , 3   , 4       , 5       , 6
     ///////////////////////////////////////////////////////////////////
 
@@ -546,7 +546,7 @@ engine.actions.changeTile = function(param) {
         var levelToChange = resources['levels'][param[6]];
     }
     if (param[2] != -1) {
-        levelToChange["Level"]["colision"][param[4]][param[5]] = param[2]
+        levelToChange["Level"]["collision"][param[4]][param[5]] = param[2]
     }
     if (param[3] != -1) {
         levelToChange["Level"]["events"][param[4]][param[5]] = param[3]
@@ -556,7 +556,7 @@ engine.actions.changeTile = function(param) {
 }
 
 engine.actions.changeAllTiles = function(param) {
-    //param = [originalTileType, newTileType,layer,colision,event,level]
+    //param = [originalTileType, newTileType,layer,collision,event,level]
     //              0          ,     1      ,  2  ,   3    ,  4  ,  5
     ///////////////////////////////////////////////////////////////////
 
@@ -569,15 +569,15 @@ engine.actions.changeAllTiles = function(param) {
     } else {
         var levelToChange = resources['levels'][param[5]];
     }
-    var h = levelToChange["Level"]["colision"].length
-    var w = levelToChange["Level"]["colision"][0].length
+    var h = levelToChange["Level"]["collision"].length
+    var w = levelToChange["Level"]["collision"][0].length
 
     for(var y=0; y<h; y++){
         for (var x=0; x<w; x++){
             var currTile = levelToChange["Level"][layer][y][x]
             if(currTile == originalTile){
                 if (param[3] != -1) {
-                    levelToChange["Level"]["colision"][y][x] = param[3]
+                    levelToChange["Level"]["collision"][y][x] = param[3]
                 }
                 if (param[4] != -1) {
                     levelToChange["Level"]["events"][y][x] = param[4]
@@ -740,7 +740,7 @@ engine.translateActions = function(action, param, position, charsender) {
 
 function char(chara, x, y) {
     this['chara'] = resources['charas'][chara]
-    this['nocolision'] = this.chara.properties.nocolision
+    this['nocollision'] = this.chara.properties.nocollision
     this['charaset'] = resources['charasets'][this['chara']['charaset']]
     this['pushable'] = this.chara.properties.pushable
     this['facing'] = 'down';
@@ -751,8 +751,8 @@ function char(chara, x, y) {
     this['movstack'] = clone(this['chara']['movements']);
     this['stopped'] = false;
     this['curr_animation'] = false;
-    this['mapheight'] = engine.currentLevel["Level"]["colision"].length-1;
-    this['mapwidth'] = engine.currentLevel["Level"]["colision"][0].length;
+    this['mapheight'] = engine.currentLevel["Level"]["collision"].length-1;
+    this['mapwidth'] = engine.currentLevel["Level"]["collision"][0].length;
     this['checkMapBoundaries'] = function(px, py, mapw, maph) {
         return engine.checkMapBoundaries(this, px, py, mapw, maph)
     }
@@ -799,7 +799,7 @@ function char(chara, x, y) {
                         }
                     }
                     if (this.checkMapBoundaries(px, py, this.mapwidth, this.mapheight) &&
-                        engine.currentLevel["Level"]["colision"][fpos[0]][fpos[1]] == 0) {
+                        engine.currentLevel["Level"]["collision"][fpos[0]][fpos[1]] == 0) {
                         this.steps = 32
                     } else {
                         this.waits = 16
@@ -853,8 +853,8 @@ player.setup = function() {
 
         var px = Math.floor(player.mapx / 32),
             py = Math.floor(player.mapy / 32) + 1;
-        var mapheight = engine.currentLevel["Level"]["colision"].length-1;
-        var mapwidth = engine.currentLevel["Level"]["colision"][0].length;
+        var mapheight = engine.currentLevel["Level"]["collision"].length-1;
+        var mapwidth = engine.currentLevel["Level"]["collision"][0].length;
 
         if (player.steps == 0 && player.waits == 0) {
             var dirkey = engine.dirKeyActive()
@@ -869,7 +869,7 @@ player.setup = function() {
                     if(charFacing.pushable){
                         charFacing.movstack.push(['move','away'])
                     }
-                    if (engine.currentLevel["Level"]["colision"][fpos[0]][fpos[1]] == 0 && !(charFacing.nocolision)) {
+                    if (engine.currentLevel["Level"]["collision"][fpos[0]][fpos[1]] == 0 && !(charFacing.nocollision)) {
                         player.steps = 32;
                         if (charFacing) {
                             eventInChar(charFacing, [0, 1], [py - 1, px])
@@ -922,7 +922,7 @@ player.setup = function() {
                     HID.inputs["accept"].active = false
                     engine.mapEventBlocked = true
 
-                    //solves colision sound played, 8 is how long it takes to fadeOut default
+                    //solves collision sound played, 8 is how long it takes to fadeOut default
                     player.waits = 8
                 }
             }
