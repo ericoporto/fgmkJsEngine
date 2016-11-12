@@ -892,7 +892,7 @@ player.setup = function() {
                         player.waits = 16
                     }
                 } else {
-                    if (py - 1 > 0 && px - 1 > 0 && px + 1 < engine.currentLevel["Level"]["events"].length && px + 1 < engine.currentLevel["Level"]["events"].length) {
+                    if (py - 1 > 0 && px - 1 > 0 && px + 1 < engine.currentLevel["Level"]["events"][0].length && py + 1 < engine.currentLevel["Level"]["events"].length) {
                         var fpos = player.facingPosition()
                         if (eventInMap(engine.currentLevel["Level"], [1, 0], fpos)) {
                             HID.inputs["accept"].active = false
