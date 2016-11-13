@@ -801,6 +801,14 @@ function char(chara, x, y) {
                     if (this.checkMapBoundaries(px, py, this.mapwidth, this.mapheight) &&
                         engine.currentLevel["Level"]["collision"][fpos[0]][fpos[1]] == 0) {
                         this.steps = 32
+
+                        if ((this.mapx%32==0) && (this.mapy%32==0)) {
+                            var cpx = Math.floor(this.mapx / 32),
+                                cpy = Math.floor(this.mapy / 32) + 1;
+                            //evType [onclick, ontouch, charatouch, charaleave], so we are checking charaleave here!
+                            if (eventInMap(engine.currentLevel["Level"], [0, 0, 0, 1], [cpy, cpx])) {
+                            }
+                        }
                     } else {
                         this.waits = 16
                     }
@@ -825,7 +833,9 @@ function char(chara, x, y) {
             }
 
         } else if (this.steps > 0 && this.waits == 0 && this.stopped == false) {
+            //this is needed to that the chara walks!
             engine.charWalkSteps(this, engine.step)
+
             if ((this.mapx%32==0) && (this.mapy%32==0)) {
                 var px = Math.floor(this.mapx / 32),
                     py = Math.floor(this.mapy / 32) + 1;
