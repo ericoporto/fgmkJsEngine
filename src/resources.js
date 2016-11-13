@@ -37,6 +37,7 @@ resources.harvest = function(callback) {
     var CHARASETS = "charaset/";
     var LEVELS = "levels/";
     var MUSIC = "audio/music/";
+    var AUDIO = "audio/";
 
     this.faceset = document.getElementById("faceset");
     this.charasetimg = document.getElementById("charasetimg");
@@ -46,6 +47,7 @@ resources.harvest = function(callback) {
     this.pictures = {};
     this.syspictures = {};
     this.music = {};
+    this.sound = {};
     this.syspictures.title = document.getElementById("titleimg");
     this.syspictures.keys1 = document.getElementById("keys1");
     this.syspictures.keys2 = document.getElementById("keys2");
@@ -398,27 +400,49 @@ resources.harvest = function(callback) {
                      DESCRIPTORS + resources.init["itemsFile"],
                     'json');
 
-
-        var MusicList = this.init['MusicList'];
-        for (var music in MusicList) {
-            var musicFile = MusicList[music];
-            //the if cases here assure only one type is loaded
-            //and that they will be supported if available.
-            if(this.audioSupport.ogg && 'ogg' in musicFile){
-              scheduleLoad(['music',music],
-                           MUSIC + musicFile.ogg,
-                           'ogg');
-            } else if(this.audioSupport.mp3 && 'mp3' in musicFile){
-              scheduleLoad(['music',music],
-                           MUSIC + musicFile.mp3,
-                           'mp3');
-            } else if(this.audioSupport.wav && 'wav' in musicFile){
-              scheduleLoad(['music',music],
-                           MUSIC + musicFile.wav,
-                           'wav');
-            }
+        if('MusicList' in this.init){
+          var MusicList = this.init['MusicList'];
+          for (var music in MusicList) {
+              var musicFile = MusicList[music];
+              //the if cases here assure only one type is loaded
+              //and that they will be supported if available.
+              if(this.audioSupport.ogg && 'ogg' in musicFile){
+                scheduleLoad(['music',music],
+                             MUSIC + musicFile.ogg,
+                             'ogg');
+              } else if(this.audioSupport.mp3 && 'mp3' in musicFile){
+                scheduleLoad(['music',music],
+                             MUSIC + musicFile.mp3,
+                             'mp3');
+              } else if(this.audioSupport.wav && 'wav' in musicFile){
+                scheduleLoad(['music',music],
+                             MUSIC + musicFile.wav,
+                             'wav');
+              }
+          }
         }
 
+        if('SoundList' in this.init){
+          var SoundList = this.init['SoundList'];
+          for (var sound in SoundList) {
+              var soundFile = SoundList[sound];
+              //the if cases here assure only one type is loaded
+              //and that they will be supported if available.
+              if(this.audioSupport.ogg && 'ogg' in soundFile){
+                scheduleLoad(['sound',sound],
+                             AUDIO + soundFile.ogg,
+                             'ogg');
+              } else if(this.audioSupport.mp3 && 'mp3' in soundFile){
+                scheduleLoad(['sound',sound],
+                             AUDIO + soundFile.mp3,
+                             'mp3');
+              } else if(this.audioSupport.wav && 'wav' in soundFile){
+                scheduleLoad(['sound',sound],
+                             AUDIO + soundFile.wav,
+                             'wav');
+              }
+          }
+        }
         loadFromSchedule();
 
     };
