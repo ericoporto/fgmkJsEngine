@@ -795,7 +795,8 @@ function char(chara, x, y) {
                         if (this.isFacingPlayer()) {
                             var playerpx = Math.floor(player.mapx / 32),
                                 playerpy = Math.floor(player.mapy / 32) + 1;
-                            eventInChar(this, [0, 1, 0], [playerpy - 1, playerpx]);
+                            //testing for player onover in this char
+                            eventInChar(this, [0, 1, 0, 0, 0], [playerpy - 1, playerpx]);
                         }
                     }
                     if (this.checkMapBoundaries(px, py, this.mapwidth, this.mapheight) &&
@@ -805,8 +806,8 @@ function char(chara, x, y) {
                         if ((this.mapx%32==0) && (this.mapy%32==0)) {
                             var cpx = Math.floor(this.mapx / 32),
                                 cpy = Math.floor(this.mapy / 32) + 1;
-                            //evType [onclick, ontouch, charatouch, charaleave], so we are checking charaleave here!
-                            if (eventInMap(engine.currentLevel["Level"], [0, 0, 0, 1], [cpy, cpx])) {
+                            //evType [onclick, onover, oncharaover, charaleave], so we are checking charaleave here!
+                            if (eventInMap(engine.currentLevel["Level"], [0, 0, 0, 1, 0], [cpy, cpx])) {
                             }
                         }
                     } else {
@@ -839,8 +840,8 @@ function char(chara, x, y) {
             if ((this.mapx%32==0) && (this.mapy%32==0)) {
                 var px = Math.floor(this.mapx / 32),
                     py = Math.floor(this.mapy / 32) + 1;
-                //evType [onclick, ontouch, charatouch], so we are checking charatouch here!
-                if (eventInMap(engine.currentLevel["Level"], [0, 0, 1], [py, px])) {
+                //evType [onclick, onover, oncharaover], so we are checking charatouch here!
+                if (eventInMap(engine.currentLevel["Level"], [0, 0, 1, 0, 0], [py, px])) {
                 }
             }
 
@@ -877,46 +878,54 @@ player.setup = function() {
         if (player.steps == 0 && player.waits == 0) {
             var dirkey = engine.dirKeyActive()
             if (dirkey) {
-                engine.mapEventBlocked = false
+                engine.mapEventBlocked = false;
                 player.mapx = px * 32,
-                    player.mapy = (py - 1) * 32
-                player.facing = dirkey
-                var fpos = player.facingPosition()
+                    player.mapy = (py - 1) * 32;
+                player.facing = dirkey;
+                var fpos = player.facingPosition();
                 if (player.checkMapBoundaries(px, py, mapwidth, mapheight)) {
-                    var charFacing = engine.playerFaceChar()
+                    var charFacing = engine.playerFaceChar();
                     if(charFacing.pushable){
-                        charFacing.movstack.push(['move','away'])
+                        charFacing.movstack.push(['move','away']);
                     }
                     if (engine.currentLevel["Level"]["collision"][fpos[0]][fpos[1]] == 0 && !(charFacing.nocollision)) {
                         player.steps = 32;
                         if (charFacing) {
-                            //evType [onclick, ontouch,...], so we are checking onover here!
-                            eventInChar(charFacing, [0, 1, 0], [py - 1, px]);
+                            //evType [onclick, onover,...], so we are checking onover here!
+                            eventInChar(charFacing, [0, 1, 0, 0, 0], [py - 1, px]);
+                        }
+                        if ((player.mapx%32==0) && (player.mapy%32==0)) {
+                            var cpx = Math.floor(player.mapx / 32),
+                                cpy = Math.floor(player.mapy / 32) + 1;
+                            //evType [onclick, onover, oncharaover, charaleave, onleave], so we are checking onleave here!
+                            if (eventInMap(engine.currentLevel["Level"], [0, 0, 0, 0, 1], [cpy, cpx])) {
+                                engine.mapEventBlocked = true;
+                            }
                         }
                     } else {
-                        feedbackEng.play('stop')
-                        HID.inputs[dirkey].active = false
+                        feedbackEng.play('stop');
+                        HID.inputs[dirkey].active = false;
                     }
                 } else {
-                    feedbackEng.play('stop')
-                    HID.inputs[dirkey].active = false
+                    feedbackEng.play('stop');
+                    HID.inputs[dirkey].active = false;
                 }
             } else if (HID.inputs["accept"].active) {
-                var charFacing = engine.playerFaceChar()
+                var charFacing = engine.playerFaceChar();
                 if (charFacing) {
-                    //evType [onclick, ontouch,...], so we are checking onclick here!
-                    if (eventInChar(charFacing, [1, 0, 0], [py - 1, px])) {
-                        HID.inputs["accept"].active = false
+                    //evType [onclick, onover,...], so we are checking onclick here!
+                    if (eventInChar(charFacing, [1, 0, 0, 0, 0], [py - 1, px])) {
+                        HID.inputs["accept"].active = false;
                         engine.waitTime(300);
                     } else {
-                        player.waits = 16
+                        player.waits = 16;
                     }
                 } else {
-                    if (py - 1 > 0 && px - 1 > 0 && px + 1 < engine.currentLevel["Level"]["events"][0].length && py + 1 < engine.currentLevel["Level"]["events"].length) {
-                        var fpos = player.facingPosition()
-                        //evType [onclick, ontouch,...], so we are checking onclick here!
-                        if (eventInMap(engine.currentLevel["Level"], [1, 0, 0], fpos)) {
-                            HID.inputs["accept"].active = false
+                    if (py - 1 > 0 && px> 0 && px + 1 < engine.currentLevel["Level"]["events"][0].length && py + 1 < engine.currentLevel["Level"]["events"].length) {
+                        var fpos = player.facingPosition();
+                        //evType [onclick, onover,...], so we are checking onclick here!
+                        if (eventInMap(engine.currentLevel["Level"], [1, 0, 0, 0, 0], fpos)) {
+                            HID.inputs["accept"].active = false;
                             engine.waitTime(300);
                         }
                     }
@@ -924,32 +933,32 @@ player.setup = function() {
                 }
             } else if (HID.inputs["cancel"].active) {
                 HID.inputs["cancel"].active = false
-                feedbackEng.play('menu')
-                engine.mapMenu.activate()
+                feedbackEng.play('menu');
+                engine.mapMenu.activate();
             }
 
         } else if (player.waits == 0) {
-            engine.charWalkSteps(player, engine.step)
+            engine.charWalkSteps(player, engine.step);
 
             if (player.running) {
                 if (!(player.steps == 0)) {
-                    engine.charWalkSteps(player, engine.step)
+                    engine.charWalkSteps(player, engine.step);
                 }
             }
             if ((player.mapx%32==0) && (player.mapy%32==0)) {
                 var px = Math.floor(player.mapx / 32),
                     py = Math.floor(player.mapy / 32) + 1;
-                //evType [onclick, ontouch,...], so we are checking ontouch here!
-                if (eventInMap(engine.currentLevel["Level"], [0, 1, 0], [py, px])) {
-                    HID.inputs["accept"].active = false
-                    engine.mapEventBlocked = true
+                //evType [onclick, onover,...], so we are checking ontouch here!
+                if (eventInMap(engine.currentLevel["Level"], [0, 1, 0, 0, 0], [py, px])) {
+                    HID.inputs["accept"].active = false;
+                    engine.mapEventBlocked = true;
 
                     //solves collision sound played, 8 is how long it takes to fadeOut default
-                    player.waits = 8
+                    player.waits = 8;
                 }
             }
         } else {
-            player.waits -= 1
+            player.waits -= 1;
         }
     };
 }
@@ -960,61 +969,61 @@ player.charaFacingTo = function(chara) {
     var cpx = Math.floor(chara.mapx / 32),
         cpy = Math.floor(chara.mapy / 32) + 1;
 
-    var resx = cpx - ppx
-    var resy = cpy - ppy
+    var resx = cpx - ppx;
+    var resy = cpy - ppy;
 
     if (resx == 0 && resy < 0)
-        return "down"
+        return "down";
     else if (resx == 0 && resy > 0)
-        return "up"
+        return "up";
     else if (resx < 0 && resy == 0)
-        return "right"
+        return "right";
     else
-        return "left"
+        return "left";
 
-    console.log("error facing!")
-    return false
+    console.log("error facing!");
+    return false;
 
 }
 
 player.facingPosition = function() {
     var px = Math.floor(player.mapx / 32),
         py = Math.floor(player.mapy / 32) + 1;
-    return engine.facingPosition(player, px, py)
+    return engine.facingPosition(player, px, py);
 }
 
 eventInMap = function(level, evType, position) {
     if (engine.mapEventBlocked) {
-        return false
+        return false;
     }
 
-    var event = level["events"][position[0]][position[1]]
+    var event = level["events"][position[0]][position[1]];
 
     if (event == 0) {
-        return false
+        return false;
     }
 
     engine.resetBlocks()
-    if (level['eventsType'][event.toString()].every(function(element,index){return element == evType[index]})) {
+    if (level['eventsType'][event.toString()].some(function(element,index){return element == evType[index]})) {
         var aNmb, action, actionAndParam;
         for (aNmb = 0; aNmb < level['eventsActions'][event.toString()].length; aNmb++) {
             actionAndParam = level['eventsActions'][event.toString()][aNmb];
             engine.translateActions(actionAndParam[0], actionAndParam[1], position);
         }
-        return true
+        return true;
     }
 };
 
 eventInChar = function(char, evType, position) {
-    if (char['chara']['actions']['type'].every(function(element,index){return element == evType[index]})) {
-        char.charwasfacingfirst = char.facing
-        char.waits = 16
-        var newfacing = player.charaFacingTo(char)
+    if (char['chara']['actions']['type'].some(function(element,index){return element == evType[index]})) {
+        char.charwasfacingfirst = char.facing;
+        char.waits = 16;
+        var newfacing = player.charaFacingTo(char);
         if (newfacing) {
-            char.facing = newfacing
+            char.facing = newfacing;
         }
-        char.stopped = true
-        engine.resetBlocks()
+        char.stopped = true;
+        engine.resetBlocks();
         var aNmb, action, actionAndParam;
         for (aNmb = 0; aNmb < char['chara']['actions']['list'].length; aNmb++) {
             actionAndParam = char['chara']['actions']['list'][aNmb];
@@ -1022,7 +1031,7 @@ eventInChar = function(char, evType, position) {
         }
         engine.atomStack.push([function() {
             char.stopped = false;
-            char.facing = char.charwasfacingfirst
+            char.facing = char.charwasfacingfirst;
         }, '']);
         return true;
     } else {
