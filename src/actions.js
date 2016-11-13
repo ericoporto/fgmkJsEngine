@@ -243,6 +243,23 @@ actions.fadeOut = function(param, position) {
     }
 };
 
+actions.shakeScreen = function(param, position) {
+    var params = param.split(';')
+    var vorh = 'h';
+
+    if( params[0]=='v' ||
+        params[0]=='vertical' ||
+        params[0] == 'VERTICAL' ||
+        params[0] == 'Vertical' ){
+            vorh='v';
+    }
+
+    engine.atomStack.push([screen.shakeScreen, vorh]);
+    for (var i = 0; i < 8; i++) {
+        engine.atomStack.push(["block", null]);
+    }
+};
+
 actions.setVar = function(param, position) {
     var params = param.split(';')
     engine.atomStack.push([engine.actions.setVar, params]);

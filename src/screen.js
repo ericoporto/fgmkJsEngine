@@ -576,14 +576,13 @@ screen.shakeEffect = function() {
 
 screen.shakeScreen = function(horv) {
     horv = (typeof horv === "undefined") ? 'h' : horv;
-
-    this.shakes = (typeof this.shakes === "undefined") ? 0 : this.shakes
-    this.shakes += 16
+    screen.shakes = (typeof screen.shakes === "undefined") ? 0 : screen.shakes
+    screen.shakes += 16
 
     if (horv == 'h') {
-        this.shaking = 'h'
+        screen.shaking = 'h'
     } else {
-        this.shaking = 'v'
+        screen.shaking = 'v'
     }
 }
 
