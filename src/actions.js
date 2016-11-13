@@ -128,6 +128,11 @@ actions.playMusic = function(param) {
   engine.atomStack.push([engine.actions.playMusic, params]);
 }
 
+actions.playSound = function(param) {
+  var params = param.split(';')
+  engine.atomStack.push([engine.actions.playSound, params]);
+}
+
 actions.teleport = function(param, position) {
     var params = param.split(';')
     engine.atomStack.push([function() {
