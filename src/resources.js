@@ -288,6 +288,10 @@ resources.harvest = function(callback) {
                           // play sound
                           resources[resDict.to[0]][resDict.to[1]].source.start(resources[resDict.to[0]][resDict.to[1]].currentTime);
                         }
+                        resources[resDict.to[0]][resDict.to[1]].setVolume = function(volume){
+                          resources[resDict.to[0]][resDict.to[1]].volume = volume;
+                          resources[resDict.to[0]][resDict.to[1]].gainNode.gain.value = resources[resDict.to[0]][resDict.to[1]].volume;
+                        }
                       }
                     })(resDict,request) /* decodeAudioData success */, function(err) {
                       throw new Error(err);
@@ -306,6 +310,9 @@ resources.harvest = function(callback) {
             resources[resDict.to[0]][resDict.to[1]]  = document.createElement('audio');
             resources[resDict.to[0]][resDict.to[1]].id = resDict.to[1];
             resources[resDict.to[0]][resDict.to[1]].loop = true;
+            resources[resDict.to[0]][resDict.to[1]].setVolume = function(volume){
+              resources[resDict.to[0]][resDict.to[1]].volume = volume;
+            }
 
             //I am having trouble loading using audio.src, instead a XMLHttpRequest
             //is a more flexible way to load audio. I don't know if the problem
