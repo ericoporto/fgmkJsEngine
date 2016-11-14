@@ -94,7 +94,8 @@
              ["teleport","11;11;beach"],
              ["fadeIn","blackFadeIn;doNotKeep"]],
         "2": 
-            [["showText","Got a sword!"],
+            [["playSound","doorClose"],
+             ["showText","Got a sword!"],
              ["addItem","sword"],
              ["changeTile","23;layer2;keep;remove;8;7;this"]]
         },
