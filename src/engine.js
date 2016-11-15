@@ -149,26 +149,30 @@ engine.menuSetup = function() {
 }
 
 engine.playerFaceChar = function() {
+    return engine.CharFaceChar(player);
+}
+
+engine.CharFaceChar = function(charp) {
     var count = chars.length;
     for (var i = 0; i < count; i++) {
         var thischar = chars[i];
-        if (player != thischar) {
-            var ppx = Math.floor(player.mapx / 32),
-                ppy = Math.floor(player.mapy / 32) + 1;
+        if (charp != thischar) {
+            var ppx = Math.floor(charp.mapx / 32),
+                ppy = Math.floor(charp.mapy / 32) + 1;
 
             var cpx = Math.floor(thischar.mapx / 32),
                 cpy = Math.floor(thischar.mapy / 32) + 1;
 
-            if (ppx - cpx == 1 && cpy - ppy == 0 && player.facing == "left")
+            if (ppx - cpx == 1 && cpy - ppy == 0 && charp.facing == "left")
                 return thischar
 
-            if (ppx - cpx == -1 && cpy - ppy == 0 && player.facing == "right")
+            if (ppx - cpx == -1 && cpy - ppy == 0 && charp.facing == "right")
                 return thischar
 
-            if (ppx - cpx == 0 && cpy - ppy == 1 && player.facing == "down")
+            if (ppx - cpx == 0 && cpy - ppy == 1 && charp.facing == "down")
                 return thischar
 
-            if (ppx - cpx == 0 && cpy - ppy == -1 && player.facing == "up")
+            if (ppx - cpx == 0 && cpy - ppy == -1 && charp.facing == "up")
                 return thischar
 
 
@@ -313,7 +317,7 @@ engine.charWalkSteps = function(_char, walkSteps) {
         _char.mapx -= walkSteps;
     } else if (_char.facing == "right") {
         _char.mapx += walkSteps;
-    } else if (_char.facing = "down") {
+    } else if (_char.facing == "down") {
         _char.mapy += walkSteps;
     }
 }
@@ -760,6 +764,10 @@ function char(chara, x, y) {
     this['checkMapBoundaries'] = function(px, py, mapw, maph) {
         return engine.checkMapBoundaries(this, px, py, mapw, maph)
     }
+    this['getMapYX'] = function(){
+      var yx = [Math.floor(this.mapy / 32) + 1, Math.floor(this.mapx / 32)];
+      return yx;
+    }
     this['facingPosition'] = function(px, py) {
         return engine.facingPosition(this, px, py)
     }
@@ -772,6 +780,30 @@ function char(chara, x, y) {
     }
     this['awayPlayer'] = function() {
         this.facing = engine.charaLookAwayPlayer(this)
+    }
+
+    //check if the char can walk to certain direction
+    this['canWalkTo'] = function(direction){
+      this.facing = direction;
+      var px; var py;
+      [py, px] = this.getMapYX();
+      var fpos = this.facingPosition(px, py);
+      var charFacing = engine.CharFaceChar(this);
+      return (this.checkMapBoundaries(px, py, this.mapwidth, this.mapheight) &&
+          engine.currentLevel["Level"]["collision"][fpos[0]][fpos[1]] == 0 &&
+          !(charFacing.nocollision)) ;
+    }
+
+    this['walkSteps'] = function(){
+      if(this.steps > 0){
+        engine.charWalkSteps(this, engine.step)
+
+        if ((this.mapx%32==0) && (this.mapy%32==0)) {
+            //evType [onclick, onover, oncharaover], so we are checking charatouch here!
+            if (eventInMap(engine.currentLevel["Level"], [0, 0, 1, 0, 0], this.getMapYX())) {
+            }
+        }
+      }
     }
 
     this['update'] = function() {
@@ -795,6 +827,7 @@ function char(chara, x, y) {
 
 
                     var fpos = this.facingPosition(px, py)
+                    var charFacing = engine.CharFaceChar(this);
                     if (this.imediate) {
                         if (this.isFacingPlayer()) {
                             var playerpx = Math.floor(player.mapx / 32),
@@ -804,14 +837,13 @@ function char(chara, x, y) {
                         }
                     }
                     if (this.checkMapBoundaries(px, py, this.mapwidth, this.mapheight) &&
-                        engine.currentLevel["Level"]["collision"][fpos[0]][fpos[1]] == 0) {
+                        engine.currentLevel["Level"]["collision"][fpos[0]][fpos[1]] == 0 &&
+                        !(charFacing.nocollision)) {
                         this.steps = 32
 
                         if ((this.mapx%32==0) && (this.mapy%32==0)) {
-                            var cpx = Math.floor(this.mapx / 32),
-                                cpy = Math.floor(this.mapy / 32) + 1;
                             //evType [onclick, onover, oncharaover, charaleave], so we are checking charaleave here!
-                            if (eventInMap(engine.currentLevel["Level"], [0, 0, 0, 1, 0], [cpy, cpx])) {
+                            if (eventInMap(engine.currentLevel["Level"], [0, 0, 0, 1, 0], [py, px])) {
                             }
                         }
                     } else {
@@ -837,17 +869,9 @@ function char(chara, x, y) {
                 }
             }
 
-        } else if (this.steps > 0 && this.waits == 0 && this.stopped == false) {
+        } else if (this.steps > 0 && this.waits == 0 && this.stopped == false && !this.pushable) {
             //this is needed to that the chara walks!
-            engine.charWalkSteps(this, engine.step)
-
-            if ((this.mapx%32==0) && (this.mapy%32==0)) {
-                var px = Math.floor(this.mapx / 32),
-                    py = Math.floor(this.mapy / 32) + 1;
-                //evType [onclick, onover, oncharaover], so we are checking charatouch here!
-                if (eventInMap(engine.currentLevel["Level"], [0, 0, 1, 0, 0], [py, px])) {
-                }
-            }
+            this.walkSteps()
 
         } else if (this.waits > 0 && this.stopped == false) {
             this.waits -= 2;
@@ -870,6 +894,33 @@ player.setup = function() {
         return engine.checkMapBoundaries(player, px, py, mapw, maph)
     }
 
+    player['pushing'] = {
+      now: false,
+      count: 0,
+      what: null,
+      dopush: function(charToPush){
+        player.pushing.now = true;
+        player.pushing.count = 32;
+        player.pushing.what = charToPush;
+        charToPush.movstack.push(['move', player.facing ]);
+        charToPush.update();
+      },
+      update: function(){
+        if (player.pushing.now) {
+          player.pushing.count-= engine.step;
+          player.pushing.what.walkSteps();
+          if(player.pushing.count <=0){
+            player.pushing.now=false;
+            player.pushing.count=0;
+            player.pushing.what=null;
+          }
+        }
+      }
+
+   };
+
+
+
     player['update'] = function() {
 
         if (printer.isShown) return;
@@ -889,10 +940,14 @@ player.setup = function() {
                 var fpos = player.facingPosition();
                 if (player.checkMapBoundaries(px, py, mapwidth, mapheight)) {
                     var charFacing = engine.playerFaceChar();
-                    if(charFacing.pushable){
-                        charFacing.movstack.push(['move','away']);
+                    var ignoreCharColision = false;
+                    if(charFacing.pushable && player.pushing.what != charFacing){
+                        if(charFacing.canWalkTo(player.facing)){
+                          ignoreCharColision = true;
+                          player.pushing.dopush(charFacing);
+                        }
                     }
-                    if (engine.currentLevel["Level"]["collision"][fpos[0]][fpos[1]] == 0 && !(charFacing.nocollision)) {
+                    if (engine.currentLevel["Level"]["collision"][fpos[0]][fpos[1]] == 0 && (!(charFacing.nocollision) || ignoreCharColision)) {
                         player.steps = 32;
                         if (charFacing) {
                             //evType [onclick, onover,...], so we are checking onover here!
@@ -943,6 +998,7 @@ player.setup = function() {
 
         } else if (player.waits == 0) {
             engine.charWalkSteps(player, engine.step);
+            player.pushing.update();
 
             if (player.running) {
                 if (!(player.steps == 0)) {
@@ -1008,7 +1064,7 @@ eventInMap = function(level, evType, position) {
     }
 
     engine.resetBlocks()
-    if (level['eventsType'][event.toString()].some(function(element,index){return element == evType[index]})) {
+    if (level['eventsType'][event.toString()].some(function(element,index){return (element == evType[index])&&(element == 1)} )) {
         var aNmb, action, actionAndParam;
         for (aNmb = 0; aNmb < level['eventsActions'][event.toString()].length; aNmb++) {
             actionAndParam = level['eventsActions'][event.toString()][aNmb];
@@ -1019,7 +1075,7 @@ eventInMap = function(level, evType, position) {
 };
 
 eventInChar = function(char, evType, position) {
-    if (char['chara']['actions']['type'].some(function(element,index){return element == evType[index]})) {
+    if (char['chara']['actions']['type'].some(function(element,index){return (element == evType[index])&&(element == 1)} )) {
         char.charwasfacingfirst = char.facing;
         char.waits = 16;
         var newfacing = player.charaFacingTo(char);
