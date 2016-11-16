@@ -223,7 +223,7 @@ battle.resolveOrder = function() {
             battle.bchToAttack = battle.order.shift();
             if (battle.bchToAttack[1] == "hero") {
                 battle.currenthero = battle.bchToAttack[0]
-                console.log("hero attack")
+                // console.log("hero attack")
                 if (battle.resolveIfSideDead()) {
                     return
                 }
@@ -234,7 +234,7 @@ battle.resolveOrder = function() {
                     return
                 }
             } else {
-                console.log("monster attack")
+                // console.log("monster attack")
                 if (battle.resolveIfSideDead()) {
                     return
                 }
@@ -431,7 +431,7 @@ battle.hAttack = function(hero) {
     }
     if (typeof __proceed !== "undefined") {
         if (__proceed != false) {
-            console.log("attacked")
+              // console.log("attacked")
             battle.resolveAtk(hero, battle.hAct.__target, battle.hAct.__damage,
                 battle.hAct.__actionType, battle.hAct.__skill)
             actions.proceedBattleTurn()

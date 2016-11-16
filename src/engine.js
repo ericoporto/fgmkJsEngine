@@ -954,10 +954,8 @@ player.setup = function() {
                             eventInChar(charFacing, [0, 1, 0, 0, 0], [py - 1, px]);
                         }
                         if ((player.mapx%32==0) && (player.mapy%32==0)) {
-                            var cpx = Math.floor(player.mapx / 32),
-                                cpy = Math.floor(player.mapy / 32) + 1;
                             //evType [onclick, onover, oncharaover, charaleave, onleave], so we are checking onleave here!
-                            if (eventInMap(engine.currentLevel["Level"], [0, 0, 0, 0, 1], [cpy, cpx])) {
+                            if (eventInMap(engine.currentLevel["Level"], [0, 0, 0, 0, 1], [py, px])) {
                                 engine.mapEventBlocked = true;
                             }
                         }
@@ -1006,8 +1004,8 @@ player.setup = function() {
                 }
             }
             if ((player.mapx%32==0) && (player.mapy%32==0)) {
-                var px = Math.floor(player.mapx / 32),
-                    py = Math.floor(player.mapy / 32) + 1;
+                px = Math.floor(player.mapx / 32);
+                py = Math.floor(player.mapy / 32) + 1;
                 //evType [onclick, onover,...], so we are checking ontouch here!
                 if (eventInMap(engine.currentLevel["Level"], [0, 1, 0, 0, 0], [py, px])) {
                     HID.inputs["accept"].active = false;
@@ -1052,6 +1050,15 @@ player.facingPosition = function() {
     return engine.facingPosition(player, px, py);
 }
 
+engine.compareTypes = function(type1,type2){
+  return ((type1[0]==type2[0] && type1[0]==1)||
+          (type1[1]==type2[1] && type1[1]==1)||
+          (type1[2]==type2[2] && type1[2]==1)||
+          (type1[3]==type2[3] && type1[3]==1)||
+          (type1[4]==type2[4] && type1[4]==1))
+
+}
+
 eventInMap = function(level, evType, position) {
     if (engine.mapEventBlocked) {
         return false;
@@ -1064,7 +1071,7 @@ eventInMap = function(level, evType, position) {
     }
 
     engine.resetBlocks()
-    if (level['eventsType'][event.toString()].some(function(element,index){return (element == evType[index])&&(element == 1)} )) {
+    if ( engine.compareTypes(level['eventsType'][event.toString()],evType) ) {
         var aNmb, action, actionAndParam;
         for (aNmb = 0; aNmb < level['eventsActions'][event.toString()].length; aNmb++) {
             actionAndParam = level['eventsActions'][event.toString()][aNmb];
@@ -1075,7 +1082,7 @@ eventInMap = function(level, evType, position) {
 };
 
 eventInChar = function(char, evType, position) {
-    if (char['chara']['actions']['type'].some(function(element,index){return (element == evType[index])&&(element == 1)} )) {
+    if ( engine.compareTypes(char['chara']['actions']['type'],evType) ) {
         char.charwasfacingfirst = char.facing;
         char.waits = 16;
         var newfacing = player.charaFacingTo(char);
