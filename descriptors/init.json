@@ -5,39 +5,55 @@
     "CharasetFileList": {
         "charaset1": "charaset1.json"
     },
-    "MusicList":{
-        "villa" : {"ogg":"villa.ogg","mp3":"villa.mp3"},
-        "battle_1": {"ogg":"battle_1.ogg","mp3":"battle_1.mp3"},
-        "battle_win": {"ogg":"battle_win.ogg","mp3":"battle_win.mp3"},
-        "opening": {"ogg": "opening.ogg","mp3": "opening.mp3"}
-    },
     "HMSFile": "hms.json",
     "LevelsList": {
-        "beach": "beach.map.json",
-        "desertcave": "desertcave.map.json",
-        "housemiddown": "housemiddown.map.json",
-        "housetopleft": "housetopleft.map.json",
-        "playerhouse": "playerhouse.map.json",
-        "smallforest": "smallforest.map.json"
+        "Bluehous": "Bluehous.map.json",
+        "Forest": "Forest.map.json",
+        "Redhousewithroof": "Redhousewithroof.map.json",
+        "Villa": "Villa.map.json",
+        "ahouse": "ahouse.map.json"
     },
-    "PictureList":["test"]
-    ,
+    "MusicList": {
+        "battle_1": {
+            "ogg": "battle_1.ogg"
+        },
+        "battle_win": {
+            "ogg": "battle_win.ogg"
+        },
+        "forest": {
+            "ogg": "forest.ogg"
+        },
+        "opening": {
+            "ogg": "opening.ogg"
+        },
+        "villa": {
+            "ogg": "villa.ogg"
+        }
+    },
+    "PictureList": [
+        "test"
+    ],
     "Player": {
         "charaFile": "person.json",
         "charaSet": "person",
         "facing": "down",
-        "initPosX": 224,
-        "initPosY": 224,
+        "initPosX": 160,
+        "initPosY": 160,
         "party": [
             "hero"
         ]
     },
     "World": {
-        "initLevel": "playerhouse",
-        "initMusic": "opening",
         "battleMusic": "battle_1",
         "battleVictoryMusic": "battle_win",
-        "initActions": [["playMusic","villa"]]
+        "initActions": [
+            [
+                "playMusic",
+                "villa"
+            ]
+        ],
+        "initLevel": "ahouse",
+        "initMusic": "opening"
     },
     "itemsFile": "items.json"
 }
