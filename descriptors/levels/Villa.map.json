@@ -116,7 +116,7 @@
         "9": 
             [["showText","there is nothing here..."]],
         "10": 
-            [["showText","delicious fruits!"]],
+            [["showText","a pile of oranges!"]],
         "11": 
             [["fadeOut","blackFadeOut;keepEffect"],
              ["teleport","7;9;Redhousewithroof"],

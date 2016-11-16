@@ -156,7 +156,7 @@
              ["teleport","1;17;Villa"],
              ["fadeIn","pixelizeFadeIn;doNotKeep"]],
         "10": 
-            [["showText","thank you for playing! This is the end of the demo."],
+            [["showText","thank you for playing! The end!"],
              ["changeTile","0;layer2;keep;keep;17;10;Villa"],
              ["changeTile","0;layer2;nocollision;11;17;11;Villa"]],
         "11":  [],
