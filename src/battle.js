@@ -189,8 +189,10 @@ battle.start = function(monsterlist, musicBattle, musicHuzzah) {
     battle.ended = false
     battle.xpreward = 0;
 
-    if (monsterlist.length > 1) {
+    if (monsterlist.length > 2) {
         dist.prepareBgEffect(31);
+    } else if (monsterlist.length > 1) {
+        dist.prepareBgEffect(2);
     } else {
         dist.prepareBgEffect(1);
     }
