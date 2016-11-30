@@ -748,6 +748,7 @@ engine.translateActions = function(action, param, position, charsender) {
 
 function char(chara, x, y) {
     this['chara'] = resources['charas'][chara]
+    this['charEventBlocked'] = false;
     this['nocollision'] = this.chara.properties.nocollision
     this['charaset'] = resources['charasets'][this['chara']['charaset']]
     this['pushable'] = this.chara.properties.pushable
@@ -1082,7 +1083,13 @@ eventInMap = function(level, evType, position) {
 };
 
 eventInChar = function(char, evType, position) {
+    if(char.charEventBlocked){
+      return false;
+    }
+
     if ( engine.compareTypes(char['chara']['actions']['type'],evType) ) {
+
+        char.charEventBlocked = true;
         char.charwasfacingfirst = char.facing;
         char.waits = 16;
         var newfacing = player.charaFacingTo(char);
@@ -1099,6 +1106,7 @@ eventInChar = function(char, evType, position) {
         engine.atomStack.push([function() {
             char.stopped = false;
             char.facing = char.charwasfacingfirst;
+            char.charEventBlocked = false;
         }, '']);
         return true;
     } else {

@@ -10,6 +10,7 @@ printer.isShown = false;
 printer.startingBox = [];
 printer.textWidth = screen.GWIDTH-32;
 printer.textHeight = 65;
+printer.boxbuffer = document.createElement('canvas');
 
 printer.drawText = function(text,x,y){
 
@@ -21,12 +22,34 @@ printer.textBoxes = function(_text) {
   var i=0;
   var remaining_text = _text;
   while(remaining_text!=''){
-    var boxbuffer = document.createElement('canvas')
-    boxbuffer.width = printer.textWidth;
-    boxbuffer.height = printer.textHeight;
-    png_font.ctx = boxbuffer.getContext('2d');
+    printer.boxbuffer.width = 0;
+    printer.boxbuffer.height = 0;
+    printer.boxbuffer.width = printer.textWidth;
+    printer.boxbuffer.height = printer.textHeight;
+    png_font.ctx = printer.boxbuffer.getContext('2d');
     remaining_text = png_font.drawText(remaining_text,[0,0],'#FFFFFF',2,'#221100');
-    printer.buffer.push(boxbuffer);
+
+    var img = new Image();   // Create new img element
+    if (!!HTMLCanvasElement.prototype.toBlob) {
+      //if we have blob, will try to convert asynchronously
+      (function(img){ printer.boxbuffer.toBlob(function(blob) {
+          var objectUrl = URL.createObjectURL(blob);
+
+          img.onload = function() {
+            // no longer need to read the blob so it's revoked
+            URL.revokeObjectURL(objectUrl);
+          };
+          img.loaded = true
+          img.src = objectUrl;
+        }, "image/png");
+      })(img)
+    } else {
+      //no toBlob support, let's use toDataUrl
+      img.src = printer.boxbuffer.toDataURL('image/bmp');
+      img.loaded = true
+    }
+
+    printer.buffer.push(img);
     i++;
   }
 
@@ -57,6 +80,8 @@ printer.dismissText = function() {
 };
 
 printer.nextBox = function() {
+    URL.revokeObjectURL(printer.buffer[0].src);
+    printer.buffer[0].src = ''
     printer.buffer.shift()
     if (printer.buffer.length <= printer.startingBox[0]) {
         printer.dismissText();
@@ -68,7 +93,9 @@ printer.nextBox = function() {
 printer.update = function() {
   if (printer.isShown && printBox.isShown()) {
     // console.log('x='+(screen.printBox.X + 16)+'; y='+(screen.printBox.Y+40)  +'; w='+printer.textWidth+'; h='+ printer.textHeight)
-    screen.drawImage(printer.buffer[0], [screen.printBox.X + 16, screen.printBox.Y +8]);
+    if(!! printer.buffer[0].loaded){
+      screen.drawImage(printer.buffer[0], [screen.printBox.X + 16, screen.printBox.Y +8]);
+    }
   }
 }
 

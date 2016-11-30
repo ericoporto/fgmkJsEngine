@@ -8,6 +8,7 @@
 // the garbage collection was slow to catch all the homeless canvas...
 
 textBuffer = {
+  newcanvas: document.createElement('canvas'),
   buffer: [],
   drawText: function(text, posx, posy, size) {
     for(var i=0; i<this.buffer.length; i++){
@@ -23,24 +24,25 @@ textBuffer = {
 
     //let's make the maximum number of texts 24.
     if(this.buffer.length>24){
+      this.buffer[0].src = ''
       this.buffer.shift()
     }
 
     //since we couldn't find the text, we need to store it.
-    var newcanvas = document.createElement('canvas');
-    newcanvas.width = screen.GWIDTH-posx;
-    newcanvas.height = screen.GHEIGHT;
-    png_font.ctx =newcanvas.getContext('2d');
+    this.newcanvas.width = 0;
+    this.newcanvas.height = 0;
+    this.newcanvas.width = screen.GWIDTH-posx;
+    this.newcanvas.height = screen.GHEIGHT;
+    png_font.ctx =this.newcanvas.getContext('2d');
 
     png_font.drawText(text,[ 0,0],'#FFFFFF',size,'#221100',null, true);
 
     var img = new Image();   // Create new img element
-    img.src = newcanvas.toDataURL('image/png');
+    img.src = this.newcanvas.toDataURL('image/png');
     this.buffer.push({text: text,
                  posx: posx,
                  posy: posy,
                  size: size,
                  canvas: img});
-    newcanvas=0;
   }
 }
