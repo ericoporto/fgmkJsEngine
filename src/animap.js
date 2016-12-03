@@ -6,16 +6,16 @@
 animap = {}
 animap.inMapAnimation = []
 
-animap.drawAnimationFromImage = function(animationImage, animationLine, frameNumber, position) {
-    if (position[0] < screen.GSTARTX - 32 || position[0] > screen.GWIDTH + 32 || position[1] < screen.GSTARTY - 64 || position[1] > screen.GHEIGHT + 64) {
+animap.drawAnimationFromImage = function(animationImage, animationLine, frameNumber, position, box) {
+    if (position[0] < screen.GSTARTX - box || position[0] > screen.GWIDTH + box || position[1] < screen.GSTARTY - box || position[1] > screen.GHEIGHT + box) {
         return
     }
 
     screen.ctx.drawImage(animationImage,
-        64 * frameNumber, 64 * animationLine,
-        64, 64,
+        box * frameNumber, box * animationLine,
+        box, box,
         screen.GSTARTX + position[0]-16, screen.GSTARTY+16 + position[1],
-        64, 64);
+        box, box);
 }
 
 animap.removeById = function(id){
@@ -35,6 +35,7 @@ function mapAnimationSprite(animationImgName, animationLine, x, y) {
   this['draw'] = function(){ animap.drawMapAnimation(this) };
   this['mapx'] = x * 32;
   this['mapy'] = (y - 1) * 32;
+  this['box'] = 64;
   this['img'] = resources.animations[animationImgName];
   this['animationLine'] = animationLine;
   this['frame'] = 0;
@@ -57,9 +58,9 @@ animap.drawMapAnimation = function(mapAS) {
         var screenx = mapAS.mapx - (camera.x * 32 + camera.finex);
         var screeny = mapAS.mapy - (camera.y * 32 + camera.finey);
 
-        animap.drawAnimationFromImage(mapAS.img, mapAS.animationLine, mapAS.frame, [screenx, screeny])
+        animap.drawAnimationFromImage(mapAS.img, mapAS.animationLine, mapAS.frame, [screenx, screeny], mapAS.box);
         mapAS.frame +=1;
     } else {
-        animap.removeById(mapAS.id)
+        animap.removeById(mapAS.id);
     }
 }
