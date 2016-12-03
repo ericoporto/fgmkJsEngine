@@ -32,14 +32,23 @@ animap.removeById = function(id){
 }
 
 function mapAnimationSprite(animationImgName, animationLine, x, y) {
+  //check if different box
+  //if animationImgName ends with _number like _32 , _72,
+  //use this number as boxsize instead of 64
+  this['box'] = 64;
+  var tmp = animationImgName.split('_');
+  tmp = parseInt(tmp[tmp.length-1]);
+  if(tmp>1){
+    this['box'] = tmp;
+  }
+
   this['draw'] = function(){ animap.drawMapAnimation(this) };
   this['mapx'] = x * 32;
   this['mapy'] = (y - 1) * 32;
-  this['box'] = 64;
   this['img'] = resources.animations[animationImgName];
   this['animationLine'] = animationLine;
   this['frame'] = 0;
-  this['maxframe'] = Math.floor(resources.animations[animationImgName].width/64);
+  this['maxframe'] = Math.floor(resources.animations[animationImgName].width/this['box']);
   this['id'] = Math.floor(Math.random()*100000);
 }
 
