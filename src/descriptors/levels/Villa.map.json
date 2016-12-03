@@ -88,7 +88,7 @@
     "eventsActions": 
         {
         "1": 
-            [["changeTile","54;layer1;nocollision;remove;current"]],
+            [["playAnimationInMap","forest;0;current"],["changeTile","54;layer1;nocollision;remove;current"]],
         "2": 
             [["showText","↑still not available in demo"]],
         "3": 

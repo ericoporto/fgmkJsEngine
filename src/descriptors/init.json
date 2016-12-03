@@ -33,6 +33,9 @@
     "PictureList": [
         "test"
     ],
+    "AnimationList": [
+        "forest"
+    ],
     "Player": {
         "charaFile": "person.json",
         "charaSet": "person",

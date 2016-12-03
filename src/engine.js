@@ -747,6 +747,7 @@ engine.translateActions = function(action, param, position, charsender) {
 };
 
 function char(chara, x, y) {
+    this['draw'] = function(){ camera.drawChar(this) };
     this['chara'] = resources['charas'][chara]
     this['charEventBlocked'] = false;
     this['nocollision'] = this.chara.properties.nocollision
@@ -882,6 +883,7 @@ function char(chara, x, y) {
 
 
 player.setup = function() {
+    player['draw'] = function(){ camera.drawChar(player) };
     player['charaset'] = resources.playerCharaset;
     // player['mapx'] = resources.init['Player']['initPosX'];
     // player['mapy'] = resources.init['Player']['initPosY'];

@@ -696,23 +696,6 @@ screen.drawEffects = function() {
     }
 };
 
-function compareChars(a, b) {
-    if (a.mapy == b.mapy) {
-        return (a.mapx < b.mapx) ? -1 : (a.mapx > b.mapx) ? 1 : 0;
-    } else {
-        return (a.mapy < b.mapy) ? -1 : 1;
-    }
-}
-
-camera.drawChars = function() {
-    chars.sort(compareChars)
-    var count = chars.length;
-    for (var i = 0; i < count; i++) {
-        var item = chars[i];
-        camera.drawChar(item)
-    }
-}
-
 screen.drawMonsters = function() {
     for (var i = 0; i < battle.monster.length; i++) {
         screen.drawMonster(battle.monster[i], [Math.floor((i + 1) * screen.GWIDTH / (battle.monster.length + 1) - 64),
@@ -869,7 +852,7 @@ screen.loop = function() {
                     camera.drawMapLayer(engine.currentLevel, "layer2");
 
                 if (debug.showLayer.layer3)
-                    camera.drawChars();
+                    camera.drawSprites();
                 //camera.drawChar(player);
 
                 if (debug.showLayer.layer4)

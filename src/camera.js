@@ -132,3 +132,22 @@ camera.drawChar = function(chara) {
     screen.drawChara(resources.charasetimg, charaAnimation, targetFrame, [screenx, screeny])
 
 }
+
+function compareSprites(a, b) {
+    if (a.mapy == b.mapy) {
+        return (a.mapx < b.mapx) ? -1 : (a.mapx > b.mapx) ? 1 : 0;
+    } else {
+        return (a.mapy < b.mapy) ? -1 : 1;
+    }
+}
+
+camera.drawSprites = function() {
+    var spritesInMap = []
+    spritesInMap = spritesInMap.concat(chars,animap.inMapAnimation);
+    spritesInMap.sort(compareSprites);
+    var count = spritesInMap.length;
+    for (var i = 0; i < count; i++) {
+        var item = spritesInMap[i];
+        item.draw();
+    }
+}

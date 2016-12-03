@@ -248,6 +248,26 @@ actions.fadeOut = function(param, position) {
     }
 };
 
+actions.playAnimationInMap = function(param, position){
+    var params = param.split(';')
+    var animationImage = params[0];
+    var animationLine = params[1];
+    var aPositionY;
+    var aPositionX;
+    if (params[2] == "current") {
+        aPositionY = position[0];
+        aPositionX = position[1];
+    } else {
+        aPositionX = params[2];
+        aPositionY = params[3];
+    }
+
+    engine.atomStack.push([
+      animap.playMapAnimation,
+      [animationImage, animationLine, aPositionX, aPositionY]
+    ]);
+}
+
 actions.shakeScreen = function(param, position) {
     var params = param.split(';')
     var vorh = 'h';

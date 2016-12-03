@@ -45,6 +45,7 @@ resources.harvest = function(callback) {
     this.monsterimg = document.getElementById("monsterbattleimg");
     this.tile = {};
     this.pictures = {};
+    this.animations = {};
     this.syspictures = {};
     this.music = {};
     this.sound = {};
@@ -135,6 +136,7 @@ resources.harvest = function(callback) {
 
         pic_i = 0
         tile_i = 0
+        anim_i = 0
 
         function loadImages(src, callback) {
             if(tile_i < resources.tileslist.length){
@@ -145,23 +147,39 @@ resources.harvest = function(callback) {
                         loadImages(resources.tileslist[tile_i], callback);
                     } else if (pic_i < resources.pictureList.length){
                         loadImages(resources.pictureList[pic_i], callback);
+                    } else if (anim_i < resources.animationList.length){
+                        loadImages(resources.animationList[anim_i], callback);
                     } else {
                         callback();
                     }
                 };
                 resources.tile[src].src = src;
-            } else {
+            } else if(pic_i < resources.pictureList.length){
                 var name = src;
                 resources.pictures[name] = new Image();
                 resources.pictures[name].onload = function() {
                     pic_i++;
                     if(pic_i < resources.pictureList.length){
                         loadImages(resources.pictureList[pic_i], callback);
+                    } else if (anim_i < resources.animationList.length){
+                        loadImages(resources.animationList[anim_i], callback);
                     } else {
                         callback();
                     }
                 };
                 resources.pictures[name].src = 'img/pictures/'+name+'.png';
+            } else if(anim_i < resources.animationList.length){
+                var name = src;
+                resources.animations[name] = new Image();
+                resources.animations[name].onload = function() {
+                    anim_i++;
+                    if (anim_i < resources.animationList.length){
+                        loadImages(resources.animationList[anim_i], callback);
+                    } else {
+                        callback();
+                    }
+                };
+                resources.animations[name].src = 'img/animations/'+name+'.png';
             }
         }
 
@@ -364,6 +382,7 @@ resources.harvest = function(callback) {
 
     this.loadAfterInit = function(){
         resources.pictureList = resources.init['PictureList']
+        resources.animationList = resources.init['AnimationList']
         var LevelsList = resources.init['LevelsList'];
         for (var level in LevelsList) {
             var levelItem = LevelsList[level];
