@@ -708,6 +708,14 @@ engine.actions.moveChara = function(param, charatodel) {
   }
 }
 
+engine.actions.blockInput = function(param) {
+  if(param[0]){
+    player.blockInput = true;
+  } else {
+    player.blockInput = false;
+  }
+}
+
 engine.actions.questionBox = function(param) {
     var answers = {}
     engine.questionBoxAnswer = engine.questionBoxUndef
@@ -921,6 +929,7 @@ player.setup = function() {
     // player['mapy'] = resources.init['Player']['initPosY'];
     player['facing'] = resources.init['Player']['facing'];
     player['party'] = resources.init['Player']['party']
+    player['blockInput'] = false;
     player['steps'] = 0;
     player['waits'] = 0;
     player['movstack'] = [];
@@ -984,6 +993,8 @@ player.setup = function() {
               player.steps = 32;
             }
           } else {
+            if(player.blockInput)
+              return;
             var dirkey = engine.dirKeyActive()
             if (dirkey) {
                 engine.mapEventBlocked = false;

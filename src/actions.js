@@ -70,6 +70,15 @@ actions.moveChara = function(param, position, charatodel) {
     engine.atomStack.push([engine.actions.moveChara, params, charatodel])
 }
 
+actions.blockInput = function(param, position) {
+    var params = param.split(';')
+    var shouldblock = false;
+    if(params[0] == true || params[0] == 'true' || params[0] == 'block' || params[0] == 'Block'){
+      var shouldblock = true;
+    }
+    engine.atomStack.push([engine.actions.blockInput, [shouldblock]])
+}
+
 actions.questionBox = function(param, position) {
     var params = param.split(';')
     engine.questionBoxAnswer = engine.questionBoxUndef
