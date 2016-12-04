@@ -248,24 +248,40 @@ actions.fadeOut = function(param, position) {
     }
 };
 
+//playAnimationInMap
+// this enables playing an animation in the sprite/chara space of the map.
+// examples:
+// "playAnimationInMap","forest;0;current"
+// "playAnimationInMap","forest;0;current;block"
+// "playAnimationInMap","forest;0;5;3;block"
 actions.playAnimationInMap = function(param, position){
     var params = param.split(';')
     var animationImage = params[0];
     var animationLine = params[1];
     var aPositionY;
     var aPositionX;
-    if (params[2] == "current") {
+    var block = false;
+    if (params[2] == 'current') {
         aPositionY = position[0];
         aPositionX = position[1];
+        if(params[3] == 'block'){
+          block = true;
+        }
     } else {
         aPositionX = params[2];
         aPositionY = params[3];
+        if(params[4] == 'block'){
+          block = true;
+        }
     }
 
     engine.atomStack.push([
       animap.playMapAnimation,
-      [animationImage, animationLine, aPositionX, aPositionY]
+      [animationImage, animationLine, aPositionX, aPositionY, block]
     ]);
+    if(block){
+        engine.atomStack.push(["block", null]);
+    }
 }
 
 actions.shakeScreen = function(param, position) {

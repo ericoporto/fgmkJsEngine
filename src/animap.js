@@ -31,7 +31,7 @@ animap.removeById = function(id){
   }
 }
 
-function mapAnimationSprite(animationImgName, animationLine, x, y) {
+function mapAnimationSprite(animationImgName, animationLine, x, y, block) {
   //check if different box
   //if animationImgName ends with _number like _32 , _72,
   //use this number as boxsize instead of 64
@@ -48,6 +48,7 @@ function mapAnimationSprite(animationImgName, animationLine, x, y) {
   this['img'] = resources.animations[animationImgName];
   this['animationLine'] = animationLine;
   this['frame'] = 0;
+  this['block'] = block;
   this['maxframe'] = Math.floor(resources.animations[animationImgName].width/this['box']);
   this['id'] = Math.floor(Math.random()*100000);
 }
@@ -57,9 +58,12 @@ animap.playMapAnimation = function(params) {
   var animationLine = params[1];
   var x = params[2];
   var y = params[3];
-
+  var block = params[4];
+  if(block){
+    engine.waitTimeSwitch = true;
+  }
   animap.inMapAnimation.push(
-    new mapAnimationSprite(animationImgName, animationLine, x, y));
+    new mapAnimationSprite(animationImgName, animationLine, x, y, block));
 }
 
 animap.drawMapAnimation = function(mapAS) {
@@ -69,6 +73,9 @@ animap.drawMapAnimation = function(mapAS) {
 
         animap.drawAnimationFromImage(mapAS.img, mapAS.animationLine, mapAS.frame, [screenx, screeny], mapAS.box);
         mapAS.frame +=1;
+        if(mapAS.frame >= mapAS.maxframe && mapAS.block){
+            engine.waitTimeSwitch = false;
+        }
     } else {
         animap.removeById(mapAS.id);
     }
