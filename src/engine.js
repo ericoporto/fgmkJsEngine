@@ -677,6 +677,37 @@ engine.actions.charAutoDelete = function(param, charatodel) {
     }
 }
 
+engine.actions.moveChara = function(param, charatodel) {
+  var chartomove = []
+  if(param[0]=='player'){
+    chartomove = player;
+  } else if(param[0]=='current'){
+    if(typeof charatodel === 'undefined'){
+        return;
+    }
+    var k = -2;
+    for (var i = 0; i < chars.length; i++) {
+        if (chars[i] == charatodel) {
+            k = i;
+            break;
+        }
+    }
+    if (chars[k] != engine.player) {
+        chartomove = chars[k];
+    }
+  } else {
+    for (var i = 0; i < chars.length; i++) {
+        if (chars[i].name == param[0]) {
+            chartomove = chars[i];
+            break;
+        }
+    }
+  }
+  for (var i = 1; i < param.length; i+=2) {
+    chartomove.movstack.push([param[i],param[i+1]]);
+  }
+}
+
 engine.actions.questionBox = function(param) {
     var answers = {}
     engine.questionBoxAnswer = engine.questionBoxUndef
@@ -748,7 +779,8 @@ engine.translateActions = function(action, param, position, charsender) {
 
 function char(chara, x, y) {
     this['draw'] = function(){ camera.drawChar(this) };
-    this['chara'] = resources['charas'][chara]
+    this['name'] = chara;
+    this['chara'] = resources['charas'][chara];
     this['charEventBlocked'] = false;
     this['nocollision'] = this.chara.properties.nocollision
     this['charaset'] = resources['charasets'][this['chara']['charaset']]
@@ -891,6 +923,7 @@ player.setup = function() {
     player['party'] = resources.init['Player']['party']
     player['steps'] = 0;
     player['waits'] = 0;
+    player['movstack'] = [];
     player['running'] = false;
     player['curr_animation'] = false;
     player['checkMapBoundaries'] = function(px, py, mapw, maph) {
@@ -934,6 +967,23 @@ player.setup = function() {
         var mapwidth = engine.currentLevel["Level"]["collision"][0].length;
 
         if (player.steps == 0 && player.waits == 0) {
+          if (this['movstack'].length > 0) {
+            engine.mapEventBlocked = false;
+            player.mapx = px * 32,
+                player.mapy = (py - 1) * 32;
+            var moveToDo = player.movstack.shift();
+            if (moveToDo[0] == "face") {
+              if(moveToDo[1] == 'up' || moveToDo[1] == 'down' || moveToDo[1] == 'right' || moveToDo[1] == 'left'){
+                player.facing = moveToDo[1]
+              }
+              player.waits = 16;
+            } else if (moveToDo[0] == "move") {
+              if(moveToDo[1] == 'up' || moveToDo[1] == 'down' || moveToDo[1] == 'right' || moveToDo[1] == 'left'){
+                player.facing = moveToDo[1]
+              }
+              player.steps = 32;
+            }
+          } else {
             var dirkey = engine.dirKeyActive()
             if (dirkey) {
                 engine.mapEventBlocked = false;
@@ -996,7 +1046,7 @@ player.setup = function() {
                 feedbackEng.play('menu');
                 engine.mapMenu.activate();
             }
-
+          }
         } else if (player.waits == 0) {
             engine.charWalkSteps(player, engine.step);
             player.pushing.update();

@@ -65,6 +65,11 @@ actions.charAutoDelete = function(param, position, charatodel) {
     engine.atomStack.push([engine.actions.charAutoDelete, params, charatodel])
 }
 
+actions.moveChara = function(param, position, charatodel) {
+    var params = param.split(';')
+    engine.atomStack.push([engine.actions.moveChara, params, charatodel])
+}
+
 actions.questionBox = function(param, position) {
     var params = param.split(';')
     engine.questionBoxAnswer = engine.questionBoxUndef
