@@ -794,6 +794,11 @@ function char(chara, x, y) {
     this['charaset'] = resources['charasets'][this['chara']['charaset']]
     this['pushable'] = this.chara.properties.pushable
     this['facing'] = 'down';
+    if('step' in this.chara.properties){
+      this['step'] = this.chara.properties.step;
+    } else {
+      this['step'] = engine.step;
+    }
     this['steps'] = 0;
     this['waits'] = 0;
     this['mapx'] = x * 32;
@@ -838,7 +843,7 @@ function char(chara, x, y) {
 
     this['walkSteps'] = function(){
       if(this.steps > 0){
-        engine.charWalkSteps(this, engine.step)
+        engine.charWalkSteps(this, this.step)
 
         if ((this.mapx%32==0) && (this.mapy%32==0)) {
             //evType [onclick, onover, oncharaover], so we are checking charatouch here!
