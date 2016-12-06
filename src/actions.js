@@ -101,6 +101,20 @@ actions.changeState = function(param, position) {
     engine.atomStack.push([engine.actions.changeState, params])
 }
 
+actions.changePan = function(param, position) {
+    var params = param.split(';')
+    engine.atomStack.push([engine.actions.changePan, params])
+}
+
+actions.setCharaInvisibility = function(param, position) {
+    var params = param.split(';')
+    var invisible = false;
+    if(params[1] == 'invisible' || params[1] == 'true' || params[1] == 'Invisible' ){
+      invisible = true;
+    }
+    engine.atomStack.push([engine.actions.setCharaInvisibility, [params[0],invisible]])
+}
+
 actions.IF = function(param, position) {
     var params = param.split(';');
     actions.blockCounter++;
@@ -275,11 +289,15 @@ actions.playAnimationInMap = function(param, position){
     var aPositionY;
     var aPositionX;
     var block = false;
+    var speed = 1;
     if (params[2] == 'current') {
         aPositionY = position[0];
         aPositionX = position[1];
         if(params[3] == 'block'){
           block = true;
+        }
+        if(typeof params[4] !== 'undefined'){
+          speed = parseInt(params[4]);
         }
     } else {
         aPositionX = params[2];
@@ -287,11 +305,14 @@ actions.playAnimationInMap = function(param, position){
         if(params[4] == 'block'){
           block = true;
         }
+        if(typeof params[5] !== 'undefined'){
+          speed = parseInt(params[5]);
+        }
     }
 
     engine.atomStack.push([
       animap.playMapAnimation,
-      [animationImage, animationLine, aPositionX, aPositionY, block]
+      [animationImage, animationLine, aPositionX, aPositionY, block, speed]
     ]);
     if(block){
         engine.atomStack.push(["block", null]);

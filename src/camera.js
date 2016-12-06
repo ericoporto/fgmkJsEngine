@@ -87,7 +87,7 @@ camera.drawMapLayer = function(_worldLevel, _zIndex) {
     var screenx = 0,
         screeny = 0;
 
-    this.panToChara(player)
+    this.panToChara(engine.charaToPan)
 
     initX = Math.max(0, this.x)
     initY = Math.max(0, this.y)
@@ -113,6 +113,10 @@ camera.drawMapLayer = function(_worldLevel, _zIndex) {
 
 camera.drawChar = function(chara) {
     var charaAnimation = null
+    if(chara.invisible){
+      return;
+    }
+
     if(chara.curr_animation){
         charaAnimation = chara.charaset[chara.curr_animation][chara.facing]
     } else if (chara.steps){

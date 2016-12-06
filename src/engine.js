@@ -67,6 +67,7 @@ engine.setup = function() {
     engine.questionBoxUndef = -1
     engine.questionBoxAnswer = engine.questionBoxUndef
     engine.menuSetup()
+    engine.charaToPan = player;
 }
 
 engine.menuSetup = function() {
@@ -415,12 +416,49 @@ engine.evalNum = function(number) {
             if (value.split('map:')[1] == "this" || value.split('map:')[1] == "current" ) {
                 return engine.currentLevel.Level.levelName
             }
+        } else if (value.indexOf("item:") == 0) {
+            var itemname = value.split('item:')[1];
+            if(itemname in items.inventory){
+              return items.inventory[itemname].quantity;
+            } else {
+              return 0;
+            }
         } else {
             return value
         }
     } else {
         return +value
     }
+}
+
+engine.translateChara = function(charaName, charatodel){
+  var charaPointer = [];
+  if(charaName=='player'){
+    charaPointer = player;
+  } else if(charaName=='current'){
+    if(typeof charatodel === 'undefined'){
+        return;
+    }
+    var k = -2;
+    for (var i = 0; i < chars.length; i++) {
+        if (chars[i] == charatodel) {
+            k = i;
+            break;
+        }
+    }
+    if (chars[k] != engine.player) {
+        charaPointer = chars[k];
+    }
+  } else {
+    for (var i = 0; i < chars.length; i++) {
+        if (chars[i].name == charaName) {
+            charaPointer = chars[i];
+            break;
+        }
+    }
+  }
+
+  return charaPointer;
 }
 
 engine.testVar = function(param) {
@@ -678,31 +716,7 @@ engine.actions.charAutoDelete = function(param, charatodel) {
 }
 
 engine.actions.moveChara = function(param, charatodel) {
-  var chartomove = []
-  if(param[0]=='player'){
-    chartomove = player;
-  } else if(param[0]=='current'){
-    if(typeof charatodel === 'undefined'){
-        return;
-    }
-    var k = -2;
-    for (var i = 0; i < chars.length; i++) {
-        if (chars[i] == charatodel) {
-            k = i;
-            break;
-        }
-    }
-    if (chars[k] != engine.player) {
-        chartomove = chars[k];
-    }
-  } else {
-    for (var i = 0; i < chars.length; i++) {
-        if (chars[i].name == param[0]) {
-            chartomove = chars[i];
-            break;
-        }
-    }
-  }
+  var chartomove = engine.translateChara(param[0],charatodel)
   for (var i = 1; i < param.length; i+=2) {
     chartomove.movstack.push([param[i],param[i+1]]);
   }
@@ -742,6 +756,10 @@ engine.actions.questionBox = function(param) {
       feedbackEng.play('question');
 }
 
+engine.actions.changePan = function(param){
+  engine.charaToPan = engine.translateChara(param[0]);
+}
+
 engine.actions.proceedBattleTurn = function(param) {
     battle.waitherodecision = false
 }
@@ -753,6 +771,11 @@ engine.actions.changePlayerAnimation = function(param){
     } else {
         player.curr_animation = param[0]
     }
+}
+
+engine.actions.setCharaInvisibility = function(param){
+  var charaToChange = engine.translateChara(param[0]);
+  charaToChange.invisible = param[1];
 }
 
 engine.actions.alert = function(param) {
@@ -800,6 +823,7 @@ function char(chara, x, y) {
       this['step'] = engine.step;
     }
     this['steps'] = 0;
+    this['invisible'] = false;
     this['waits'] = 0;
     this['mapx'] = x * 32;
     this['mapy'] = (y - 1) * 32;
@@ -937,6 +961,7 @@ player.setup = function() {
     player['blockInput'] = false;
     player['steps'] = 0;
     player['waits'] = 0;
+    player['invisible'] = false;
     player['movstack'] = [];
     player['running'] = false;
     player['curr_animation'] = false;
