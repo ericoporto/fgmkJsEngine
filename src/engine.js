@@ -809,7 +809,7 @@ engine.alertupdate = function() {
             return a[1] - b[1]
         })
         if (engine.alertStack[0][1] <= 0) {
-            engine.alertStack.pop()
+            engine.alertStack.shift()
         }
     }
 }
