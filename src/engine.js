@@ -508,6 +508,16 @@ engine.testVar = function(param) {
     return test[operator](var1, var2)
 }
 
+engine.actions.insideOutside = function(param) {
+    if(param[0]=='inside' || param[0]=='in' || param[0]=='i'){
+      screen.rains.drawrain = false;
+      setTimeout(function(){bgmusic.changeVolume(0.5);},150)
+
+    } else {
+      screen.rains.drawrain = true;
+      setTimeout(function(){bgmusic.changeVolume(0.7);},150)
+    }
+}
 
 engine.actions.addItem = function(param) {
     for (var i = 0; i < param.length; i++) {

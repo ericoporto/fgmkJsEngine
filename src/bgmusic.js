@@ -36,7 +36,7 @@ bgmusic = {
   },
   changeVolume: function(volume){
     if(this.playing in resources.music){
-      resources.music[song].setVolume(volume);
+      resources.music[this.playing].setVolume(volume);
     }
   },
   pushSong: function(){

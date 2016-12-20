@@ -1,6 +1,6 @@
 // rain.js
 //  The rain effect that can be draw in the screen is defined
-// in this module. 
+// in this module.
 
 function rain(__context, __width, __height, ___screen) {
     var that = this;
@@ -17,6 +17,8 @@ function rain(__context, __width, __height, ___screen) {
     var rainBufferHeight = (typeof __height === "undefined") ? 416 : __height;
 
     this.raining = false;
+
+    this.drawrain = true;
 
     function toColor(num) {
         var g = Math.min(Math.round(num), 0xFF);
@@ -112,10 +114,11 @@ function rain(__context, __width, __height, ___screen) {
             if (particles.length > 0) {
                 blankRainBC();
 
-                for (var k = 2; k < 6; k++) {
-                    DrawRainColor(k)
+                if(this.drawrain){
+                  for (var k = 2; k < 6; k++) {
+                      DrawRainColor(k)
+                  }
                 }
-
                 ___context.drawImage(rainBufferCanvas, ___screen.GSTARTX, ___screen.GSTARTY, rainBufferWidth, rainBufferHeight);
             }
 

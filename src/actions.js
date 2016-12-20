@@ -388,6 +388,13 @@ actions.waitCycle = function(param, position) {
     }
 };
 
+actions.insideOutside = function(param, position) {
+    var params = param.split(';');
+
+    engine.atomStack.push([engine.actions.insideOutside, params]);
+
+}
+
 actions.rain = function(param, position) {
     var params = param.split(';')
 
