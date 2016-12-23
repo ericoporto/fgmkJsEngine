@@ -544,9 +544,9 @@ engine.actions.battle = function(param) {
     var musicHuzzah = resources.init['World']['battleVictoryMusic'];
     for(var i=0; i<param.length; i++){
       if(param[i].indexOf("music:") == 0){
-        musicBattle = value.split('music:')[1];
+        musicBattle = param[i].split('music:')[1];
       } else if (param[i].indexOf("musicwin:") == 0) {
-        musicHuzzah = value.split('musicwin:')[1];
+        musicHuzzah = param[i].split('musicwin:')[1];
       } else {
         monsterlist.push(param[i]);
       }
