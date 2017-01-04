@@ -896,7 +896,7 @@ function char(chara, x, y) {
                     py = Math.floor(this.mapy / 32) + 1;
                 var moveToDo = this['movstack'].shift();
                 if (moveToDo[0] == "move") {
-                    if (moveToDo[1] == "follow") {
+                    if (moveToDo[1] == "follow" || moveToDo[1] == "near") {
                         this.followPlayer()
                     } else if (moveToDo[1] == "away") {
                         this.awayPlayer()
@@ -920,7 +920,16 @@ function char(chara, x, y) {
                     if (this.checkMapBoundaries(px, py, this.mapwidth, this.mapheight) &&
                         engine.currentLevel["Level"]["collision"][fpos[0]][fpos[1]] == 0 &&
                         !(charFacing.nocollision)) {
-                        this.steps = 32
+
+                          if(moveToDo[1] == "follow" && (px==Math.floor(player.mapx / 32)) && (py== Math.floor(player.mapy / 32) + 1)){
+                            this.waits = 32;
+                          } else if(moveToDo[1] == "near" &&
+                                    (px>= Math.floor(player.mapx / 32) -1 && px<= Math.floor(player.mapx / 32) +1) &&
+                                    (py>= Math.floor(player.mapy / 32) && py <= Math.floor(player.mapy / 32)+2)){
+                            this.waits = 32;
+                          } else {
+                            this.steps = 32;
+                          }
 
                         if ((this.mapx%32==0) && (this.mapy%32==0)) {
                             //evType [onclick, onover, oncharaover, charaleave], so we are checking charaleave here!
@@ -933,7 +942,7 @@ function char(chara, x, y) {
 
                 }
                 if (moveToDo[0] == "face") {
-                    if (moveToDo[1] == "follow") {
+                    if (moveToDo[1] == "follow"|| moveToDo[1] == "near") {
                         this.followPlayer()
                     } else if (moveToDo[1] == "away") {
                         this.awayPlayer()
